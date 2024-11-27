@@ -1,3 +1,47 @@
+class Game:
+    def __init__(self, name: str, main_player: Player):
+        self.name = name,
+        self.main_player = main_player
+
+    def start():
+        pass
+
+    def save():
+        pass
+
+    def load():
+        pass
+
+
+
+class Place:
+    def __init__(self, name: str, description: str, monsters: Monster):
+        self.name = name
+        self.description = description
+        self.monsters = monsters
+        self.exploration = False
+
+    def interact():
+        pass
+
+class Combat:
+    def __init__(self, player: Player, target: Monster):
+        self.turn = 0
+        self.player = player
+        self.target = target
+
+    def start():
+        pass
+
+    def turn():
+        pass
+
+    def end():
+        pass
+
+    def escape():
+        pass
+
 class Entity:
     def __init__(self, name: str, description: str, level: int, xp: float, stats: array, attack_list: array):
         self.name = name
@@ -78,45 +122,3 @@ class Attack:
         self.AHHHHHH = AHHHHHH
         self.durability = durability
         self.effect = effect # {stat : dégats}
-
-class Game:
-    def __init__(self, name: str, main_player: Player):
-        self.name = name,
-        self.main_player = main_player
-
-    def start():
-        pass
-
-    def save():
-        pass
-
-    def load():
-        pass
-
-class Combat:
-    def __init__(self, player: Player, target: Monster):
-        self.turn = 0
-        self.player = player
-        self.target = target
-
-    def start():
-        pass
-
-    def turn():
-        pass
-
-    def end():
-        pass
-
-    def escape():
-        pass
-
-class Place:
-    def __init__(self, name: str, description: str, monsters: Monster):
-        self.name = name
-        self.description = description
-        self.monsters = monsters
-        self.exploration = False
-
-    def interact():
-        pass
