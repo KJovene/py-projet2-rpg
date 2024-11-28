@@ -261,10 +261,9 @@ class Consomable(Item):
         pass
 
 class Attack:
-    def __init__(self, name: str, description: str, damage_type: str, durability: int, effect: dict):
+    def __init__(self, name: str, description: str, battle_cry: str, durability: int, effect: dict):
         self.name = name
         self.description = description
-        self.damage_type = damage_type
         self.durability = durability
         self.effect = effect
 
