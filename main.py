@@ -97,8 +97,8 @@ class Game:
             "Clé du casino" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={}),
             "Clé de la fête foraine" : Item(name="Clé de la fête foraine", description="Cette clé t'aidera a acceder au boss final !", effect={}),
             "Clé du temple" : Item(name="Clé du temple", description="Cette clé t'aidera a acceder au boss final !", effect={}),
-            "Clé des sou(flis)" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={})
             "Clé des sou(flis)" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={}),
+            "Petite potion rouge": Consomable(name="Petite potion rouge", description="Potion donné par la déesse Gaïa (soigne)", effect={"hp": 5}, durability=1)
         }
 
         self.artefact = {
