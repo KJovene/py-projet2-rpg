@@ -66,6 +66,12 @@ class Game:
                 monsters=[]
             )
         }
+        self.items = {
+            "Clé du casino" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={}),
+            "Clé de la fête foraine" : Item(name="Clé de la fête foraine", description="Cette clé t'aidera a acceder au boss final !", effect={}),
+            "Clé du temple" : Item(name="Clé du temple", description="Cette clé t'aidera a acceder au boss final !", effect={}),
+            "Clé des sou(flis)" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={})
+        }
         pass
 
 
