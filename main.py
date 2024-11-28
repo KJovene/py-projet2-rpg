@@ -261,6 +261,7 @@ class Attack:
     def __init__(self, name: str, description: str, battle_cry: str, durability: int, effect: dict):
         self.name = name
         self.description = description
+        self.battle_cry = battle_cry
         self.durability = durability
         self.effect = effect
 
