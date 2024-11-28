@@ -44,6 +44,9 @@ class Combat:
             player.interact = input("Keskon fait ? (attaquer/POPO/fuir)")
             if player.interact == "attaquer":
                 pass
+            if self.target.health <= 0 :
+                    print(f"Vous avez vaincu {self.taget} !")
+                    self.end()
             elif player.interact == "POPO" :
                 pass
             elif player.interact == "fuir" :
