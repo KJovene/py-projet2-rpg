@@ -143,10 +143,33 @@ class Game:
             "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
 
         }
+
     def start(self):
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
+        choice = Prompt.ask(
+            "Faites un choix :\n0 - Créer un monde\n1 - Charger un monde",
+            choices=["0", "1"]
+        )
+
+        if choice == "0":
+            console.print("[green]Création du personnage...[/green]")
+            player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?")
+            self.main_player = Player(
+                name=player_name,
+                level=1,
+                xp=0,
+                stats={"hp": 100, "attack": 10, "defense": 5},
+                attack_list=[],
+                place= self.places["Spawn"]
+            )
+
+            self.main_player.place.interact()
+
+
+
     def save(self):
         pass
+
     def load(self):
         pass
 
@@ -268,4 +291,5 @@ class Attack:
 
 if __name__ == "__main__":
     game = Game("Mon RPG")
+
     game.start()
