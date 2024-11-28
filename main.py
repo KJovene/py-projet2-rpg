@@ -108,15 +108,16 @@ class Game:
         }
 
         self.monsters = {
-            "Fara": Monster(name="Fara", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Imen": Monster(name="Imen", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Nazim": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Nana la renarde": Monster(name="Nana la renarde", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Youva": Monster(name="Youva", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Carglass": Monster(name="Carglass", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Cherif": Monster(name="Cherif", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
-            "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Amelie": Monster(name="Amelie", description="", level=2, stats={}, attack_list=[self.attacks["Amel 1"], self.attacks["Amel 2"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Fara": Monster(name="Fara", description="", level=2, stats={}, attack_list=[self.attacks["Fara 1"], self.attacks["Fara 2"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Imen": Monster(name="Imen", description="", level=2, stats={}, attack_list=[self.attacks["Control Mental"], self.attacks["Gear 5"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Nazim": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[self.attacks["Kamehameha"], self.attacks["Malaka"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Nana la renarde": Monster(name="Nana la renarde", description="", level=2, stats={}, attack_list=[self.attacks["Charme"], self.attacks["Chant brutal"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Youva": Monster(name="Youva", description="", level=2, stats={}, attack_list=[self.attacks["Explosion"], self.attacks["Vol rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Carglass": Monster(name="Carglass", description="", level=2, stats={}, attack_list=[self.attacks["Lancé de talon"], self.attacks["Griffure"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Cherif": Monster(name="Cherif", description="", level=2, stats={}, attack_list=[self.attacks["Coup de tonerre"], self.attacks["Grattage du délégué"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
         }
     def start(self):
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
