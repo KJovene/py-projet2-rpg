@@ -1,4 +1,7 @@
+from rich.console import Console
+from rich.prompt import Prompt
 
+console = Console()
 
 class Game:
     def __init__(self, name: str):
