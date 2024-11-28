@@ -1,15 +1,71 @@
+
+
 class Game:
-    def __init__(self, name: str, main_player: Player):
-        self.name = name,
-        self.main_player = main_player
-
-    def start():
-        pass
-
-    def save():
-        pass
-
-    def load():
+    def __init__(self, name: str):
+        self.name = name
+        self.main_player = None
+        self.places = {
+            "Spawn": Place(
+                name="Spawn",
+                description="Le point de départ du joueur",
+                places_around={
+                    "east": self.places["Souflis Forest"]
+                },
+                monsters=[]
+            ),
+            "Souflis Forest": Place(
+                name="Souflis Forest",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "west": self.places["Spawn"],
+                    "north": self.places["Ici tout le monde perd"],
+                    "north-east": self.places["Domaine des Souflis"],
+                    "east": self.places["Hetic"],
+                    "south-east": self.places["Le casino du cartier des plaisirs"],
+                    "south": self.places["Le temple des 1 000 moines"]
+                },
+                monsters=[]
+            ),
+            "Ici tout le monde perd": Place(
+                name="Ici tout le monde perd",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "south": self.places["Souflis Forest"],
+                },
+                monsters=[]
+            ),
+            "Domaine des Souflis": Place(
+                name="Domaine des Souflis",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "south-west": self.places["Souflis Forest"],
+                },
+                  monsters=[]),
+            "Le casino du cartier des plaisirs": Place(
+                name="Le casino du cartier des plaisirs",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "west": self.places["Souflis Forest"],
+                },
+                monsters=[]
+            ),
+            "Le temple des 1 000 moines": Place(
+                name="Le temple des 1 000 moines",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "north-west": self.places["Souflis Forest"],
+                },
+                monsters=[]
+            ),
+            "Hetic": Place(
+                name="Hetic",
+                description="Un endroit où vous pouvez trouver des ressources",
+                places_around={
+                    "west": self.places["Souflis Forest"],
+                },
+                monsters=[]
+            )
+        }
         pass
 
 
