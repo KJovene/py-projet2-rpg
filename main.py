@@ -95,6 +95,11 @@ class Game:
             "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
             "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
         }
+    def start(self):
+        console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
+    def save(self):
+        pass
+    def load(self):
         pass
 
 
