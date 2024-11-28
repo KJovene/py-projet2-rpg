@@ -66,6 +66,10 @@ class Game:
                 monsters=[]
             )
         }
+
+        self.attacks = {
+        }
+
         self.items = {
             "Clé du casino" : Item(name="Clé du casino", description="Cette clé t'aidera a acceder au boss final !", effect={}),
             "Clé de la fête foraine" : Item(name="Clé de la fête foraine", description="Cette clé t'aidera a acceder au boss final !", effect={}),
