@@ -78,6 +78,19 @@ class Game:
             "Maxi Phô Boeuf": Equipable(name="Maxi Phô Boeuf", description="", effect={"damage": 10}),
             "Jeu de cartes": Equipable(name="Jeu de cartes", description="", effect={})
         }
+
+        self.monsters = {
+            "Amelie": Monster(name="Amelie", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Fara": Monster(name="Fara", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Imen": Monster(name="Imen", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Nazim": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Nana la renarde": Monster(name="Nana la renarde", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Youva": Monster(name="Youva", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Carglass": Monster(name="Carglass", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Cherif": Monster(name="Cherif", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+            "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[], dropable_items=[]),
+        }
         pass
 
 
