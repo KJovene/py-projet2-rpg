@@ -181,10 +181,7 @@ class Monster(Entity):
         super().__init__(name, description, level, 0, stats, attack_list)
         self.dropable_items = dropable_items
 
-    def attack():
-        pass
-
-    def calculate_drops():
+    def calculate_drops(self):
         pass
 
 class Place:
