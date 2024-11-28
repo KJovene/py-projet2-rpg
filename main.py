@@ -29,17 +29,24 @@ class Combat:
         self.turn = 0
         self.player = player
         self.target = target
+        self.active = False
 
-    def start():
+    def start(self):
+        print(f"Le combat a commencé entre '{self.target}' et '{self.player}' !")
+        self.active = True
         pass
 
-    def turn():
+    def turn(self):
         pass
 
-    def end():
+    def end(self):
+        print("Le combat est terminé !")
+        self.active = False
         pass
 
-    def escape():
+    def escape(self):
+        print("Vous avez reussi à fuir !")
+        self.end()
         pass
 
 class Entity:
