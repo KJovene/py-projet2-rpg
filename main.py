@@ -136,6 +136,12 @@ class Game:
             "Cherif": Monster(name="Cherif", description="", level=2, stats={}, attack_list=[self.attacks["Coup de tonerre"], self.attacks["Grattage du délégué"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Kevin": Monster(name="Kevin", description="Souverain des rires perdus", level=1000, stats={}, attack_list=[self.attacks["Marteau du Forain"], self.attacks["Billes de Loterie Explosives"], self.attacks["Claque de la Poigne Gigantesque"]], dropable_items=[self.items["Clé de la fête foraine"]]),
+            "Anjaro": Monster(name="Anjaro", description="Roi de la jungle", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
+            "Mathieu": Monster(name="Mathieu", description="Riche investisseur", level=1000, stats={}, attack_list=[self.attacks["Le Marteau de la Banque"], self.attacks["Le Lancer de Pièce Fétiche"], self.attacks["Le Coup du Pantalon Traître"], self.attacks["L’Écran Noir de la Dette"]], dropable_items=[self.items["Clé du Domaine"]]),
+            "Le Roi Singe": Monster(name="Le Roi Singe", description="Père d'Anjaro", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
+            "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
+
         }
     def start(self):
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
