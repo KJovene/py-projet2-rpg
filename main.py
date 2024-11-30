@@ -1,5 +1,6 @@
 from rich.console import Console
 from rich.prompt import Prompt
+from random import randint
 
 console = Console()
 
@@ -169,49 +170,6 @@ class Place:
     def interact():
         pass
 
-<<<<<<< HEAD
-class Combat:
-    def __init__(self, player: Player, target: Monster):
-        self.turn = 0
-        self.player = player
-        self.target = target
-        self.active = False #Combat ON/OFF
-
-    def start(self):
-        print(f"Le combat a commencé entre '{self.target}' et '{self.player}' !")
-        self.active = True 
-        self.turn()
-        
-
-    def turn(self):
-        while self.active == True :
-            self.turn += 1 #Compteur de tours
-            print(f"Tour {self.turn}")
-            print("1. Attaquer")
-            print("2. Inventaire")
-            print("3. Fuir")
-            player_interact = input("Choisissez une action (attaquer/inventaire/fuir ou 1/2/3) : ").lower()
-            if player_interact == "attaquer" or '1':
-                self.player.attack()
-                self.target.take_damage()
-                if self.target.health <= 0 :
-                    print(f"Vous avez vaincu {self.target} !")
-                    self.end()
-            elif player_interact == "inventaire" or '2' :
-                self.player.show_inventory()
-                self.player.use_item()
-            elif player_interact == "fuir" or '3' :
-                self.escape()
-            else:
-                print("Action incomprise, veuillez réessayer")
-            
-            if self.target.health > 0 :
-                self.target.attack()
-                self.player.take_damage()
-                if self.player.health <= 0 :
-                    print(f"Vous avez été vaincu par '{self.target}' !")
-                    self.end()
-=======
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
         super().__init__(name, "", level, xp, stats, attack_list)
@@ -219,7 +177,10 @@ class Player(Entity):
         self.place = place
 
     def show_inventory(self):
-        pass
+        player_inventory_list = ""
+        for i in range(len(self.inventory)) :
+            player_inventory_list += f"{i +1} {self.inventory[i]}"
+        return player_inventory_list
 
     def use_item(self):
         pass
@@ -231,20 +192,57 @@ class Player(Entity):
         pass
 
 class Combat:
-    def __init__(self, player: Player, target: Monster):
-        self.turn = 1
+    def __init__(self, player: Player, opponent: Monster):
+        self.turn = 0
         self.player = player
-        self.target = target
-        self.is_active = True
+        self.opponent = opponent
+        self.active = False #Combat ON/OFF
+    
+    def start(self):
+        Combat_debut = f"[red]Vous vous apprêtez à vous battre contre {self.opponent}...\n QUE LE COMBAT COMMENCE[/red]"
+        self.active = True 
+        self.first_to_play = randint(0 , 1)
+        if self.first_to_play == 1 :
+            self.player_turn()
+        else:
+            self.opponent_turn()
 
-    def start(self) -> None:
-        """Démarre le combat"""
-        console.print(f"[red]Combat contre {self.target.name} commencé ![/red]")
+    def player_turn(self):
+        while self.active :
+            player_interact = Prompt.ask(
+                "Choisissez une action", 
+                choices = ["1","2","3"], 
+                default= "attaquer"
+                )
+            if player_interact == '1':
+                for i in range(len(self.player.attack_list)) :
+                    player_attack_list = Prompt.ask(f"{i + 1} {self.player.attack_list[i]}")
+                pass #Â remplir une fois la liste d'attaques du héro OK
+                self.player.attack()
+                self.opponent.take_damage()
+                if self.target.health <= 0 :
+                    Victory = f"Vous avez vaincu {self.opponent} !"
+                    self.end()
+            elif player_interact == '2' :
+                #Affichage de l'inventaire
+                self.player.show_inventory()
+                inventory_choice = Prompt.ask(
+                    "Choisissez un objet dans votre inventaire"
+                    choices= '1','2','3','4','5','6'
+                )
+                if inventory_choice == "Consomable item" :
+                    self.player.use_item()
+            elif player_interact == '3' :
+                self.escape()
+            
 
-    def process_turn(self) -> None:
-        """Gère un tour de combat"""
-        pass
->>>>>>> dev
+    def opponent_turn(self):
+        if self.opponent.health > 0 :
+            self.opponent.attack()
+            self.player.take_damage()
+            if self.player.health <= 0 :
+                Lost = f"Vous avec perdu le combat, Looser !"
+                self.end()
 
     def end(self):
         print("Le combat est terminé !")
@@ -253,9 +251,7 @@ class Combat:
             self.target.calculate_drops()
         else:
             self.active = False #Combat OFF
-            self.player.move('spawn')
-        
-        
+            self.player.move('spawn')       
 
     def escape(self):
         print("Vous avez reussi à fuir !")
