@@ -34,22 +34,22 @@ class Combat:
     def start(self):
         print(f"Le combat a commencé entre '{self.target}' et '{self.player}' !")
         self.active = True 
-        self.turn() #Lance la boucle de tours du combat
-        pass
+        self.turn()
+        
 
     def turn(self):
-        while self.active == True : #Tant que c'est True, les tours se déroulent
+        while self.active == True :
             self.turn += 1 #Compteur de tours
             print(f"Tour {self.turn}")
-            player.interact = input("Keskon fait ? (attaquer/POPO/fuir)")
-            if player.interact == "attaquer":
+            player_interact = input("Keskon fait ? (attaquer/POPO/fuir)")
+            if player_interact == "attaquer":
                 pass
             if self.target.health <= 0 :
                     print(f"Vous avez vaincu {self.taget} !")
                     self.end()
-            elif player.interact == "POPO" :
+            elif player_interact == "POPO" :
                 pass
-            elif player.interact == "fuir" :
+            elif player_interact == "fuir" :
                 self.escape()
             
 
