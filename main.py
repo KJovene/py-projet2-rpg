@@ -11,28 +11,30 @@ class Game:
 
         def spawn_interaction(place):
             naration = [
-                "...vous vous réveillez lentement, déboussolé vous entendez des bruits peu reconnaissables…",
-                "...vos yeux s'ouvrent lentement...",
-                "Vous pensez : Ou suis-je…? Quels sont ces bruits...?",
-                f"... : ... ? ... !? {self.main_player.name} !!!?",
-                "Vous, encore déboussolé : Ou.. Ou suis-je..? Et qui êtes vous..?",
-                "... : Ah ! J'ai bien cru que vous étiez morte !",
-                "Vous, lentement : Mais qui...",
-                "... : Chut ! Laissez moi me présenter, je me nome Loic et je serais ton guide tout au long de cette aventure !",
-                "Vous, encore confuse : Une aventure ? Mais de quoi parlez-vous ?",
-                f"Loic, avec un sourire énigmatique : Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères.",
-                "Vous, en vous redressant lentement : Je ne comprends pas... Comment suis-je arrivée ici ?",
-                "Loic : C'est une excellente question, mais malheureusement, je n'ai pas la réponse. Ce que je sais, c'est que vous avez un rôle crucial à jouer dans ce monde.",
-                "Vous, en regardant autour de vous : Et quel est ce rôle exactement ?",
-                f"Loic : Cela, {self.main_player.name}, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape.",
-                "Soudain, un bruit étrange résonne au loin. Loic se tourne brusquement.",
-                "Loic, d'un ton urgent : Nous devons partir. Ce monde peut être dangereux pour ceux qui ne le connaissent pas. Suivez-moi !",
-                "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange.",
-                "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure..."
+                ("-", "Vous vous réveillez lentement, déboussolé vous entendez des bruits peu reconnaissables…"),
+                ("-", "Vos yeux s'ouvrent lentement..."),
+                ("Vous dans vos pensées", "Ou suis-je…? Quels sont ces bruits...?"),
+                ("...", f"... ? ... !? {self.main_player.name} !!!?"),
+                ("Vous, déboussolé", "Ou.. Ou suis-je..? Et qui êtes vous..?"),
+                ("...", "Ah ! J'ai bien cru que vous étiez morte !"),
+                ("Vous, lentement", "Mais qui..."),
+                ("...", "Chut ! Laissez moi me présenter, je me nome Loic et je serais ton guide tout au long de cette aventure !"),
+                ("Vous, encore confus", "Une aventure ? Mais de quoi parlez-vous ?"),
+                ("Loic, avec un sourir énigmatique", f"Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères."),
+                ("Vous, en vous redressant lentement", "Je ne comprends pas... Comment suis-je arrivée ici ?"),
+                ("Loic", "C'est une excellente question, mais malheureusement, je n'ai pas la réponse. Ce que je sais, c'est que vous avez un rôle crucial à jouer dans ce monde."),
+                ("Vous, en regardant autour de vous", "Et quel est ce rôle exactement ?"),
+                ("Loic", f"Cela, {self.main_player.name}, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape."),
+                ("-", "Soudain, un bruit étrange résonne au loin. Loic se tourne brusquement."),
+                ("Loic, d'un ton urgent", "Nous devons partir. Ce monde peut être dangereux pour ceux qui ne le connaissent pas. Suivez-moi !"),
+                ("-", "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange."),
+                ("-", "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure...")
             ]
-            for text in naration:
-                system("clear")
-                Prompt.ask(text + "\nAppuyez sur ENTRER pour continuer")
+            for speaker, text in naration:
+                if speaker == "-":
+                    dialog.naration(text)
+                else:
+                    dialog.talk(speaker, text)
 
         def souflis_forest_interaction(place):
             pass
@@ -114,7 +116,7 @@ class Game:
             "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjaro utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
             "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjaro effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
             "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjaro effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
-            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
+            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
             "Le Marteau de la Banque": Attack(name="Le Marteau de la Banque", description="Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", battle_cry="TA BOURSE NE VA PAS AIMER ÇA !", durability=100, effect={"damage": 100}),
             "Le Lancer de Pièce Fétiche": Attack(name="Le Lancer de Pièce Fétiche", description="Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l’ennemi directement entre les yeux.", battle_cry="C’EST À MOI QUE TU LA DOIS, LA MONNAIE !", durability=100, effect={"damage": 100}),
             "Le Coup du Pantalon Traître": Attack(name="Le Coup du Pantalon Traître", description="Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu’il emporte ses adversaires.", battle_cry="CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", durability=100, effect={"damage": 100}),
@@ -308,8 +310,22 @@ class Attack:
         self.durability = durability
         self.effect = effect
 
+class Dialog:
+    def place_changement(self, new_place: str):
+        system("clear")
+        Prompt.ask(f"[bold][green]Vous changez d'endroit...\nBienvenue dans [underline]{new_place}[/underline][/green][/bold]")
+
+    def talk(self, speaker:str, text: str):
+        system("clear")
+        Prompt.ask(f"[blue]{speaker} >[/blue] {text}\n\nAppuyez sur enter pour continuer..")
+
+    def naration(self, text):
+        system("clear")
+        Prompt.ask(f"[yellow]VOIX OFF >[/yellow] {text}\n\nAppuyez sur enter pour continuer..")
+
 
 if __name__ == "__main__":
+    dialog = Dialog()
     game = Game("Mon RPG")
 
     game.start()
