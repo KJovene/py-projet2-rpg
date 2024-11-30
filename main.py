@@ -46,7 +46,7 @@ class Combat:
                 self.player.attack()
                 self.target.take_damage()
                 if self.target.health <= 0 :
-                    print(f"Vous avez vaincu {self.taget} !")
+                    print(f"Vous avez vaincu {self.target} !")
                     self.end()
             elif player_interact == "inventaire" :
                 self.player.show_inventory()
@@ -56,10 +56,21 @@ class Combat:
             else:
                 print("Action incomprise, veuillez réessayer")
             
+            if self.target.health > 0 :
+                self.target.attack()
+                self.player.take_damage()
+                if self.player.health <= 0 :
+                    print(f"Vous avez été vaincu par '{self.target}' !")
+                    self.end()
 
     def end(self):
         print("Le combat est terminé !")
-        self.active = False #Combat OFF
+        if self.target.health <= 0 :
+            self.player.add_xp()
+        else:
+            self.active = False #Combat OFF
+            self.player.move('spawn')
+        
         
 
     def escape(self):
