@@ -1,5 +1,6 @@
 from rich.console import Console
 from rich.prompt import Prompt
+from os import system
 
 console = Console()
 
@@ -8,15 +9,59 @@ class Game:
         self.name = name
         self.main_player = None
 
-        # Initialisation des places sans les connexions
-        spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[])
-        souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
-        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
-        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
-        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
-        temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
-        hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[])
+        def spawn_interaction(place):
+            naration = [
+                ("-", "Vous vous réveillez lentement, déboussolé vous entendez des bruits peu reconnaissables…"),
+                ("-", "Vos yeux s'ouvrent lentement..."),
+                ("Vous dans vos pensées", "Ou suis-je…? Quels sont ces bruits...?"),
+                ("...", f"... ? ... !? {self.main_player.name} !!!?"),
+                ("Vous, déboussolé", "Ou.. Ou suis-je..? Et qui êtes vous..?"),
+                ("...", "Ah ! J'ai bien cru que vous étiez morte !"),
+                ("Vous, lentement", "Mais qui..."),
+                ("...", "Chut ! Laissez moi me présenter, je me nome Loic et je serais ton guide tout au long de cette aventure !"),
+                ("Vous, encore confus", "Une aventure ? Mais de quoi parlez-vous ?"),
+                ("Loic, avec un sourir énigmatique", f"Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères."),
+                ("Vous, en vous redressant lentement", "Je ne comprends pas... Comment suis-je arrivée ici ?"),
+                ("Loic", "C'est une excellente question, mais malheureusement, je n'ai pas la réponse. Ce que je sais, c'est que vous avez un rôle crucial à jouer dans ce monde."),
+                ("Vous, en regardant autour de vous", "Et quel est ce rôle exactement ?"),
+                ("Loic", f"Cela, {self.main_player.name}, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape."),
+                ("-", "Soudain, un bruit étrange résonne au loin. Loic se tourne brusquement."),
+                ("Loic, d'un ton urgent", "Nous devons partir. Ce monde peut être dangereux pour ceux qui ne le connaissent pas. Suivez-moi !"),
+                ("-", "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange."),
+                ("-", "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure...")
+            ]
+            for speaker, text in naration:
+                if speaker == "-":
+                    dialog.naration(text)
+                else:
+                    dialog.talk(speaker, text)
 
+        def souflis_forest_interaction(place):
+            pass
+
+        def ici_tout_le_monde_perd_interaction(place):
+            pass
+
+        def domaine_des_souflis_interaction(place):
+            pass
+
+        def le_casino_du_cartier_des_plaisirs_interaction(place):
+            pass
+
+        def le_temple_des_1000_moines_interaction(place):
+            pass
+
+        def hetic_interaction(place):
+            pass
+
+        # Initialisation des places sans les connexions
+        spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
+        souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
+        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd_interaction)
+        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
+        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
+        temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
+        hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
         # Connexions entre les places
         spawn.places_around = {"east": souflis_forest}
         souflis_forest.places_around = {
@@ -71,7 +116,7 @@ class Game:
             "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjaro utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
             "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjaro effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
             "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjaro effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
-            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
+            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
             "Le Marteau de la Banque": Attack(name="Le Marteau de la Banque", description="Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", battle_cry="TA BOURSE NE VA PAS AIMER ÇA !", durability=100, effect={"damage": 100}),
             "Le Lancer de Pièce Fétiche": Attack(name="Le Lancer de Pièce Fétiche", description="Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l’ennemi directement entre les yeux.", battle_cry="C’EST À MOI QUE TU LA DOIS, LA MONNAIE !", durability=100, effect={"damage": 100}),
             "Le Coup du Pantalon Traître": Attack(name="Le Coup du Pantalon Traître", description="Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu’il emporte ses adversaires.", battle_cry="CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", durability=100, effect={"damage": 100}),
@@ -82,7 +127,6 @@ class Game:
             "Coup du Lotus Brisé": Attack(name="Coup du Lotus Brisé", description="Un coup puissant et ciblé, imitant l’éclosion brutale d’un lotus.", battle_cry="", durability=100, effect={"damage": 100}),
             "Sillage d’Encens": Attack(name="Sillage d’Encens", description="Une série de mouvements fluides libérant une fumée toxique qui entrave les adversaires.", battle_cry="", durability=100, effect={"damage": 100}),
             "Colère des 1000 Âmes": Attack(name="Colère des 1000 Âmes", description="Le boss invoque les esprits des moines qui l’entourent pour déchaîner une tempête spirituelle dévastatrice.", battle_cry="", durability=1, effect={"damage": 100}),
-
         }
 
         self.items = {
@@ -117,10 +161,36 @@ class Game:
             "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
 
         }
+
     def start(self):
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
+        choice = Prompt.ask(
+            "Faites un choix :\n0 - Créer un monde\n1 - Charger un monde\n",
+            choices=["0", "1"]
+        )
+
+        system("clear")
+
+        if choice == "0":
+            console.print("[green]Création du personnage...[/green]")
+            player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?")
+            system("clear")
+            self.main_player = Player(
+                name=player_name,
+                level=1,
+                xp=0,
+                stats={"hp": 100, "attack": 10, "defense": 5},
+                attack_list=[],
+                place= self.places["Spawn"]
+            )
+
+            self.main_player.place.interact()
+
+
+
     def save(self):
         pass
+
     def load(self):
         pass
 
@@ -159,15 +229,16 @@ class Monster(Entity):
         pass
 
 class Place:
-    def __init__(self, name: str, description: str, monsters: list, places_around = None):
+    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
         self.name = name
         self.description = description
         self.places_around = places_around or {}
         self.monsters = monsters
         self.exploration = False
+        self.interaction = interaction
 
-    def interact():
-        pass
+    def interact(self):
+        self.interaction(self)
 
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
@@ -202,10 +273,10 @@ class Combat:
         """Gère un tour de combat"""
         pass
 
-    def end():
+    def end(self):
         pass
 
-    def escape():
+    def escape(self):
         pass
 
 class Item:
@@ -239,7 +310,22 @@ class Attack:
         self.durability = durability
         self.effect = effect
 
+class Dialog:
+    def place_changement(self, new_place: str):
+        system("clear")
+        Prompt.ask(f"[bold][green]Vous changez d'endroit...\nBienvenue dans [underline]{new_place}[/underline][/green][/bold]")
+
+    def talk(self, speaker:str, text: str):
+        system("clear")
+        Prompt.ask(f"[blue]{speaker} >[/blue] {text}\n\nAppuyez sur enter pour continuer..")
+
+    def naration(self, text):
+        system("clear")
+        Prompt.ask(f"[yellow]VOIX OFF >[/yellow] {text}\n\nAppuyez sur enter pour continuer..")
+
 
 if __name__ == "__main__":
+    dialog = Dialog()
     game = Game("Mon RPG")
+
     game.start()
