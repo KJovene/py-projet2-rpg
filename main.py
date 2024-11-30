@@ -41,27 +41,31 @@ class Combat:
         while self.active == True :
             self.turn += 1 #Compteur de tours
             print(f"Tour {self.turn}")
-            player_interact = input("Keskon fait ? (attaquer/POPO/fuir)")
+            player_interact = input("Choisir une action (attaquer/inventaire/fuir) : ").lower()
             if player_interact == "attaquer":
-                pass
-            if self.target.health <= 0 :
+                self.player.attack()
+                self.target.take_damage()
+                if self.target.health <= 0 :
                     print(f"Vous avez vaincu {self.taget} !")
                     self.end()
-            elif player_interact == "POPO" :
-                pass
+            elif player_interact == "inventaire" :
+                self.player.show_inventory()
+                self.player.use_item()
             elif player_interact == "fuir" :
                 self.escape()
+            else:
+                print("Action incomprise, veuillez réessayer")
             
 
     def end(self):
         print("Le combat est terminé !")
         self.active = False #Combat OFF
-        pass
+        
 
     def escape(self):
         print("Vous avez reussi à fuir !")
         self.end() #Appel de fonction pour arrêter le combat
-        pass
+        
 
 class Entity:
     def __init__(self, name: str, description: str, level: int, xp: float, stats: array, attack_list: array):
