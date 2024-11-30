@@ -2,36 +2,64 @@ from rich.console import Console
 from rich.prompt import Prompt
 
 console = Console()
-
-def spawn_interaction():
-    pass
-def souflis_forest_interaction():
-    pass
-def ici_tout_le_monde_perd_interaction():
-    pass
-def domaine_des_souflis_interaction():
-    pass
-def le_casino_du_cartier_des_plaisirs_interaction():
-    pass
-def le_temple_des_1000_moines_interaction():
-    pass
-def hetic_interaction():
-    pass
-
 class Game:
     def __init__(self, name: str):
         self.name = name
         self.main_player = None
 
-        # Initialisation des places sans les connexions
-        spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction())
-        souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction())
-        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd())
-        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction())
-        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction())
-        temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction())
-        hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction())
+        def spawn_interaction(place):
+            naration = [
+                "...vous vous réveillez lentement, déboussolé vous entendez des bruits peu reconnaissables…",
+                "...vos yeux s'ouvrent lentement… vous vous dites",
+                "Vous pensez : Ou suis-je…? Quels sont ces bruits...?",
+                "... : ..ria ? .aria !? MARIA !!!?",
+                "Vous, encore déboussolé : Ou.. Ou suis-je..? Et qui êtes vous..?",
+                "... : Ah ! J'ai bien cru que vous étiez morte !",
+                "Vous, lentement : Mais qui...",
+                "... : Chut ! Laissez moi me présenter, je me nome Loic et je serais ton guide tout au long de cette aventure !",
+                "Vous, encore confuse : Une aventure ? Mais de quoi parlez-vous ?",
+                "Loic, avec un sourire énigmatique : Ah, Maria ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères.",
+                "Vous, en vous redressant lentement : Je ne comprends pas... Comment suis-je arrivée ici ?",
+                "Loic : C'est une excellente question, mais malheureusement, je n'ai pas la réponse. Ce que je sais, c'est que vous avez un rôle crucial à jouer dans ce monde.",
+                "Vous, en regardant autour de vous : Et quel est ce rôle exactement ?",
+                "Loic : Cela, Maria, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape.",
+                "Soudain, un bruit étrange résonne au loin. Loic se tourne brusquement.",
+                "Loic, d'un ton urgent : Nous devons partir. Ce monde peut être dangereux pour ceux qui ne le connaissent pas. Suivez-moi !",
+                "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange.",
+                "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure..."
+            ]
+            for text in naration:
+                console.print(text)
 
+
+            self.main_player
+
+        def souflis_forest_interaction(place):
+            pass
+
+        def ici_tout_le_monde_perd_interaction(place):
+            pass
+
+        def domaine_des_souflis_interaction(place):
+            pass
+
+        def le_casino_du_cartier_des_plaisirs_interaction(place):
+            pass
+
+        def le_temple_des_1000_moines_interaction(place):
+            pass
+
+        def hetic_interaction(place):
+            pass
+
+        # Initialisation des places sans les connexions
+        spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
+        souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
+        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd_interaction)
+        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
+        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
+        temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
+        hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
         # Connexions entre les places
         spawn.places_around = {"east": souflis_forest}
         souflis_forest.places_around = {
@@ -196,7 +224,7 @@ class Monster(Entity):
         pass
 
 class Place:
-    def __init__(self, name: str, description: str, places_around: dict, monsters: list, interaction):
+    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
         self.name = name
         self.description = description
         self.places_around = places_around or {}
@@ -205,7 +233,7 @@ class Place:
         self.interaction = interaction
 
     def interact(self):
-        self.interaction()
+        self.interaction(self)
 
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
