@@ -3,6 +3,21 @@ from rich.prompt import Prompt
 
 console = Console()
 
+def spawn_interaction():
+    pass
+def souflis_forest_interaction():
+    pass
+def ici_tout_le_monde_perd_interaction():
+    pass
+def domaine_des_souflis_interaction():
+    pass
+def le_casino_du_cartier_des_plaisirs_interaction():
+    pass
+def le_temple_des_1000_moines_interaction():
+    pass
+def hetic_interaction():
+    pass
+
 class Game:
     def __init__(self, name: str):
         self.name = name
@@ -14,7 +29,8 @@ class Game:
                 places_around={
                     "east": self.places["Souflis Forest"]
                 },
-                monsters=[]
+                monsters=[],
+                interaction=spawn_interaction()
             ),
             "Souflis Forest": Place(
                 name="Souflis Forest",
@@ -27,7 +43,8 @@ class Game:
                     "south-east": self.places["Le casino du cartier des plaisirs"],
                     "south": self.places["Le temple des 1 000 moines"]
                 },
-                monsters=[]
+                monsters=[],
+                interaction=souflis_forest_interaction()
             ),
             "Ici tout le monde perd": Place(
                 name="Ici tout le monde perd",
@@ -35,7 +52,8 @@ class Game:
                 places_around={
                     "south": self.places["Souflis Forest"],
                 },
-                monsters=[]
+                monsters=[],
+                interaction=ici_tout_le_monde_perd_interaction()
             ),
             "Domaine des Souflis": Place(
                 name="Domaine des Souflis",
@@ -43,14 +61,17 @@ class Game:
                 places_around={
                     "south-west": self.places["Souflis Forest"],
                 },
-                  monsters=[]),
+                  monsters=[],
+                  interaction=domaine_des_souflis_interaction()
+            ),
             "Le casino du cartier des plaisirs": Place(
                 name="Le casino du cartier des plaisirs",
                 description="Un endroit où vous pouvez trouver des ressources",
                 places_around={
                     "west": self.places["Souflis Forest"],
                 },
-                monsters=[]
+                monsters=[],
+                interaction=le_casino_du_cartier_des_plaisirs_interaction()
             ),
             "Le temple des 1 000 moines": Place(
                 name="Le temple des 1 000 moines",
@@ -58,7 +79,8 @@ class Game:
                 places_around={
                     "north-west": self.places["Souflis Forest"],
                 },
-                monsters=[]
+                monsters=[],
+                interaction=le_temple_des_1000_moines_interaction()
             ),
             "Hetic": Place(
                 name="Hetic",
@@ -66,7 +88,8 @@ class Game:
                 places_around={
                     "west": self.places["Souflis Forest"],
                 },
-                monsters=[]
+                monsters=[],
+                interaction=hetic_interaction()
             )
         }
 
@@ -108,7 +131,6 @@ class Game:
             "Coup du Lotus Brisé": Attack(name="Coup du Lotus Brisé", description="Un coup puissant et ciblé, imitant l’éclosion brutale d’un lotus.", battle_cry="", durability=100, effect={"damage": 100}),
             "Sillage d’Encens": Attack(name="Sillage d’Encens", description="Une série de mouvements fluides libérant une fumée toxique qui entrave les adversaires.", battle_cry="", durability=100, effect={"damage": 100}),
             "Colère des 1000 Âmes": Attack(name="Colère des 1000 Âmes", description="Le boss invoque les esprits des moines qui l’entourent pour déchaîner une tempête spirituelle dévastatrice.", battle_cry="", durability=1, effect={"damage": 100}),
-
         }
 
         self.items = {
@@ -208,15 +230,16 @@ class Monster(Entity):
         pass
 
 class Place:
-    def __init__(self, name: str, description: str, places_around: dict, monsters: list):
+    def __init__(self, name: str, description: str, places_around: dict, monsters: list, interaction):
         self.name = name
         self.description = description
         self.places_around = places_around
         self.monsters = monsters
         self.exploration = False
+        self.interaction = interaction
 
-    def interact():
-        pass
+    def interact(self):
+        self.interaction()
 
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
@@ -251,10 +274,10 @@ class Combat:
         """Gère un tour de combat"""
         pass
 
-    def end():
+    def end(self):
         pass
 
-    def escape():
+    def escape(self):
         pass
 
 class Item:
