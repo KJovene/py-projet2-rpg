@@ -1,7 +1,9 @@
 from rich.console import Console
 from rich.prompt import Prompt
+from os import system
 
 console = Console()
+
 class Game:
     def __init__(self, name: str):
         self.name = name
@@ -10,29 +12,27 @@ class Game:
         def spawn_interaction(place):
             naration = [
                 "...vous vous réveillez lentement, déboussolé vous entendez des bruits peu reconnaissables…",
-                "...vos yeux s'ouvrent lentement… vous vous dites",
+                "...vos yeux s'ouvrent lentement...",
                 "Vous pensez : Ou suis-je…? Quels sont ces bruits...?",
-                "... : ..ria ? .aria !? MARIA !!!?",
+                f"... : ... ? ... !? {self.main_player.name} !!!?",
                 "Vous, encore déboussolé : Ou.. Ou suis-je..? Et qui êtes vous..?",
                 "... : Ah ! J'ai bien cru que vous étiez morte !",
                 "Vous, lentement : Mais qui...",
                 "... : Chut ! Laissez moi me présenter, je me nome Loic et je serais ton guide tout au long de cette aventure !",
                 "Vous, encore confuse : Une aventure ? Mais de quoi parlez-vous ?",
-                "Loic, avec un sourire énigmatique : Ah, Maria ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères.",
+                f"Loic, avec un sourire énigmatique : Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères.",
                 "Vous, en vous redressant lentement : Je ne comprends pas... Comment suis-je arrivée ici ?",
                 "Loic : C'est une excellente question, mais malheureusement, je n'ai pas la réponse. Ce que je sais, c'est que vous avez un rôle crucial à jouer dans ce monde.",
                 "Vous, en regardant autour de vous : Et quel est ce rôle exactement ?",
-                "Loic : Cela, Maria, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape.",
+                f"Loic : Cela, {self.main_player.name}, c'est à vous de le découvrir. Mais ne vous inquiétez pas, je serai là pour vous guider à chaque étape.",
                 "Soudain, un bruit étrange résonne au loin. Loic se tourne brusquement.",
                 "Loic, d'un ton urgent : Nous devons partir. Ce monde peut être dangereux pour ceux qui ne le connaissent pas. Suivez-moi !",
                 "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange.",
                 "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure..."
             ]
             for text in naration:
-                console.print(text)
-
-
-            self.main_player
+                system("clear")
+                Prompt.ask(text + "\nAppuyez sur ENTRER pour continuer")
 
         def souflis_forest_interaction(place):
             pass
@@ -163,13 +163,16 @@ class Game:
     def start(self):
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
         choice = Prompt.ask(
-            "Faites un choix :\n0 - Créer un monde\n1 - Charger un monde",
+            "Faites un choix :\n0 - Créer un monde\n1 - Charger un monde\n",
             choices=["0", "1"]
         )
+
+        system("clear")
 
         if choice == "0":
             console.print("[green]Création du personnage...[/green]")
             player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?")
+            system("clear")
             self.main_player = Player(
                 name=player_name,
                 level=1,
