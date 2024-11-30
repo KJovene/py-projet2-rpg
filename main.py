@@ -22,75 +22,41 @@ class Game:
     def __init__(self, name: str):
         self.name = name
         self.main_player = None
+
+        # Initialisation des places sans les connexions
+        spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction())
+        souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction())
+        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd())
+        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction())
+        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction())
+        temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction())
+        hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction())
+
+        # Connexions entre les places
+        spawn.places_around = {"east": souflis_forest}
+        souflis_forest.places_around = {
+            "west": spawn,
+            "north": ici_tout_le_monde_perd,
+            "north-east": domaine_des_souflis,
+            "east": hetic,
+            "south-east": casino,
+            "south": temple,
+        }
+        ici_tout_le_monde_perd.places_around = {"south": souflis_forest}
+        domaine_des_souflis.places_around = {"south-west": souflis_forest}
+        casino.places_around = {"west": souflis_forest}
+        temple.places_around = {"north-west": souflis_forest}
+        hetic.places_around = {"west": souflis_forest}
+
+        # Stockage des places
         self.places = {
-            "Spawn": Place(
-                name="Spawn",
-                description="Le point de départ du joueur",
-                places_around={
-                    "east": self.places["Souflis Forest"]
-                },
-                monsters=[],
-                interaction=spawn_interaction()
-            ),
-            "Souflis Forest": Place(
-                name="Souflis Forest",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "west": self.places["Spawn"],
-                    "north": self.places["Ici tout le monde perd"],
-                    "north-east": self.places["Domaine des Souflis"],
-                    "east": self.places["Hetic"],
-                    "south-east": self.places["Le casino du cartier des plaisirs"],
-                    "south": self.places["Le temple des 1 000 moines"]
-                },
-                monsters=[],
-                interaction=souflis_forest_interaction()
-            ),
-            "Ici tout le monde perd": Place(
-                name="Ici tout le monde perd",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "south": self.places["Souflis Forest"],
-                },
-                monsters=[],
-                interaction=ici_tout_le_monde_perd_interaction()
-            ),
-            "Domaine des Souflis": Place(
-                name="Domaine des Souflis",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "south-west": self.places["Souflis Forest"],
-                },
-                  monsters=[],
-                  interaction=domaine_des_souflis_interaction()
-            ),
-            "Le casino du cartier des plaisirs": Place(
-                name="Le casino du cartier des plaisirs",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "west": self.places["Souflis Forest"],
-                },
-                monsters=[],
-                interaction=le_casino_du_cartier_des_plaisirs_interaction()
-            ),
-            "Le temple des 1 000 moines": Place(
-                name="Le temple des 1 000 moines",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "north-west": self.places["Souflis Forest"],
-                },
-                monsters=[],
-                interaction=le_temple_des_1000_moines_interaction()
-            ),
-            "Hetic": Place(
-                name="Hetic",
-                description="Un endroit où vous pouvez trouver des ressources",
-                places_around={
-                    "west": self.places["Souflis Forest"],
-                },
-                monsters=[],
-                interaction=hetic_interaction()
-            )
+            "Spawn": spawn,
+            "Souflis Forest": souflis_forest,
+            "Ici tout le monde perd": ici_tout_le_monde_perd,
+            "Domaine des Souflis": domaine_des_souflis,
+            "Le casino du cartier des plaisirs": casino,
+            "Le temple des 1 000 moines": temple,
+            "Hetic": hetic,
         }
 
         self.attacks = {
@@ -233,7 +199,7 @@ class Place:
     def __init__(self, name: str, description: str, places_around: dict, monsters: list, interaction):
         self.name = name
         self.description = description
-        self.places_around = places_around
+        self.places_around = places_around or {}
         self.monsters = monsters
         self.exploration = False
         self.interaction = interaction
