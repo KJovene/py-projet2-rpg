@@ -67,6 +67,7 @@ class Combat:
         print("Le combat est terminé !")
         if self.target.health <= 0 :
             self.player.add_xp()
+            self.target.calculate_drops()
         else:
             self.active = False #Combat OFF
             self.player.move('spawn')
