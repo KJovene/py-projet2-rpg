@@ -41,17 +41,20 @@ class Combat:
         while self.active == True :
             self.turn += 1 #Compteur de tours
             print(f"Tour {self.turn}")
-            player_interact = input("Choisir une action (attaquer/inventaire/fuir) : ").lower()
-            if player_interact == "attaquer":
+            print("1. Attaquer")
+            print("2. Inventaire")
+            print("3. Fuir")
+            player_interact = input("Choisissez une action (attaquer/inventaire/fuir ou 1/2/3) : ").lower()
+            if player_interact == "attaquer" or '1':
                 self.player.attack()
                 self.target.take_damage()
                 if self.target.health <= 0 :
                     print(f"Vous avez vaincu {self.target} !")
                     self.end()
-            elif player_interact == "inventaire" :
+            elif player_interact == "inventaire" or '2' :
                 self.player.show_inventory()
                 self.player.use_item()
-            elif player_interact == "fuir" :
+            elif player_interact == "fuir" or '3' :
                 self.escape()
             else:
                 print("Action incomprise, veuillez réessayer")
