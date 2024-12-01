@@ -30,11 +30,8 @@ class Game:
                 ("-", "Vous hésitez un instant, puis décidez de suivre Loic. Après tout, il semble être votre seul allié dans ce monde étrange."),
                 ("-", "Alors que vous vous mettez en route, vous ne pouvez vous empêcher de vous demander ce qui vous attend dans cette mystérieuse aventure...")
             ]
-            for speaker, text in naration:
-                if speaker == "-":
-                    dialog.naration(text)
-                else:
-                    dialog.talk(speaker, text)
+
+            dialog.dialog(naration)
 
         def souflis_forest_interaction(place):
             pass
@@ -311,6 +308,13 @@ class Attack:
         self.effect = effect
 
 class Dialog:
+    def dialog(self, dialog: list):
+        for speaker, text in dialog:
+            if speaker == "-":
+                self.naration(text)
+            else:
+                self.talk(speaker, text)
+
     def place_changement(self, new_place: str):
         system("clear")
         Prompt.ask(f"[bold][green]Vous changez d'endroit...\nBienvenue dans [underline]{new_place}[/underline][/green][/bold]")
