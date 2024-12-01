@@ -32,6 +32,7 @@ class Game:
             ]
 
             dialog.dialog(naration)
+            self.main_player.move(self.places["Souflis Forest"])
 
         def souflis_forest_interaction(place):
             pass
@@ -249,7 +250,7 @@ class Player(Entity):
     def use_item(self):
         pass
 
-    def move(self):
+    def move(self, place):
         pass
 
     def add_xp(self):
