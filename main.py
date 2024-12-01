@@ -1,3 +1,5 @@
+from pdb import main
+from random import randint
 from rich.console import Console
 from rich.prompt import Prompt
 from os import system
@@ -32,11 +34,59 @@ class Game:
             ]
 
             dialog.dialog(naration)
+            dialog.place_changement(self.places["Souflis Forest"].name) # Faux déplacement
+            naration = [
+                ["-", "La lumière filtre à travers les arbres d'une forêt dense. L'air est rempli de murmures, comme si les feuilles elles-mêmes chuchotaient des secrets oubliés. Loic marche devant vous, vif et attentif, se retournant de temps en temps pour s'assurer que vous le suivez."],
+                ["Loic", f"Bienvenue, {self.main_player.name}, dans la Forêt des Souflis. Cet endroit est unique... et dangereux. Mais c'est aussi ici que commence votre apprentissage."],
+                ["-", "Vous regardez autour de vous, observant les racines imposantes et les étranges champignons luminescents qui poussent dans l'obscurité. Vous sentez une présence, comme si la forêt elle-même vous scrutait."],
+                ["Vous", "Apprentissage ? Que suis-je censée apprendre ici ?"],
+                ["Loic", "Les bases. Comment vous défendre, comment survivre, et comment devenir suffisamment forte pour affronter ce qui vous attend. La quête que vous portez ne sera pas facile. Mais avec chaque épreuve, vous deviendrez plus puissante."],
+                ["-", "Soudain, un mouvement furtif attire votre attention. Une petite créature, mi-lapin, mi-reptile, bondit hors d’un buisson. Elle vous fixe avec des yeux curieux."],
+                ["Loic", f"Regardez, {self.main_player.name}. La nature vous offre déjà votre premier défi. Ces créatures, les ‘Écho-lapins’, sont faibles, mais rapides. Attrapez-en un pour commencer. Vous devez vous familiariser avec le maniement de vos compétences."],
+                ["Vous", "Mais… je ne sais même pas comment faire ça."],
+                ["Loic (riant doucement)", "C’est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire – un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."],
+                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l’intérieur. Vous le saisissez avec hésitation."],
+                ["Loic", "Bien. Maintenant, tenez-vous prête. Ces créatures sont petites, mais elles peuvent mordre si vous n’êtes pas rapide. Concentrez votre énergie sur leur mouvement… et frappez !"],
+                ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
+            ]
+            dialog.dialog(naration)
+
+            tutoriel = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+
+            naration = [
+                ["Vous", "Je l’ai eu !"],
+                ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prête à affronter bien plus que des lapins."],
+                ["-", "Alors que vous continuez votre exploration, Loic vous explique les mécaniques du jeu."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n1 - Expérience et Niveaux : Chaque créature vaincue vous rapporte de l’expérience. Plus vous en accumulez, plus vous montez en niveau, débloquant de nouvelles compétences et renforçant vos capacités."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC (NABIL)."],
+            ]
+            dialog.dialog(naration)
+
+            self.places["Souflis Forest"].interact()
             self.main_player.move(self.places["Souflis Forest"])
 
         def souflis_forest_interaction(place):
-            pass
-
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (Ici Tout le monde perd)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino du cartier des plaisirs)\n7 - Go to the south (Le temple des 1 000 moines)", choices=["1","2","3","4","5","6","7","8"], show_choices=False)
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    combat = Combat(self.main_player, place.monsters[randint(0, len(place.monsters) - 1)])
+                    combat.start()
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.places["Ici tout le monde perd"].interact()
+                case "4":
+                    self.places["Domaine des Souflis"].interact()
+                case "5":
+                    self.places["Hetic"].interact()
+                case "6":
+                    self.places["Le casino du cartier des plaisirs"].interact()
+                case "7":
+                    self.places["Le temple des 1 000 moines"].interact()
+                case _:
+                    pass
         def ici_tout_le_monde_perd_interaction(place):
             pass
 
@@ -56,7 +106,7 @@ class Game:
         spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
         souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
         ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd_interaction)
-        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
+        domaine_des_souflis = Place(name="Le domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
         casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
         temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
         hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
@@ -145,7 +195,7 @@ class Game:
             "Amelie": Monster(name="Amelie", description="", level=2, stats={}, attack_list=[self.attacks["Amel 1"], self.attacks["Amel 2"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Fara": Monster(name="Fara", description="", level=2, stats={}, attack_list=[self.attacks["Fara 1"], self.attacks["Fara 2"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Imen": Monster(name="Imen", description="", level=2, stats={}, attack_list=[self.attacks["Control Mental"], self.attacks["Gear 5"]], dropable_items=[self.items["Petite potion rouge"]]),
-            "Nazim": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[self.attacks["Kamehameha"], self.attacks["Malaka"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Loic": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[self.attacks["Kamehameha"], self.attacks["Malaka"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Nana la renarde": Monster(name="Nana la renarde", description="", level=2, stats={}, attack_list=[self.attacks["Charme"], self.attacks["Chant brutal"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Youva": Monster(name="Youva", description="", level=2, stats={}, attack_list=[self.attacks["Explosion"], self.attacks["Vol rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Carglass": Monster(name="Carglass", description="", level=2, stats={}, attack_list=[self.attacks["Lancé de talon"], self.attacks["Griffure"]], dropable_items=[self.items["Petite potion rouge"]]),
