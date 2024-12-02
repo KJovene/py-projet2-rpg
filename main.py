@@ -196,66 +196,74 @@ class Combat:
         self.turn = 0
         self.player = player
         self.opponent = opponent
-        self.active = False #Combat ON/OFF
+        self.active_player = 0 # 0 = Player / 1 = Monster
     
     def start(self):
         Combat_debut = f"[red]Vous vous apprêtez à vous battre contre {self.opponent}...\n QUE LE COMBAT COMMENCE[/red]"
-        self.active = True 
-        self.first_to_play = randint(0 , 1)
-        if self.first_to_play == 1 :
+        self.active_player = randint(0 , 1) # 0 = Player /  1 = Monster        
+        while self.player.health != 0 and self.opponent.health != 0:
+            self.turn()
+        self.end()
+        
+    def turn(self):
+        if self.active_player:
             self.player_turn()
         else:
             self.opponent_turn()
 
     def player_turn(self):
-        while self.active :
+            player_turn = f"[cyan]C'est votre tour ![/cyan]"
             player_interact = Prompt.ask(
                 "Choisissez une action", 
                 choices = ["1","2","3"], 
-                default= "attaquer"
+                default= "1"
                 )
             if player_interact == '1':
+                list_attack = f"Liste des attaques disponibles :"
                 for i in range(len(self.player.attack_list)) :
                     player_attack_list = Prompt.ask(f"{i + 1} {self.player.attack_list[i]}")
                 pass #Â remplir une fois la liste d'attaques du héro OK
                 self.player.attack()
                 self.opponent.take_damage()
-                if self.target.health <= 0 :
-                    Victory = f"Vous avez vaincu {self.opponent} !"
-                    self.end()
             elif player_interact == '2' :
                 #Affichage de l'inventaire
-                self.player.show_inventory()
+                list_inventory = f"{self.player.show_inventory()}"
+                inventory_choices = []
+                for i in range(len(self.player.inventory)) :
+                    inventory_choices.append(str(i + 1)) #Obligé de préciser en string car l'affichage de l'inventaire l'est aussi
                 inventory_choice = Prompt.ask(
-                    "Choisissez un objet dans votre inventaire"
-                    choices= '1','2','3','4','5','6'
+                    "Choisissez un objet dans votre inventaire",
+                    choices = inventory_choices
                 )
-                if inventory_choice == "Consomable item" :
-                    self.player.use_item()
+                item_i = int(inventory_choice) - 1
+                item = self.player.inventory[item_i]
+                if item.type == "Consumable" :
+                    self.player.use_item(item)
+
             elif player_interact == '3' :
                 self.escape()
             
-
     def opponent_turn(self):
-        if self.opponent.health > 0 :
             self.opponent.attack()
             self.player.take_damage()
-            if self.player.health <= 0 :
-                Lost = f"Vous avec perdu le combat, Looser !"
-                self.end()
 
     def end(self):
-        print("Le combat est terminé !")
-        if self.target.health <= 0 :
+        if self.opponent.health <= 0 :
             self.player.add_xp()
-            self.target.calculate_drops()
-        else:
-            self.active = False #Combat OFF
-            self.player.move('spawn')       
+            self.opponent.calculate_drops()
+            xp = 0
+            drop_item = None
+            Combat_end = f"Le combat est terminé !"
+            Combat_win = f"[cyan]Vous avez vaincu {self.opponent} \n XP = +{xp} \n Vous avez trouvé {drop_item}[/cyan]"
+        
+        if self.player.health <= 0 :
+            Combat_loose = f"[red]Vous avez été vaincu comme un Looser que vous êtes ! Vous retournez au spawn bredouille ![/red]"            
+            self.player.move('spawn')
+
 
     def escape(self):
-        print("Vous avez reussi à fuir !")
-        self.end() #Appel de fonction pour arrêter le combat
+        Combat_run = f"[cyan]Vous arrivez à vous enfuir comme un lâche ![/cyan]"
+        self.player.move('spawn')
         
 
 class Item:
