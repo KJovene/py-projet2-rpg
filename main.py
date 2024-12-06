@@ -67,7 +67,7 @@ class Game:
             self.main_player.move(self.places["Souflis Forest"])
 
         def souflis_forest_interaction(place):
-            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (Ici Tout le monde perd)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino du cartier des plaisirs)\n7 - Go to the south (Le temple des 1 000 moines)", choices=["1","2","3","4","5","6","7","8"], show_choices=False)
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (La Foire aux Illusions Perdues)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino Zoologique)\n7 - Go to the south (Le temple des 1 000 moines)\n", choices=["1","2","3","4","5","6","7"])
             match choice:
                 case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
                     combat = Combat(self.main_player, place.monsters[randint(0, len(place.monsters) - 1)])
@@ -76,18 +76,18 @@ class Game:
                 case "2":
                     pass
                 case "3":
-                    self.places["Ici tout le monde perd"].interact()
+                    self.places["La Foire aux Illusions Perdues"].interact()
                 case "4":
                     self.places["Domaine des Souflis"].interact()
                 case "5":
                     self.places["Hetic"].interact()
                 case "6":
-                    self.places["Le casino du cartier des plaisirs"].interact()
+                    self.places["Le Casino Zoologique"].interact()
                 case "7":
                     self.places["Le temple des 1 000 moines"].interact()
                 case _:
                     pass
-        def ici_tout_le_monde_perd_interaction(place):
+        def la_foire_aux_illusions_perdues_interaction(place):
             pass
 
         def domaine_des_souflis_interaction(place):
@@ -105,22 +105,22 @@ class Game:
         # Initialisation des places sans les connexions
         spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
         souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
-        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd_interaction)
+        la_foire_aux_illusions_perdues = Place(name="La Foire aux Illusions Perdues", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=la_foire_aux_illusions_perdues_interaction)
         domaine_des_souflis = Place(name="Le domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
-        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
+        casino = Place(name="Le Casino Zoologique", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
         temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
         hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
         # Connexions entre les places
         spawn.places_around = {"east": souflis_forest}
         souflis_forest.places_around = {
             "west": spawn,
-            "north": ici_tout_le_monde_perd,
+            "north": la_foire_aux_illusions_perdues,
             "north-east": domaine_des_souflis,
             "east": hetic,
             "south-east": casino,
             "south": temple,
         }
-        ici_tout_le_monde_perd.places_around = {"south": souflis_forest}
+        la_foire_aux_illusions_perdues.places_around = {"south": souflis_forest}
         domaine_des_souflis.places_around = {"south-west": souflis_forest}
         casino.places_around = {"west": souflis_forest}
         temple.places_around = {"north-west": souflis_forest}
@@ -130,9 +130,9 @@ class Game:
         self.places = {
             "Spawn": spawn,
             "Souflis Forest": souflis_forest,
-            "Ici tout le monde perd": ici_tout_le_monde_perd,
+            "La Foire aux Illusions Perdues": la_foire_aux_illusions_perdues,
             "Domaine des Souflis": domaine_des_souflis,
-            "Le casino du cartier des plaisirs": casino,
+            "Le Casino Zoologique": casino,
             "Le temple des 1 000 moines": temple,
             "Hetic": hetic,
         }
