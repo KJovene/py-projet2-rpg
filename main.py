@@ -76,15 +76,15 @@ class Game:
                 case "2":
                     pass
                 case "3":
-                    self.places["La Foire aux Illusions Perdues"].interact()
+                    self.main_player.move(self.places["La Foire aux Illusions Perdues"])
                 case "4":
-                    self.places["Domaine des Souflis"].interact()
+                    self.main_player.move(self.places["Domaine des Souflis"])
                 case "5":
-                    self.places["Hetic"].interact()
+                    self.main_player.move(self.places["Hetic"])
                 case "6":
-                    self.places["Le Casino Zoologique"].interact()
+                    self.main_player.move(self.places["Le Casino Zoologique"])
                 case "7":
-                    self.places["Le temple des 1 000 moines"].interact()
+                    self.main_player.move(self.places["Le temple des 1 000 moines"])
                 case _:
                     pass
         def la_foire_aux_illusions_perdues_interaction(place):
@@ -276,18 +276,6 @@ class Monster(Entity):
     def calculate_drops(self):
         pass
 
-class Place:
-    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
-        self.name = name
-        self.description = description
-        self.places_around = places_around or {}
-        self.monsters = monsters
-        self.exploration = False
-        self.interaction = interaction
-
-    def interact(self):
-        self.interaction(self)
-
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
         super().__init__(name, "", level, xp, stats, attack_list)
@@ -305,6 +293,19 @@ class Player(Entity):
 
     def add_xp(self):
         pass
+
+class Place:
+    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
+        self.name = name
+        self.description = description
+        self.places_around = places_around or {}
+        self.monsters = monsters
+        self.exploration = False
+        self.interaction = interaction
+
+    def interact(self):
+        self.interaction(self)
+
 
 class Combat:
     def __init__(self, player: Player, target: Monster):
