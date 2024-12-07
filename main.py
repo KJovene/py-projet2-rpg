@@ -138,7 +138,44 @@ class Game:
                         pass
             self.places["Ici tout le monde perd"].interact()
         def domaine_des_souflis_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the south-west (Domaine des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement du donjon
+                    naration = [
+                        ("-", "Vous franchissez les portes massives du Domaine des Souflis. Le lieu est à la fois majestueux et intimidant, avec des sculptures imposantes et des fresques murales racontant des légendes anciennes. Au centre, une immense salle trône sous un ciel artificiel éclairé par des cristaux lumineux. Vous ressentez une étrange tension dans l'air, comme si chaque pierre murmurait des avertissements."),
+                        ("Loic", "Nous sommes arrivés, Maria. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
+                        ("-", "Soudain, un bruit sourd résonne. Une silhouette imposante s’avance, sortant de l’ombre. C’est Anjalou, le fils du maître du Casino Zoologique, Anjara, et actuel protecteur de Mathieu Souflis."),
+                        ("-", "Maria entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d’un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
+                        ("Anjalou", "Ah, ma chère, vous avez enfin décidé de faire acte de présence. Mais faites attention, ce sol n’est pas là pour être sali !"),
+                        ("-", "Anjalou jette un coup d'œil à Maria, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
+                        ("Anjalou (S'approchant)", "Je suis Anjalou, le garde du corps du Seigneur Souflis. Si vous avez l’intention de vous aventurer plus loin, je conseille vivement de respecter le code de la mode et de l’élégance... ainsi que de vous préparer à affronter le véritable luxe.")
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Anjalou"])
+                    naration = [
+                        ("-", "Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, Maria réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
+                        ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
+                        ("-", "Il s'effondre doucement, lissant encore une fois son crâne avant de sombrer dans l'obscurité."),
+                        ("-", "Vous entre dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
+                        ("Mathieu", "Ah, une nouvelle venue... Vous devez vous demander pourquoi un homme tel que moi se trouve ici, non ? Ne vous inquiétez pas, ce n'est pas la richesse qui vous intéressera ici. Vous vous apprêtez à rencontrer la véritable force."),
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Mathieu"])
+                    naration = [
+                        ("-", "Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde Maria avec une expression résolue."),
+                        ("Mathieu", "Vous pensiez que la richesse était ma véritable arme ? Vous vous êtes trompée. J’ai plus que ça sous cette couche de confort."),
+                        ("-", "Il lève son poing, prêt à frapper une dernière fois, mais vous lui donnez un coup fatal avant qu'il ne puisse attaquer. Son corps s’effondre lentement sur le sol, son sourire s'effaçant doucement, mais une lueur de respect dans ses yeux."),
+                        ("Mathieu", "La... puissance... est... tout..."),
+                    ]
+                    dialog.dialog(naration)
+                    self.main_player.inventory.append(self.artefact["Ecran du mac"])
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places("Souflis Forest"))
+                case _:
+                    pass
 
         def le_casino_du_cartier_des_plaisirs_interaction(place):
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
@@ -259,10 +296,10 @@ class Game:
             "Marteau du Forain": Attack(name="Marteau du Forain", description="", battle_cry="Kévin abat son marteau avec fracas, déclenchant une onde de choc qui fait vibrer les miroirs autour de vous.", durability=100, effect={"damage": 100}),
             "Billes de Loterie Explosives": Attack(name="Billes de Loterie Explosives", description="", battle_cry="Il lance une poignée de billes colorées qui explosent en gerbes de lumière aveuglante.", durability=100, effect={"damage": 100}),
             "Claque de la Poigne Gigantesque": Attack(name="Claque de la Poigne Gigantesque", description="", battle_cry="Il prépare une claque chargée, des veines lumineuses pulsent sur la main, et un bruit sourd de tension monte dans l’air. L’impact crée une onde de choc qui soulève poussière et débris tout autour.", durability=1, effect={"damage": 100}),
-            "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjaro utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
-            "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjaro effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
-            "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjaro effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
-            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
+            "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjalou utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
+            "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjalou effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
+            "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjalou effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
+            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjalou se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
             "Le Marteau de la Banque": Attack(name="Le Marteau de la Banque", description="Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", battle_cry="TA BOURSE NE VA PAS AIMER ÇA !", durability=100, effect={"damage": 100}),
             "Le Lancer de Pièce Fétiche": Attack(name="Le Lancer de Pièce Fétiche", description="Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l’ennemi directement entre les yeux.", battle_cry="C’EST À MOI QUE TU LA DOIS, LA MONNAIE !", durability=100, effect={"damage": 100}),
             "Le Coup du Pantalon Traître": Attack(name="Le Coup du Pantalon Traître", description="Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu’il emporte ses adversaires.", battle_cry="CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", durability=100, effect={"damage": 100}),
@@ -301,9 +338,9 @@ class Game:
             "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Kevin": Monster(name="Kevin", description="Souverain des rires perdus", level=1000, stats={}, attack_list=[self.attacks["Marteau du Forain"], self.attacks["Billes de Loterie Explosives"], self.attacks["Claque de la Poigne Gigantesque"]], dropable_items=[self.items["Clé de la fête foraine"]]),
-            "Anjaro": Monster(name="Anjaro", description="Roi de la jungle", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
+            "Anjalou": Monster(name="Anjalou", description="Roi de la jungle", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
             "Mathieu": Monster(name="Mathieu", description="Riche investisseur", level=1000, stats={}, attack_list=[self.attacks["Le Marteau de la Banque"], self.attacks["Le Lancer de Pièce Fétiche"], self.attacks["Le Coup du Pantalon Traître"], self.attacks["L’Écran Noir de la Dette"]], dropable_items=[self.items["Clé du Domaine"]]),
-            "Le Roi Singe": Monster(name="Le Roi Singe", description="Père d'Anjaro", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
+            "Le Roi Singe": Monster(name="Le Roi Singe", description="Père d'Anjalou", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
             "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
 
         }
