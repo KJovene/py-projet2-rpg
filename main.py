@@ -283,12 +283,12 @@ class Item:
     def __init__(self, name: str, description: str, effect: dict):
         self.name = name
         self.descritpion = description
-        self.effect = effect # {"health": 10, "strenght": 10, "defense": 10}
+        self.effect = effect
         effect = {
             "health": 10
         }
         effect = {
-            "strenght": 10,
+            "attack": 10,
             "defense": 10
         }
 
@@ -311,8 +311,8 @@ class Consomable(Item):
                    target.stats["health"] += self.effect["health"]
                else :
                    target.stats["health"] = target.max_health
-        elif "strenght" in self.effect:
-            target.stats["strenght"] += self.effect["strenght"]
+        elif "attack" in self.effect:
+            target.stats["attack"] += self.effect["attack"]
         else :
             target.stats["defense"] += self.effect["defense"]
 
