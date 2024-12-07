@@ -232,7 +232,35 @@ class Game:
                     pass
 
         def le_temple_des_1000_moines_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    naration = [
+                        ("-", "Vous arrivez au pied de la montagne qui abrite le légendaire Temple des 1000 Moines. Une double porte imposante en bois rouge écarlate se dresse devant vous, marquant l’entrée de ce sanctuaire ancien. Alors que vous vous approchez, les portes s’ouvrent lentement dans un grincement solennel. Une silhouette élancée se détache dans l’ombre du seuil."),
+                        ('Leo', "Mes respects, jeune héros. Je suis Leo, humble serviteur de ce temple sacré. Bienvenue au sanctuaire du Temple des 1000 Moines."),
+                        ("Leo (s'inclinant légèrement)", "Mon maître, Lao Ren, vous attendait avec impatience. Il dit que vous êtes l'Élu destiné à libérer la Forêt des Souflis de l’emprise de la guilde HETIC. Cependant…"),
+                        ("Leo (serrant fortement un baton légèrement)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
+                    ]
+                    dialog.dialog(naration)
+                    # COMBAT CONTRE LEO
+
+                    naration = [
+                        ("-", "Vous gravissez péniblement l’escalier interminable. À chaque marche, la végétation luxuriante de la forêt des Souflis s’éloigne, offrant une vue à couper le souffle sur le paysage environnant. Enfin, au sommet, le temple se dévoile, majestueux. Les trois pavillons principaux scintillent sous le soleil, leurs toits dorés étincelant comme des joyaux. Les murs extérieurs racontent, à travers des fresques, l’histoire des 1000 moines qui atteignirent l’illumination en ces lieux.\nAlors que vous avancez, une voix grave et profonde résonne dans le vent, semblant provenir de toutes les directions à la fois."),
+                        ("-", "Vous entendez une voix omniprésente. \"Vous avez donc réussi le défi de mon disciple… Suivez ma voix, héros, et venez à ma rencontre.\""),
+                        ("-", "Vous atteignez la cour centrale, où le vent se fait plus vif. Soudain, un nuage de fumée s’élève devant vous. De cette brume émerge Lao Ren, le Gardien du Temple des 1000 Moines. Grand et imposant, vêtu d’un habit de soie orné de motifs dorés, il tient un bâton gravé de symboles mystiques."),
+                        ("Maître Lao Ren", "Sacheburidana, héros-sama. Je sais pourquoi vous êtes là."),
+                        ("-", "Le maître, vous salue lentement, puis plante son bâton au sol avec force."),
+                        ("Maître Lao ren", "Mais avant d’accepter de vous remettre la relique sacrée, il est de mon devoir de tester votre force et votre volonté. Ne perdons pas de temps... Affrontez-moi !")
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Lao-ren"])
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places["Souflis Forest"])
+                case _:
+                    pass
 
         def hetic_interaction(place):
             pass
