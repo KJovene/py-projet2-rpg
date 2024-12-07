@@ -52,7 +52,8 @@ class Game:
             ]
             dialog.dialog(naration)
 
-            tutoriel = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            tutorielCombat.start()
 
             naration = [
                 ["Vous", "Je l’ai eu !"],
@@ -143,17 +144,17 @@ class Game:
                 case "1": # Lancement du donjon
                     naration = [
                         ("-", "Vous franchissez les portes massives du Domaine des Souflis. Le lieu est à la fois majestueux et intimidant, avec des sculptures imposantes et des fresques murales racontant des légendes anciennes. Au centre, une immense salle trône sous un ciel artificiel éclairé par des cristaux lumineux. Vous ressentez une étrange tension dans l'air, comme si chaque pierre murmurait des avertissements."),
-                        ("Loic", "Nous sommes arrivés, Maria. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
+                        ("Loic", f"Nous sommes arrivés, {self.main_plyer.name}. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
                         ("-", "Soudain, un bruit sourd résonne. Une silhouette imposante s’avance, sortant de l’ombre. C’est Anjalou, le fils du maître du Casino Zoologique, Anjara, et actuel protecteur de Mathieu Souflis."),
-                        ("-", "Maria entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d’un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
+                        ("-", f"{self.main_plyer.name} entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d’un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
                         ("Anjalou", "Ah, ma chère, vous avez enfin décidé de faire acte de présence. Mais faites attention, ce sol n’est pas là pour être sali !"),
-                        ("-", "Anjalou jette un coup d'œil à Maria, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
+                        ("-", f"Anjalou jette un coup d'œil à {self.main_plyer.name}, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
                         ("Anjalou (S'approchant)", "Je suis Anjalou, le garde du corps du Seigneur Souflis. Si vous avez l’intention de vous aventurer plus loin, je conseille vivement de respecter le code de la mode et de l’élégance... ainsi que de vous préparer à affronter le véritable luxe.")
                     ]
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, self.monsters["Anjalou"])
                     naration = [
-                        ("-", "Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, Maria réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
+                        ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_plyer.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
                         ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
                         ("-", "Il s'effondre doucement, lissant encore une fois son crâne avant de sombrer dans l'obscurité."),
                         ("-", "Vous entre dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
@@ -162,7 +163,7 @@ class Game:
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, self.monsters["Mathieu"])
                     naration = [
-                        ("-", "Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde Maria avec une expression résolue."),
+                        ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_plyer.name} avec une expression résolue."),
                         ("Mathieu", "Vous pensiez que la richesse était ma véritable arme ? Vous vous êtes trompée. J’ai plus que ça sous cette couche de confort."),
                         ("-", "Il lève son poing, prêt à frapper une dernière fois, mais vous lui donnez un coup fatal avant qu'il ne puisse attaquer. Son corps s’effondre lentement sur le sol, son sourire s'effaçant doucement, mais une lueur de respect dans ses yeux."),
                         ("Mathieu", "La... puissance... est... tout..."),
@@ -358,7 +359,7 @@ class Game:
             "Amelie": Monster(name="Amelie", description="", level=2, stats={}, attack_list=[self.attacks["Amel 1"], self.attacks["Amel 2"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Fara": Monster(name="Fara", description="", level=2, stats={}, attack_list=[self.attacks["Fara 1"], self.attacks["Fara 2"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Imen": Monster(name="Imen", description="", level=2, stats={}, attack_list=[self.attacks["Control Mental"], self.attacks["Gear 5"]], dropable_items=[self.items["Petite potion rouge"]]),
-            "Loic": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[self.attacks["Kamehameha"], self.attacks["Malaka"]], dropable_items=[self.items["Petite potion rouge"]]),
+            "Nazim": Monster(name="Nazim", description="", level=2, stats={}, attack_list=[self.attacks["Kamehameha"], self.attacks["Malaka"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Nana la renarde": Monster(name="Nana la renarde", description="", level=2, stats={}, attack_list=[self.attacks["Charme"], self.attacks["Chant brutal"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Youva": Monster(name="Youva", description="", level=2, stats={}, attack_list=[self.attacks["Explosion"], self.attacks["Vol rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Carglass": Monster(name="Carglass", description="", level=2, stats={}, attack_list=[self.attacks["Lancé de talon"], self.attacks["Griffure"]], dropable_items=[self.items["Petite potion rouge"]]),
@@ -440,7 +441,7 @@ class Monster(Entity):
         pass
 
 class Player(Entity):
-    def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
+    def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place ):
         super().__init__(name, "", level, xp, stats, attack_list)
         self.inventory = []
         self.place = place
