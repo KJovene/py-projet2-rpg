@@ -153,9 +153,9 @@ class Game:
             "Noa": Monster(name="Noa", description="", level=2, stats={}, attack_list=[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Hamid": Monster(name="Hamid", description="", level=2, stats={}, attack_list=[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]], dropable_items=[self.items["Petite potion rouge"]]),
             "Kevin": Monster(name="Kevin", description="Souverain des rires perdus", level=1000, stats={}, attack_list=[self.attacks["Marteau du Forain"], self.attacks["Billes de Loterie Explosives"], self.attacks["Claque de la Poigne Gigantesque"]], dropable_items=[self.items["Clé de la fête foraine"]]),
-            "Anjaro": Monster(name="Anjaro", description="Roi de la jungle", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
+            "Anjaro": Monster(name="Anjaro", description="Fils du Roi Singe", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
             "Mathieu": Monster(name="Mathieu", description="Riche investisseur", level=1000, stats={}, attack_list=[self.attacks["Le Marteau de la Banque"], self.attacks["Le Lancer de Pièce Fétiche"], self.attacks["Le Coup du Pantalon Traître"], self.attacks["L’Écran Noir de la Dette"]], dropable_items=[self.items["Clé du Domaine"]]),
-            "Le Roi Singe": Monster(name="Le Roi Singe", description="Père d'Anjaro", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
+            "Le Roi Singe": Monster(name="Le Roi Singe", description="Dirigeant de la confrérie singeresque", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
             "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
 
         }
@@ -177,7 +177,7 @@ class Game:
                 name=player_name,
                 level=1,
                 xp=0,
-                stats={"hp": 100, "attack": 10, "defense": 5},
+                stats={"health": 100, "attack": 10, "defense": 5},
                 attack_list=[],
                 place= self.places["Spawn"]
             )
@@ -200,8 +200,10 @@ class Entity:
         self.level = level
         self.xp = xp
         self.stats = stats or {}
+        self.max_hp = stats["health"]
         self.attack_list = attack_list or []
         self.status = []
+
 
     def attack(self, target: 'Entity') -> None:
         """Effectue une attaque sur la cible"""
@@ -281,15 +283,21 @@ class Item:
     def __init__(self, name: str, description: str, effect: dict):
         self.name = name
         self.descritpion = description
-        self.effect = effect
+        self.effect = effect # {"health": 10, "strenght": 10, "defense": 10}
+        effect = {
+            "health": 10
+        }
+        effect = {
+            "strenght": 10,
+            "defense": 10
+        }
 
 class Equipable(Item):
     def __init__(self, name: str, description: str, effect: dict):
         super().__init__(name, description, effect)
         self.equiped = False
 
-    def equip(self):
-        pass
+
 
 class Consomable(Item):
     def __init__(self, name: str, description: str, effect: dict, durability: int):
@@ -297,8 +305,21 @@ class Consomable(Item):
         self.active = False
         self.durability = durability
 
-    def use(self):
-        pass
+    def use(self, target):
+        if "health" in self.effect and target.max_health > target.stats["health"]:
+               if self.effect["health"] < target.max_health - target.stats["health"] :
+                   target.stats["health"] += self.effect["health"]
+               else :
+                   target.stats["health"] = target.max_health
+        elif "strenght" in self.effect:
+            target.stats["strenght"] += self.effect["strenght"]
+        else :
+            target.stats["defense"] += self.effect["defense"]
+
+
+
+
+
 
 class Attack:
     def __init__(self, name: str, description: str, battle_cry: str, durability: int, effect: dict):
