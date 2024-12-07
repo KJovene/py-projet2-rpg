@@ -1,4 +1,3 @@
-from posix import stat
 from rich.console import Console
 from rich.prompt import Prompt
 from os import system
