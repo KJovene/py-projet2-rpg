@@ -38,8 +38,63 @@ class Game:
             pass
 
         def ici_tout_le_monde_perd_interaction(place):
-            pass
+            naration = [
+                ("-", "Vous arrivez sur un sentier escarpé. En contrebas, un étrange spectacle attire votre attention : un lieu qui ressemble à une fête foraine, bruyant et lumineux, plein de mouvement. Intrigué, vous descendez le sentier sinueux, curieux d’explorer cet endroit qui semble détonner dans cette nature sauvage."),
+                ("-", "Plus vous approchez, plus les détails vous troublent : la \"fête foraine\" semble minuscule comparée à ce que vous aviez vu de loin. Quelques tentes délabrées, des attractions à moitié effondrées, et une ambiance bien plus lugubre qu’invitante. Vous ressentez un frisson désagréable."),
+                ("-", "Soudain, une vieille femme surgit de l’ombre et vous agrippe le bras avec une poigne étonnamment ferme pour son âge."),
+                ("Vieille Femme", "Alors, jeune âme téméraire… que fais-tu ici, perdu au milieu de nulle part ?"),
+                ("Vous", "Je me suis égaré après avoir quitté la Forêt des Souflis."),
+                ("Vieille Femme", "Oh, comme c’est mignon. Mais tu as de la chance d’être tombé sur moi, car je peux t’aider. Cependant, tout a un prix ici... Je vais te proposer un choix crucial."),
+                ("-", "Elle sort trois objets de sous sa cape :\nLes boucles d’oreilles de la mère de Mathieu\nLe bonnet légendaire de Laurent\nUn orbe magique scintillant"),
+                ("Vieille Femme", "Chacun de ces objets a des avantages uniques pour la suite de ton aventure. Mais choisis bien, car tu ne pourras jamais revenir en arrière."),
+            ]
 
+            dialog.dialog(naration)
+
+            choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d’oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
+
+            match choice:
+                case "1":
+                    self.monsters["Kevin"].stats["health"] += 20
+                    self.main_player.stats["health"] -= 20
+                case "2":
+                    self.monsters["Kevin"].stats["defense"] += 20
+                    self.main_player.stats["attack"] -= 20
+                case "3":
+                    self.monsters["Kevin"].stats["defense"] += 20
+                    self.main_player.stats["defense"] -= 20
+                case _:
+                    pass
+
+            naration = [
+                ("-", "Vous hésitez, mais finissez par faire un choix. La vieille femme esquisse un sourire énigmatique avant de disparaître dans un nuage de fumée."),
+                ("-", "Une fois la femme disparue, vous ressentez un étrange frisson. En fouillant votre inventaire, vous réalisez que l’objet choisi n’est pas là. Pire encore, vous sentez une partie de votre force vous quitter. Les statistiques que vous venez de perdre semblent avoir été volées, comme si elles s’étaient volatilisées dans l’air… ou transférées à quelqu’un d’autre."),
+                ("-", "Malgré cette expérience troublante, vous continuez votre chemin et entrez dans ce qui reste de la fête foraine. Mais l’ambiance y est complètement différente de ce que vous aviez perçu de loin : tout est inerte, silencieux. Plus un bruit, plus un mouvement. Les lumières des attractions vacillent, les ombres dansent, et un sentiment d’abandon vous envahit. Vous frissonnez à nouveau."),
+                ("-", "Une lumière vive attire votre attention. Vous vous retournez et découvrez une grande structure, effrayante et imposante : le Palais des Glaces. Le bâtiment semble presque vivant, et une énergie sinistre s’en dégage. Vous comprenez que c’est votre seule option pour avancer. Résolu, vous pénétrez dans ce lieu étrange, vos pas résonnant dans un silence oppressant."),
+                ("-", "L’intérieur est encore plus déroutant : des miroirs déformants renvoient des images grotesques et inquiétantes de vous-même. Chaque reflet semble amplifié, chaque pas résonne comme un coup de tonnerre. Alors que vous progressez dans ce labyrinthe brillant et oppressant, un rire lointain résonne soudain. Il est à la fois malveillant et amusé, semblant venir de partout à la fois."),
+                ("???", "Bienvenue dans MON domaine, intrus."),
+                ("-", "Vous tournez frénétiquement la tête, cherchant l’origine de cette voix, mais tout ce que vous voyez, ce sont des ombres mouvantes et des éclats de lumière. Soudain, une silhouette bondit devant vous. Un homme masqué, vêtu comme un clown sinistre, avec un immense marteau posé nonchalamment sur son épaule."),
+                ("Kévin", "Tu crois pouvoir défier le Souverain des Rires Perdus ? HAHAHA ! Prépare-toi à souffrir, petit joueur. Ce lieu est mon royaume, et ici, je fixe les règles."),
+                ("-", "Kévin brandit son marteau et se jette sur vous. Vous esquivez de justesse et comprenez que vous n’avez pas d’autre choix que de vous battre.")
+            ]
+
+            dialog.dialog(naration)
+
+            combat = Combat(self.main_player, self.monsters["Kevin"])
+
+            if combat:
+                self.main_player.inventory.append(self.artefact[""])
+            else:
+                match choice:
+                    case "1":
+                        self.monsters["Kevin"].stats["health"] -= 20
+                    case "2":
+                        self.monsters["Kevin"].stats["defense"] -= 20
+                    case "3":
+                        self.monsters["Kevin"].stats["defense"] -= 20
+                    case _:
+                        pass
+            self.places["Ici tout le monde perd"].interact()
         def domaine_des_souflis_interaction(place):
             pass
 
