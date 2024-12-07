@@ -2,6 +2,7 @@ from pdb import main
 from random import randint
 from rich.console import Console
 from rich.prompt import Prompt
+from random import randint
 from os import system
 
 console = Console()
@@ -140,7 +141,58 @@ class Game:
             pass
 
         def le_casino_du_cartier_des_plaisirs_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    naration = [
+                        ("-", "Après avoir traversé la jungle dense et sauvage, vous découvrez enfin une clairière dissimulée par une végétation luxuriante. Une lumière vacillante brille à travers les feuillages : c'est l'entrée du mystérieux Casino Zoologique. Une arche massive faite de lianes et de bois sculpté marque le passage vers ce lieu de vice et de hasard."),
+                        ('-', "Deux imposants gorilles en costards, bras croisés, montent la garde devant une porte dorée ornée de pierres précieuses. Leur allure imposante et leur regard perçant suffisent à dissuader quiconque de s’approcher imprudemment."),
+                        ("Garde Gorille 1 (ton grave et méfiant)", "Hé toi, petit humain. Bienvenue au Casino Zoologique, le repaire des âmes audacieuses."),
+                        ("Garde Gorille 2 (d’un ton moqueur) ", "Connaîtras-tu la lumière de la gloire ou te perdras-tu dans l’obscurité ? Héhéhé…"),
+                        ('-', "Vous semblez hésitant face à ces deux colosses, mais vous affichez votre détermination."),
+                        ("Garde Gorille 1 (impressionné, mais narquois)", "Tu viens pour défier le Roi ? Tu as du cran, mais ne crois pas que ce sera aussi simple."),
+                        ("Garde Gorille 2", "On pourrait juste te casser en deux, mais… les règles du casino sont claires. Ici, seule la chance décide de ton sort."),
+                        ("Garde Gorille 1", "Voici notre test : ce dé pipé. Tout ce que tu as à faire, c’est obtenir un 12. Simple, non ?"),
+                        ("Garde Gorille 2", "Bonne chance, humain… ou devrais-je dire, bonne patience. Tant que tu n’y arrives pas, tu restes là. Mwahaha !")
+                    ]
+                    dialog.dialog(naration)
+
+                    number = 0
+
+                    while number != 12:
+                        choice = Prompt.ask("Choisissez une action :\n1 - Lancer un dé\n2 - Abandonner", choices=["1","2"])
+                        if choice == 1:
+                            number = randint(0, 12)
+                            dialog.talk("-", f"Vous lancez un dé et tombez sur le numéro {number}")
+                            if number != 12:
+                                dialog.talk("Garde Gorille 1", "Hahaha, tu as raté ! Ré essaie si tu l'ose...")
+                        else: # Choice == 2
+                            dialog.talk("Garde Gorille 1", "Pff, comme prévu. Aucun humain ne peut rivaliser avec la jungle. Rentre chez toi, gamin.")
+                            return self.places["Le casino du cartier des plaisirs"].interact()
+
+                    naration = [
+                        ("Garde Gorille 1 (étonné)", "Quoi ?! Tu as obtenu un 12 ? Eh bien, il semble que tu sois béni par la chance aujourd’hui."),
+                        ("Garde Gorille 2", "Bonne chance avec le Roi. Il n’est pas aussi gentil que nous… Hé hé."),
+                        ("-", "Une fois à l’intérieur, un monde flamboyant s’offre à vous : des chandeliers dorés suspendus au plafond, des tables de jeu illuminées par des néons verts et rouges, et une foule de primates en effervescence. Les chimpanzés, habillés comme des croupiers, font tourner les tables, tandis que des lémuriens occupés comptent des piles de jetons dans un coin sombre."),
+                        ("-", "Au centre de la salle, sur un trône taillé dans un tronc d’arbre massif et recouvert de fourrure, trône le Roi Anjara. C’est un gorille massif au pelage d’un noir brillant, vêtu d’une cape en velours rouge. Un cigare pend mollement à sa lèvre, et une pile de cartes est posée à ses côtés."),
+                        ("Roi Anjara (voix rauque et dominante)", "Qui ose troubler la paix de mon royaume ?"),
+                        ("-", "Il vous dévisage avec intensité, puis se redresse lentement, écrasant son cigare dans une coupe dorée."),
+                        ("Roi Anjara", "Ah, un humain… Tu veux te mesurer à moi ? Sache que je ne joue pas seulement avec les cartes, mais avec les destins. Prépare-toi, car ici, la triche est une vertu et la chance, un art.")
+                    ]
+
+                    dialog.dialog(naration)
+
+                    combat = Combat(self.main_player, self.monsters["Le Roi Singe"])
+                    combat.start()
+
+                    self.main_player.inventory.append(self.artefact["Jeu de cartes"])
+                    self.places["Le casino du cartier des plaisirs"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places["Souflis Forest"])
+                case _:
+                    pass
 
         def le_temple_des_1000_moines_interaction(place):
             pass
