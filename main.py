@@ -1,5 +1,8 @@
+from pdb import main
+from random import randint
 from rich.console import Console
 from rich.prompt import Prompt
+from random import randint
 from os import system
 
 console = Console()
@@ -32,22 +35,233 @@ class Game:
             ]
 
             dialog.dialog(naration)
+            dialog.place_changement(self.places["Souflis Forest"].name) # Faux déplacement
+            naration = [
+                ["-", "La lumière filtre à travers les arbres d'une forêt dense. L'air est rempli de murmures, comme si les feuilles elles-mêmes chuchotaient des secrets oubliés. Loic marche devant vous, vif et attentif, se retournant de temps en temps pour s'assurer que vous le suivez."],
+                ["Loic", f"Bienvenue, {self.main_player.name}, dans la Forêt des Souflis. Cet endroit est unique... et dangereux. Mais c'est aussi ici que commence votre apprentissage."],
+                ["-", "Vous regardez autour de vous, observant les racines imposantes et les étranges champignons luminescents qui poussent dans l'obscurité. Vous sentez une présence, comme si la forêt elle-même vous scrutait."],
+                ["Vous", "Apprentissage ? Que suis-je censée apprendre ici ?"],
+                ["Loic", "Les bases. Comment vous défendre, comment survivre, et comment devenir suffisamment forte pour affronter ce qui vous attend. La quête que vous portez ne sera pas facile. Mais avec chaque épreuve, vous deviendrez plus puissante."],
+                ["-", "Soudain, un mouvement furtif attire votre attention. Une petite créature, mi-lapin, mi-reptile, bondit hors d’un buisson. Elle vous fixe avec des yeux curieux."],
+                ["Loic", f"Regardez, {self.main_player.name}. La nature vous offre déjà votre premier défi. Ces créatures, les ‘Écho-lapins’, sont faibles, mais rapides. Attrapez-en un pour commencer. Vous devez vous familiariser avec le maniement de vos compétences."],
+                ["Vous", "Mais… je ne sais même pas comment faire ça."],
+                ["Loic (riant doucement)", "C’est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire – un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."],
+                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l’intérieur. Vous le saisissez avec hésitation."],
+                ["Loic", "Bien. Maintenant, tenez-vous prête. Ces créatures sont petites, mais elles peuvent mordre si vous n’êtes pas rapide. Concentrez votre énergie sur leur mouvement… et frappez !"],
+                ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
+            ]
+            dialog.dialog(naration)
+
+            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            tutorielCombat.start()
+
+            naration = [
+                ["Vous", "Je l’ai eu !"],
+                ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prête à affronter bien plus que des lapins."],
+                ["-", "Alors que vous continuez votre exploration, Loic vous explique les mécaniques du jeu."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n1 - Expérience et Niveaux : Chaque créature vaincue vous rapporte de l’expérience. Plus vous en accumulez, plus vous montez en niveau, débloquant de nouvelles compétences et renforçant vos capacités."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC (NABIL)."],
+            ]
+            dialog.dialog(naration)
+
+            self.places["Souflis Forest"].interact()
             self.main_player.move(self.places["Souflis Forest"])
 
         def souflis_forest_interaction(place):
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (La Foire aux Illusions Perdues)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino Zoologique)\n7 - Go to the south (Le temple des 1 000 moines)\n", choices=["1","2","3","4","5","6","7"])
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    combat = Combat(self.main_player, place.monsters[randint(0, len(place.monsters) - 1)])
+                    combat.start()
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places["La Foire aux Illusions Perdues"])
+                case "4":
+                    self.main_player.move(self.places["Domaine des Souflis"])
+                case "5":
+                    self.main_player.move(self.places["Hetic"])
+                case "6":
+                    self.main_player.move(self.places["Le Casino Zoologique"])
+                case "7":
+                    self.main_player.move(self.places["Le temple des 1 000 moines"])
+                case _:
+                    pass
+        def la_foire_aux_illusions_perdues_interaction(place):
             pass
 
-        def ici_tout_le_monde_perd_interaction(place):
-            pass
+            dialog.dialog(naration)
 
+            choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d’oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
+
+            match choice:
+                case "1":
+                    self.monsters["Kevin"].stats["health"] += 20
+                    self.main_player.stats["health"] -= 20
+                case "2":
+                    self.monsters["Kevin"].stats["defense"] += 20
+                    self.main_player.stats["attack"] -= 20
+                case "3":
+                    self.monsters["Kevin"].stats["defense"] += 20
+                    self.main_player.stats["defense"] -= 20
+                case _:
+                    pass
+
+            naration = [
+                ("-", "Vous hésitez, mais finissez par faire un choix. La vieille femme esquisse un sourire énigmatique avant de disparaître dans un nuage de fumée."),
+                ("-", "Une fois la femme disparue, vous ressentez un étrange frisson. En fouillant votre inventaire, vous réalisez que l’objet choisi n’est pas là. Pire encore, vous sentez une partie de votre force vous quitter. Les statistiques que vous venez de perdre semblent avoir été volées, comme si elles s’étaient volatilisées dans l’air… ou transférées à quelqu’un d’autre."),
+                ("-", "Malgré cette expérience troublante, vous continuez votre chemin et entrez dans ce qui reste de la fête foraine. Mais l’ambiance y est complètement différente de ce que vous aviez perçu de loin : tout est inerte, silencieux. Plus un bruit, plus un mouvement. Les lumières des attractions vacillent, les ombres dansent, et un sentiment d’abandon vous envahit. Vous frissonnez à nouveau."),
+                ("-", "Une lumière vive attire votre attention. Vous vous retournez et découvrez une grande structure, effrayante et imposante : le Palais des Glaces. Le bâtiment semble presque vivant, et une énergie sinistre s’en dégage. Vous comprenez que c’est votre seule option pour avancer. Résolu, vous pénétrez dans ce lieu étrange, vos pas résonnant dans un silence oppressant."),
+                ("-", "L’intérieur est encore plus déroutant : des miroirs déformants renvoient des images grotesques et inquiétantes de vous-même. Chaque reflet semble amplifié, chaque pas résonne comme un coup de tonnerre. Alors que vous progressez dans ce labyrinthe brillant et oppressant, un rire lointain résonne soudain. Il est à la fois malveillant et amusé, semblant venir de partout à la fois."),
+                ("???", "Bienvenue dans MON domaine, intrus."),
+                ("-", "Vous tournez frénétiquement la tête, cherchant l’origine de cette voix, mais tout ce que vous voyez, ce sont des ombres mouvantes et des éclats de lumière. Soudain, une silhouette bondit devant vous. Un homme masqué, vêtu comme un clown sinistre, avec un immense marteau posé nonchalamment sur son épaule."),
+                ("Kévin", "Tu crois pouvoir défier le Souverain des Rires Perdus ? HAHAHA ! Prépare-toi à souffrir, petit joueur. Ce lieu est mon royaume, et ici, je fixe les règles."),
+                ("-", "Kévin brandit son marteau et se jette sur vous. Vous esquivez de justesse et comprenez que vous n’avez pas d’autre choix que de vous battre.")
+            ]
+
+            dialog.dialog(naration)
+
+            combat = Combat(self.main_player, self.monsters["Kevin"])
+
+            if combat:
+                self.main_player.inventory.append(self.artefact[""])
+            else:
+                match choice:
+                    case "1":
+                        self.monsters["Kevin"].stats["health"] -= 20
+                    case "2":
+                        self.monsters["Kevin"].stats["defense"] -= 20
+                    case "3":
+                        self.monsters["Kevin"].stats["defense"] -= 20
+                    case _:
+                        pass
+            self.places["Ici tout le monde perd"].interact()
         def domaine_des_souflis_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the south-west (Domaine des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement du donjon
+                    naration = [
+                        ("-", "Vous franchissez les portes massives du Domaine des Souflis. Le lieu est à la fois majestueux et intimidant, avec des sculptures imposantes et des fresques murales racontant des légendes anciennes. Au centre, une immense salle trône sous un ciel artificiel éclairé par des cristaux lumineux. Vous ressentez une étrange tension dans l'air, comme si chaque pierre murmurait des avertissements."),
+                        ("Loic", f"Nous sommes arrivés, {self.main_plyer.name}. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
+                        ("-", "Soudain, un bruit sourd résonne. Une silhouette imposante s’avance, sortant de l’ombre. C’est Anjalou, le fils du maître du Casino Zoologique, Anjara, et actuel protecteur de Mathieu Souflis."),
+                        ("-", f"{self.main_plyer.name} entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d’un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
+                        ("Anjalou", "Ah, ma chère, vous avez enfin décidé de faire acte de présence. Mais faites attention, ce sol n’est pas là pour être sali !"),
+                        ("-", f"Anjalou jette un coup d'œil à {self.main_plyer.name}, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
+                        ("Anjalou (S'approchant)", "Je suis Anjalou, le garde du corps du Seigneur Souflis. Si vous avez l’intention de vous aventurer plus loin, je conseille vivement de respecter le code de la mode et de l’élégance... ainsi que de vous préparer à affronter le véritable luxe.")
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Anjalou"])
+                    naration = [
+                        ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_plyer.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
+                        ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
+                        ("-", "Il s'effondre doucement, lissant encore une fois son crâne avant de sombrer dans l'obscurité."),
+                        ("-", "Vous entre dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
+                        ("Mathieu", "Ah, une nouvelle venue... Vous devez vous demander pourquoi un homme tel que moi se trouve ici, non ? Ne vous inquiétez pas, ce n'est pas la richesse qui vous intéressera ici. Vous vous apprêtez à rencontrer la véritable force."),
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Mathieu"])
+                    naration = [
+                        ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_plyer.name} avec une expression résolue."),
+                        ("Mathieu", "Vous pensiez que la richesse était ma véritable arme ? Vous vous êtes trompée. J’ai plus que ça sous cette couche de confort."),
+                        ("-", "Il lève son poing, prêt à frapper une dernière fois, mais vous lui donnez un coup fatal avant qu'il ne puisse attaquer. Son corps s’effondre lentement sur le sol, son sourire s'effaçant doucement, mais une lueur de respect dans ses yeux."),
+                        ("Mathieu", "La... puissance... est... tout..."),
+                    ]
+                    dialog.dialog(naration)
+                    self.main_player.inventory.append(self.artefact["Ecran du mac"])
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places("Souflis Forest"))
+                case _:
+                    pass
 
         def le_casino_du_cartier_des_plaisirs_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    naration = [
+                        ("-", "Après avoir traversé la jungle dense et sauvage, vous découvrez enfin une clairière dissimulée par une végétation luxuriante. Une lumière vacillante brille à travers les feuillages : c'est l'entrée du mystérieux Casino Zoologique. Une arche massive faite de lianes et de bois sculpté marque le passage vers ce lieu de vice et de hasard."),
+                        ('-', "Deux imposants gorilles en costards, bras croisés, montent la garde devant une porte dorée ornée de pierres précieuses. Leur allure imposante et leur regard perçant suffisent à dissuader quiconque de s’approcher imprudemment."),
+                        ("Garde Gorille 1 (ton grave et méfiant)", "Hé toi, petit humain. Bienvenue au Casino Zoologique, le repaire des âmes audacieuses."),
+                        ("Garde Gorille 2 (d’un ton moqueur) ", "Connaîtras-tu la lumière de la gloire ou te perdras-tu dans l’obscurité ? Héhéhé…"),
+                        ('-', "Vous semblez hésitant face à ces deux colosses, mais vous affichez votre détermination."),
+                        ("Garde Gorille 1 (impressionné, mais narquois)", "Tu viens pour défier le Roi ? Tu as du cran, mais ne crois pas que ce sera aussi simple."),
+                        ("Garde Gorille 2", "On pourrait juste te casser en deux, mais… les règles du casino sont claires. Ici, seule la chance décide de ton sort."),
+                        ("Garde Gorille 1", "Voici notre test : ce dé pipé. Tout ce que tu as à faire, c’est obtenir un 12. Simple, non ?"),
+                        ("Garde Gorille 2", "Bonne chance, humain… ou devrais-je dire, bonne patience. Tant que tu n’y arrives pas, tu restes là. Mwahaha !")
+                    ]
+                    dialog.dialog(naration)
+
+                    number = 0
+
+                    while number != 12:
+                        choice = Prompt.ask("Choisissez une action :\n1 - Lancer un dé\n2 - Abandonner", choices=["1","2"])
+                        if choice == 1:
+                            number = randint(0, 12)
+                            dialog.talk("-", f"Vous lancez un dé et tombez sur le numéro {number}")
+                            if number != 12:
+                                dialog.talk("Garde Gorille 1", "Hahaha, tu as raté ! Ré essaie si tu l'ose...")
+                        else: # Choice == 2
+                            dialog.talk("Garde Gorille 1", "Pff, comme prévu. Aucun humain ne peut rivaliser avec la jungle. Rentre chez toi, gamin.")
+                            return self.places["Le casino du cartier des plaisirs"].interact()
+
+                    naration = [
+                        ("Garde Gorille 1 (étonné)", "Quoi ?! Tu as obtenu un 12 ? Eh bien, il semble que tu sois béni par la chance aujourd’hui."),
+                        ("Garde Gorille 2", "Bonne chance avec le Roi. Il n’est pas aussi gentil que nous… Hé hé."),
+                        ("-", "Une fois à l’intérieur, un monde flamboyant s’offre à vous : des chandeliers dorés suspendus au plafond, des tables de jeu illuminées par des néons verts et rouges, et une foule de primates en effervescence. Les chimpanzés, habillés comme des croupiers, font tourner les tables, tandis que des lémuriens occupés comptent des piles de jetons dans un coin sombre."),
+                        ("-", "Au centre de la salle, sur un trône taillé dans un tronc d’arbre massif et recouvert de fourrure, trône le Roi Anjara. C’est un gorille massif au pelage d’un noir brillant, vêtu d’une cape en velours rouge. Un cigare pend mollement à sa lèvre, et une pile de cartes est posée à ses côtés."),
+                        ("Roi Anjara (voix rauque et dominante)", "Qui ose troubler la paix de mon royaume ?"),
+                        ("-", "Il vous dévisage avec intensité, puis se redresse lentement, écrasant son cigare dans une coupe dorée."),
+                        ("Roi Anjara", "Ah, un humain… Tu veux te mesurer à moi ? Sache que je ne joue pas seulement avec les cartes, mais avec les destins. Prépare-toi, car ici, la triche est une vertu et la chance, un art.")
+                    ]
+
+                    dialog.dialog(naration)
+
+                    combat = Combat(self.main_player, self.monsters["Le Roi Singe"])
+                    combat.start()
+
+                    self.main_player.inventory.append(self.artefact["Jeu de cartes"])
+                    self.places["Le casino du cartier des plaisirs"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places["Souflis Forest"])
+                case _:
+                    pass
 
         def le_temple_des_1000_moines_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+            match choice:
+                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    naration = [
+                        ("-", "Vous arrivez au pied de la montagne qui abrite le légendaire Temple des 1000 Moines. Une double porte imposante en bois rouge écarlate se dresse devant vous, marquant l’entrée de ce sanctuaire ancien. Alors que vous vous approchez, les portes s’ouvrent lentement dans un grincement solennel. Une silhouette élancée se détache dans l’ombre du seuil."),
+                        ('Leo', "Mes respects, jeune héros. Je suis Leo, humble serviteur de ce temple sacré. Bienvenue au sanctuaire du Temple des 1000 Moines."),
+                        ("Leo (s'inclinant légèrement)", "Mon maître, Lao Ren, vous attendait avec impatience. Il dit que vous êtes l'Élu destiné à libérer la Forêt des Souflis de l’emprise de la guilde HETIC. Cependant…"),
+                        ("Leo (serrant fortement un baton légèrement)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
+                    ]
+                    dialog.dialog(naration)
+                    # COMBAT CONTRE LEO
+
+                    naration = [
+                        ("-", "Vous gravissez péniblement l’escalier interminable. À chaque marche, la végétation luxuriante de la forêt des Souflis s’éloigne, offrant une vue à couper le souffle sur le paysage environnant. Enfin, au sommet, le temple se dévoile, majestueux. Les trois pavillons principaux scintillent sous le soleil, leurs toits dorés étincelant comme des joyaux. Les murs extérieurs racontent, à travers des fresques, l’histoire des 1000 moines qui atteignirent l’illumination en ces lieux.\nAlors que vous avancez, une voix grave et profonde résonne dans le vent, semblant provenir de toutes les directions à la fois."),
+                        ("-", "Vous entendez une voix omniprésente. \"Vous avez donc réussi le défi de mon disciple… Suivez ma voix, héros, et venez à ma rencontre.\""),
+                        ("-", "Vous atteignez la cour centrale, où le vent se fait plus vif. Soudain, un nuage de fumée s’élève devant vous. De cette brume émerge Lao Ren, le Gardien du Temple des 1000 Moines. Grand et imposant, vêtu d’un habit de soie orné de motifs dorés, il tient un bâton gravé de symboles mystiques."),
+                        ("Maître Lao Ren", "Sacheburidana, héros-sama. Je sais pourquoi vous êtes là."),
+                        ("-", "Le maître, vous salue lentement, puis plante son bâton au sol avec force."),
+                        ("Maître Lao ren", "Mais avant d’accepter de vous remettre la relique sacrée, il est de mon devoir de tester votre force et votre volonté. Ne perdons pas de temps... Affrontez-moi !")
+                    ]
+                    dialog.dialog(naration)
+                    combat = Combat(self.main_player, self.monsters["Lao-ren"])
+                    self.places["Souflis Forest"].interact()
+                case "2":
+                    pass
+                case "3":
+                    self.main_player.move(self.places["Souflis Forest"])
+                case _:
+                    pass
 
         def hetic_interaction(place):
             pass
@@ -55,22 +269,22 @@ class Game:
         # Initialisation des places sans les connexions
         spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
         souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
-        ici_tout_le_monde_perd = Place(name="Ici tout le monde perd", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=ici_tout_le_monde_perd_interaction)
-        domaine_des_souflis = Place(name="Domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
-        casino = Place(name="Le casino du cartier des plaisirs", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
+        la_foire_aux_illusions_perdues = Place(name="La Foire aux Illusions Perdues", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=la_foire_aux_illusions_perdues_interaction)
+        domaine_des_souflis = Place(name="Le domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
+        casino = Place(name="Le Casino Zoologique", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
         temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
         hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
         # Connexions entre les places
         spawn.places_around = {"east": souflis_forest}
         souflis_forest.places_around = {
             "west": spawn,
-            "north": ici_tout_le_monde_perd,
+            "north": la_foire_aux_illusions_perdues,
             "north-east": domaine_des_souflis,
             "east": hetic,
             "south-east": casino,
             "south": temple,
         }
-        ici_tout_le_monde_perd.places_around = {"south": souflis_forest}
+        la_foire_aux_illusions_perdues.places_around = {"south": souflis_forest}
         domaine_des_souflis.places_around = {"south-west": souflis_forest}
         casino.places_around = {"west": souflis_forest}
         temple.places_around = {"north-west": souflis_forest}
@@ -80,9 +294,9 @@ class Game:
         self.places = {
             "Spawn": spawn,
             "Souflis Forest": souflis_forest,
-            "Ici tout le monde perd": ici_tout_le_monde_perd,
+            "La Foire aux Illusions Perdues": la_foire_aux_illusions_perdues,
             "Domaine des Souflis": domaine_des_souflis,
-            "Le casino du cartier des plaisirs": casino,
+            "Le Casino Zoologique": casino,
             "Le temple des 1 000 moines": temple,
             "Hetic": hetic,
         }
@@ -111,10 +325,10 @@ class Game:
             "Marteau du Forain": Attack(name="Marteau du Forain", description="", battle_cry="Kévin abat son marteau avec fracas, déclenchant une onde de choc qui fait vibrer les miroirs autour de vous.", durability=100, effect={"damage": 100}),
             "Billes de Loterie Explosives": Attack(name="Billes de Loterie Explosives", description="", battle_cry="Il lance une poignée de billes colorées qui explosent en gerbes de lumière aveuglante.", durability=100, effect={"damage": 100}),
             "Claque de la Poigne Gigantesque": Attack(name="Claque de la Poigne Gigantesque", description="", battle_cry="Il prépare une claque chargée, des veines lumineuses pulsent sur la main, et un bruit sourd de tension monte dans l’air. L’impact crée une onde de choc qui soulève poussière et débris tout autour.", durability=1, effect={"damage": 100}),
-            "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjaro utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
-            "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjaro effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
-            "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjaro effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
-            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjaro se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
+            "Le Lasso de Soie": Attack(name="Le Lasso de Soie", description="Anjalou utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l’envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", battle_cry="TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", durability=100, effect={"damage": 100}),
+            "La Roulade du Gentleman": Attack(name="La Roulade du Gentleman", description="Anjalou effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", battle_cry="UNE DANSE AU RYTHME DU STYLE !", durability=100, effect={"damage": 100}),
+            "Le Vent du Chapeau": Attack(name="Le Vent du Chapeau", description="Anjalou effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", battle_cry="MON STYLE, MA PUISSANCE !", durability=100, effect={"damage": 100}),
+            "Le Crâne de Lumière": Attack(name="Le Crâne de Lumière", description="Anjalou se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l’éclat de son apparence avec une touche de perfection.", battle_cry="VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", durability=1, effect={"damage": 100}),
             "Le Marteau de la Banque": Attack(name="Le Marteau de la Banque", description="Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", battle_cry="TA BOURSE NE VA PAS AIMER ÇA !", durability=100, effect={"damage": 100}),
             "Le Lancer de Pièce Fétiche": Attack(name="Le Lancer de Pièce Fétiche", description="Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l’ennemi directement entre les yeux.", battle_cry="C’EST À MOI QUE TU LA DOIS, LA MONNAIE !", durability=100, effect={"damage": 100}),
             "Le Coup du Pantalon Traître": Attack(name="Le Coup du Pantalon Traître", description="Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu’il emporte ses adversaires.", battle_cry="CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", durability=100, effect={"damage": 100}),
@@ -156,6 +370,7 @@ class Game:
             "Anjaro": Monster(name="Anjaro", description="Fils du Roi Singe", level=1000, stats={}, attack_list=[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]], dropable_items=[]),
             "Mathieu": Monster(name="Mathieu", description="Riche investisseur", level=1000, stats={}, attack_list=[self.attacks["Le Marteau de la Banque"], self.attacks["Le Lancer de Pièce Fétiche"], self.attacks["Le Coup du Pantalon Traître"], self.attacks["L’Écran Noir de la Dette"]], dropable_items=[self.items["Clé du Domaine"]]),
             "Le Roi Singe": Monster(name="Le Roi Singe", description="Dirigeant de la confrérie singeresque", level=1000, stats={}, attack_list=[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]], dropable_items=[self.items["Clé du casino"]]),
+
             "Lao-ren": Monster(name="Lao-ren", description="Maître Shaolin", level=1000, stats={}, attack_list=[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d’Encens"], self.attacks["Colère des 1000 Âmes"]], dropable_items=[self.items["Clé du temple"]]),
 
         }
@@ -228,20 +443,8 @@ class Monster(Entity):
     def calculate_drops(self):
         pass
 
-class Place:
-    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
-        self.name = name
-        self.description = description
-        self.places_around = places_around or {}
-        self.monsters = monsters
-        self.exploration = False
-        self.interaction = interaction
-
-    def interact(self):
-        self.interaction(self)
-
 class Player(Entity):
-    def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
+    def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place ):
         super().__init__(name, "", level, xp, stats, attack_list)
         self.inventory = []
         self.place = place
@@ -257,6 +460,19 @@ class Player(Entity):
 
     def add_xp(self):
         pass
+
+class Place:
+    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
+        self.name = name
+        self.description = description
+        self.places_around = places_around or {}
+        self.monsters = monsters
+        self.exploration = False
+        self.interaction = interaction
+
+    def interact(self):
+        self.interaction(self)
+
 
 class Combat:
     def __init__(self, player: Player, target: Monster):
