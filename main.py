@@ -95,16 +95,16 @@ class Game:
             dialog.dialog(naration)
 
             choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d’oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
-
+            monster = Monster(**self.monsters["Kevin"])
             match choice:
                 case "1":
-                    self.monsters["Kevin"].stats["health"] += 20
+                    monster.stats["health"] += 20
                     self.main_player.stats["health"] -= 20
                 case "2":
-                    self.monsters["Kevin"].stats["defense"] += 20
+                    monster.stats["defense"] += 20
                     self.main_player.stats["attack"] -= 20
                 case "3":
-                    self.monsters["Kevin"].stats["defense"] += 20
+                    monster.stats["defense"] += 20
                     self.main_player.stats["defense"] -= 20
                 case _:
                     pass
@@ -123,20 +123,11 @@ class Game:
 
             dialog.dialog(naration)
 
-            combat = Combat(self.main_player, self.monsters["Kevin"])
+            combat = Combat(self.main_player, monster)
 
             if combat:
                 self.main_player.inventory.append(self.artefact[""])
-            else:
-                match choice:
-                    case "1":
-                        self.monsters["Kevin"].stats["health"] -= 20
-                    case "2":
-                        self.monsters["Kevin"].stats["defense"] -= 20
-                    case "3":
-                        self.monsters["Kevin"].stats["defense"] -= 20
-                    case _:
-                        pass
+
             self.places["Ici tout le monde perd"].interact()
         def domaine_des_souflis_interaction(place):
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the south-west (Domaine des Souflis)\n", choices=["1","2","3"])
@@ -152,7 +143,7 @@ class Game:
                         ("Anjalou (S'approchant)", "Je suis Anjalou, le garde du corps du Seigneur Souflis. Si vous avez l’intention de vous aventurer plus loin, je conseille vivement de respecter le code de la mode et de l’élégance... ainsi que de vous préparer à affronter le véritable luxe.")
                     ]
                     dialog.dialog(naration)
-                    combat = Combat(self.main_player, self.monsters["Anjalou"])
+                    combat = Combat(self.main_player, Monster(**self.monsters["Anjalou"]))
                     naration = [
                         ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_plyer.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
                         ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
@@ -161,7 +152,7 @@ class Game:
                         ("Mathieu", "Ah, une nouvelle venue... Vous devez vous demander pourquoi un homme tel que moi se trouve ici, non ? Ne vous inquiétez pas, ce n'est pas la richesse qui vous intéressera ici. Vous vous apprêtez à rencontrer la véritable force."),
                     ]
                     dialog.dialog(naration)
-                    combat = Combat(self.main_player, self.monsters["Mathieu"])
+                    combat = Combat(self.main_player, Monster(**self.monsters["Mathieu"]))
                     naration = [
                         ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_plyer.name} avec une expression résolue."),
                         ("Mathieu", "Vous pensiez que la richesse était ma véritable arme ? Vous vous êtes trompée. J’ai plus que ça sous cette couche de confort."),
@@ -220,7 +211,7 @@ class Game:
 
                     dialog.dialog(naration)
 
-                    combat = Combat(self.main_player, self.monsters["Le Roi Singe"])
+                    combat = Combat(self.main_player, Monster(**self.monsters["Le Roi Singe"]))
                     combat.start()
 
                     self.main_player.inventory.append(self.artefact["Jeu de cartes"])
@@ -254,7 +245,7 @@ class Game:
                         ("Maître Lao ren", "Mais avant d’accepter de vous remettre la relique sacrée, il est de mon devoir de tester votre force et votre volonté. Ne perdons pas de temps... Affrontez-moi !")
                     ]
                     dialog.dialog(naration)
-                    combat = Combat(self.main_player, self.monsters["Lao-ren"])
+                    combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
                     self.places["Souflis Forest"].interact()
                 case "2":
                     pass
@@ -366,63 +357,63 @@ class Game:
             "Fara": {
                 "name":"Fara",
                 "description":"",
-                "level":2,
+                "level":4,
                 "stats":{},
                 "attack_list":[self.attacks["Fara 1"], self.attacks["Fara 2"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Imen": {
                 "name":"Imen",
                 "description":"",
-                "level":2,
+                "level":6,
                 "stats":{},
                 "attack_list":[self.attacks["Control Mental"], self.attacks["Gear 5"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Nazim": {
                 "name":"Nazim",
                 "description":"",
-                "level":2,
+                "level":8,
                 "stats":{},
                 "attack_list":[self.attacks["Kamehameha"], self.attacks["Malaka"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Nana la renarde": {
                 "name":"Nana la renarde",
                 "description":"",
-                "level":2,
+                "level":10,
                 "stats":{},
                 "attack_list":[self.attacks["Charme"], self.attacks["Chant brutal"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Youva": {
                 "name":"Youva",
                 "description":"",
-                "level":2,
+                "level":12,
                 "stats":{},
                 "attack_list":[self.attacks["Explosion"], self.attacks["Vol rapide"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Carglass": {
                 "name":"Carglass",
                 "description":"",
-                "level":2,
+                "level":14,
                 "stats":{},
                 "attack_list":[self.attacks["Lancé de talon"], self.attacks["Griffure"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Cherif": {
                 "name":"Cherif",
                 "description":"",
-                "level":2,
+                "level":16,
                 "stats":{},
                 "attack_list":[self.attacks["Coup de tonerre"], self.attacks["Grattage du délégué"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Noa": {
                 "name":"Noa",
                 "description":"",
-                "level":2,
+                "level":18,
                 "stats":{},
                 "attack_list":[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
             "Hamid": {
                 "name":"Hamid",
                 "description":"",
-                "level":2,
+                "level":20,
                 "stats":{},
                 "attack_list":[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]],
                 "dropable_items":[self.items["Petite potion rouge"]]},
