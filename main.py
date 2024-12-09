@@ -7,25 +7,41 @@ console = Console()
 
 class Combat:
     def __init__(self, player: Player, opponent: Monster):
-        self.turn = 0
+        self.turn_number = 0 
         self.player = player
         self.opponent = opponent
-        self.active_player = 0 # 0 = Player / 1 = Monster
+        self.active_player = 0 # 0 = Monster / 1 = Player
     
     def start(self):
+        #Début du combat
         Console.print("[red]Vous vous apprêtez à vous battre contre {self.opponent}...\n QUE LE COMBAT COMMENCE[/red]")
-        self.active_player = randint(0 , 1) # 0 = Player /  1 = Monster        
-        while self.player.health != 0 and self.opponent.health != 0:
+        self.active_player = randint(0 , 1) # 0 = Player /  1 = Monster // Détermine celui qui commence en premier       
+        while self.player.health != 0 and self.opponent.health != 0: #Boucle des tours
             self.turn()
         self.end()
         
     def turn(self):
-        if self.active_player:
-            Console.print("[cyan]Vous commencez en premier ![/cyan]")
+        self.turn_number += 1
+        if self.active_player and self.turn_number == 1: #Le Player commence le combat
+            Console.print(f"[cyan]Tour 1 : Vous commencez en premier ![/cyan]")
+            Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
+            self.player_turn()
+        elif self.active_player == 0: #L'adverdsaire commence le combat
+            Console.print(f"[cyan]Tour 1 : {self.opponent} commence en premier ![/cyan]")
+            Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
+            self.opponent_turn()
+            
+        if self.active_player == 1:
+            Console.print(f"[cyan]Tour {self.turn_number} : A votre tour de jouer ![/cyan]")
+            Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
             self.player_turn()
         else:
-            Console.print(f"[cyan]{self.opponent} commence en premier ![/cyan]")
-            self.opponent_turn()
+            Console.print(f"[cyan]Tour {self.turn_number} : Au tour de {self.opponent} de jouer ![/cyan]")
+            Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
+            self.opponent_turn()    
+
+        self.active_player = 1 - self.active_player #Inversion de active_player après chaque tour (alterne entre 0 et 1)
+
 
     def player_turn(self):
             player_interact = Prompt.ask(
@@ -33,20 +49,18 @@ class Combat:
                 choices = [
                         "1", "Attaquer\n",
                         "2", "Inventaire\n",
-                        "3","Fuir" ], 
+                        "3","Fuir" ],C
                 default= "1"
                 )
             if player_interact == '1':
                 
-                Console.print({self.show_attacks})
-                pass #Â remplir une fois la liste d'attaques du héro OK
-                self.player.attack(choosen_attack)
-                damage = self.player.attack
-                self.opponent.take_damage(damage)
+                attack_opponent = self.player.attack(self.opponent)                
+                opponent_damaged = self.opponent.take_damage(attack_opponent)
+                
 
             elif player_interact == '2' :
 
-                self.player.show_inventory()
+                Inventory = self.player.show_inventory() #Affiche l'inventaire
 
                 Menu_choice = Prompt.ask(
                     choices = [
@@ -56,7 +70,7 @@ class Combat:
                 )
 
                 if Menu_choice == '1' :
-
+                    Inventory() #Ré-affiche l'inventaire
                     inventory_interact = Prompt.ask(
                         "Que souhaitez vous utiliser ?",
                         choices = [i for i in range(len(self.player.inventory))]
@@ -67,6 +81,7 @@ class Combat:
                         Confirm_use = Confirm.ask("Voulez vous vraiment utiliser cet objet ?", default=True)
 
                         if Confirm_use:
+                            item_to_use = inventory_interact
                             self.player.use_item(item_to_use)
                         else:
                             Console.print("Action annulée !\n Retour en arrière.")
