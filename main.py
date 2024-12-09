@@ -41,7 +41,8 @@ class Combat:
                 Console.print({self.show_attacks})
                 pass #Â remplir une fois la liste d'attaques du héro OK
                 self.player.attack(choosen_attack)
-                self.opponent.take_damage(attack_damage)
+                damage = self.player.attack
+                self.opponent.take_damage(damage)
 
             elif player_interact == '2' :
 
@@ -66,21 +67,20 @@ class Combat:
                         Confirm_use = Confirm.ask("Voulez vous vraiment utiliser cet objet ?", default=True)
 
                         if Confirm_use:
-                            self.player.use_item()
+                            self.player.use_item(item_to_use)
                         else:
                             Console.print("Action annulée !\n Retour en arrière.")
-                            self.player.player_turn()
 
                 elif Menu_choice == '2' :
                     Console.print("Retour en arrière.")
-                    self.player.player_turn()
 
             elif player_interact == '3' :
                 self.escape()
             
     def opponent_turn(self):
             self.opponent.attack()
-            self.player.take_damage()
+            damage = self.opponent.attack()
+            self.player.take_damage(damage)
 
     def end(self):
         if self.opponent.health <= 0 :
