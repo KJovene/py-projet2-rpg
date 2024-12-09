@@ -4,34 +4,24 @@ class Entity:
         self.description = description
         self.level = level
         self.xp = xp
-        self.stat = stat or {"health" : 100, "attack": 10, "defense": 5}
+        self.stat = stat or {}
         self.attack_list = attack_list or []
         self.status = []
 
     def attack(self, target: 'Entity') -> None:
-        if not self.attack_list:
-            console.print(f"{self.name} n'a aucune attaque disponible")
-            return
-        
-        attack = self.attack_list[0]
-        damage = attack["damage"] + self.stat["attack"]
-        damage_type = attack["type"]
-        console.print(f"{self.name} attaque {target.name} avec {attack['name']} et inflige {damage}")
-
-        target.take_damage(damage,damage_type)
+        """Effectue une attaque sur la cible"""
+        pass
 
     def take_damage(self, amount: int, damage_type: str) -> None:
-        resistance = self.stat.get(f"res_{damage_type}", 0)
-        defense = self.stat.get ("defense", 0)
-        actual_damage = max(amount - defense - resistance, 0)
+        """Reçoit des dégâts d'un certain type"""
+        pass
 
-        self.stat["health"] -= actual_damage
-        self.stat["health"] = max(self.stat["health"], 0)
+class Pnj(Entity):
+    def __init__(self, dialog: list):
+        self.dialog = dialog
 
-        console.print(f"{self.name} reçit {actual_damage}. Santé restante : {self.stat['health']}")
-
-        if self.stat["health"] <= 0:
-            console.print(f"{self.name} est vaincu")
+    def interact(self):
+        pass
 
 class Monster(Entity):
     def __init__(self, name: str, description: str, level: int, stats: dict, attack_list: list, dropable_items: list):
@@ -39,24 +29,32 @@ class Monster(Entity):
         self.dropable_items = dropable_items
 
     def calculate_drops(self):
-        dropped_item = []
-        for item, drop_chance in self.dropable_items:
-            if random.randint() < drop_chance:
-                dropped_items.append(item)
-            return dropped_items
-        
-        if __name__ == "__main__":
-            Amelie = Monster(
-                name = "Amelie",
-                level = 2,
-                stats = {"health" : 20, "attack" : 3, "defense" : 2},
-                attack_list=[],
-                dropable_items=[
-                    ("Potion de soin", 0.5)
-                ]
-            )
-        drops = Amelie.calculate_drops()
-        console.print(f"Objets obtenus : {', '.join(drops) if drops else 'Aucun objet'}")
+        pass
+
+class Map :
+    def __init__ (self, width: int, height: int):
+        self.width = width
+        self.height = height
+        self.grid = [["empty" for _ in range(width)] for _ in range(height)]
+    
+    def show_map(self):
+        console.print("Game map:")
+        for row in self.grid:
+            console.print("".join(row))
+
+game_map = Map(10,10)
+
+class Place:
+    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
+        self.name = name
+        self.description = description
+        self.places_around = places_around or {}
+        self.monsters = monsters
+        self.exploration = False
+        self.interaction = interaction
+
+    def interact(self):
+        self.interaction(self)
 
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
@@ -90,6 +88,26 @@ class Player(Entity):
                 return
         console.print(f"{item.name} n'est pas dans votre inventaire")
 
+    def move(self, place):
+        directions = {
+            "nord":(1,0),
+            "sud":(-1,0),
+            "ouest":(0,-1),
+            "est":(0,1)
+        }
+        if direction not in directions:
+            console.print(f" Direction non valide, veuillez choisir : nord, sud, ouest ou est")
+            return
+
+        delta_row, delta_col = directions[direction]
+        new_row = self.place.row + delta_row
+        new_col = self.place.col = delta_col
+        if not (0 <= new_row < len(game_map) and 0 <= new_col < len(game_map[0])):
+            console.print(f"Vous ne pouvez pas vous déplacer vers {direction}. Vous êtes à la limite de la carte")
+        
+        console.print(f"Vous vous déplacer vers {direction}, vous êtes en ({new_row},{new_col})")
+        self.place.row, self.place.col = new_row, new_col
+
     def add_xp(self, amount : float):
         if amount <= 0 :
             console.print("L'expérience ne peut pas être négative")
@@ -116,4 +134,3 @@ class Player(Entity):
             self.stats[stat] += increase
             console.print(f"vos statistiques sont augmentées de {increase} pour {self.stats[stat]} !")
         
-        #On débloque des nouvelles attaques ?
