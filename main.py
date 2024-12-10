@@ -27,7 +27,7 @@ class Combat:
             Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
             self.player_turn()
         elif self.active_player == 0: #L'adverdsaire commence le combat
-            Console.print(f"[cyan]Tour 1 : {self.opponent} commence en premier ![/cyan]")
+            Console.print(f"[cyan]Tour 1 : {self.opponent.name} commence en premier ![/cyan]")
             Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
             self.opponent_turn()
             
@@ -36,7 +36,7 @@ class Combat:
             Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
             self.player_turn()
         else:
-            Console.print(f"[cyan]Tour {self.turn_number} : Au tour de {self.opponent} de jouer ![/cyan]")
+            Console.print(f"[cyan]Tour {self.turn_number} : Au tour de {self.opponent.name} de jouer ![/cyan]")
             Console.print(f"[bold]Vous avez {self.player.health} PDV. \n {self.opponent.name} a {self.opponent.health} PDV.")
             self.opponent_turn()    
 
@@ -55,12 +55,13 @@ class Combat:
             if player_interact == '1':
                 
                 attack_opponent = self.player.attack(self.opponent)                
-                opponent_damaged = self.opponent.take_damage(attack_opponent)
+                #opponent_damaged = self.opponent.take_damage(attack_opponent)
+                Console.print(f"Vous infligez {attack_opponent} dégâts à {self.opponent.name} !")
+                Console.print(f"Il reste {self.opponent.health} PDV à {self.opponent.name}.")
                 
-
             elif player_interact == '2' :
 
-                Inventory = self.player.show_inventory() #Affiche l'inventaire
+                self.player.show_inventory() #Affiche l'inventaire
 
                 Menu_choice = Prompt.ask(
                     choices = [
@@ -70,7 +71,7 @@ class Combat:
                 )
 
                 if Menu_choice == '1' :
-                    Inventory() #Ré-affiche l'inventaire
+                    self.player.show_inventory() #Ré-affiche l'inventaire
                     inventory_interact = Prompt.ask(
                         "Que souhaitez vous utiliser ?",
                         choices = [i for i in range(len(self.player.inventory))]
@@ -93,16 +94,18 @@ class Combat:
                 self.escape()
             
     def opponent_turn(self):
-            self.opponent.attack()
-            damage = self.opponent.attack()
-            self.player.take_damage(damage)
+        
+            attack_player = self.opponent.attack(self.player)
+            #player_damaged = self.player.take_damage(attack_player)
+            Console.print(f"{self.opponent.name} vous inflige {attack_player} de dégâts !")
+            Console.print(f"Il vous reste {self.player.health} PDV.")
 
     def end(self):
         if self.opponent.health <= 0 :
-            self.player.add_xp()
-            self.opponent.calculate_drops()
+            amount_xp = self.player.add_xp()
+            drop_item = self.opponent.calculate_drops()
             Console.print("Le combat est terminé !")
-            Console.print("[cyan]Vous avez vaincu {self.opponent} \n XP = +{amount} \n Vous avez trouvé {drop_item}[/cyan]")
+            Console.print("[cyan]Vous avez vaincu {self.opponent.name} \n XP = +{amount_xp} \n Vous avez trouvé {drop_item}[/cyan]")
         
         if self.player.health <= 0 :
             Console.print("[red]Vous avez été vaincu comme un Looser que vous êtes ! Vous retournez au spawn bredouille ![/red]")          
