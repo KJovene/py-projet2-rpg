@@ -1,8 +1,7 @@
-from pdb import main
-from random import randint
 from rich.console import Console
 from rich.prompt import Prompt
 from random import randint
+from random import choice
 from os import system
 
 console = Console()
@@ -52,7 +51,7 @@ class Game:
             ]
             dialog.dialog(naration)
 
-            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={"health": 10}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
             tutorielCombat.start()
 
             naration = [
@@ -71,21 +70,19 @@ class Game:
         def souflis_forest_interaction(place):
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (La Foire aux Illusions Perdues)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino Zoologique)\n7 - Go to the south (Le temple des 1 000 moines)\n", choices=["1","2","3","4","5","6","7"])
             match choice:
-                case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
-                    # je sais pas quel nom de variable mettre pour player_level
-                player_level = n
-                print(player_level)
-                level_min = player_level - 2
-                level_max = player_level + 2
-                monster_possibility = [monster for monster in monsters if level_min <= monsters("level") <=level_max]
+                case "1":
+                    player_level = self.main_player.level
+                    monster_possibility = [monster_data for monster_data in self.monsters.values() if player_level - 2 <= monster_data["level"] <= player_level + 2]
 
-                if monster_possibility :
-                     monster_fight = random.choice(monster_possibility)
-                    print("Vous rencontez", monster_fight)
-                    
-                    combat = Combat(self.main_player, place.monsters[randint(0, len(place.monsters) - 1)])
-                    combat.start()
-                    self.places["Souflis Forest"].interact()
+                    if monster_possibility :
+                        monster_fight = choice(monster_possibility)
+                        
+                        combat = Combat(self.main_player, Monster(**monster_fight))
+                        combat.start()
+                    else:
+                        combat = Combat(self.main_player, Monster(**self.monsters["Hamid"]))
+                        combat.start()
+                    place.interact()
                 case "2":
                     pass
                 case "3":
