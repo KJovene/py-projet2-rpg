@@ -1,7 +1,6 @@
 from rich.console import Console
 from rich.prompt import Prompt
-from random import randint
-from random import choice
+import random
 from os import system
 
 console = Console()
@@ -75,7 +74,7 @@ class Game:
                     monster_possibility = [monster_data for monster_data in self.monsters.values() if player_level - 2 <= monster_data["level"] <= player_level + 2]
 
                     if monster_possibility :
-                        monster_fight = choice(monster_possibility)
+                        monster_fight = random.choice(monster_possibility)
                         
                         combat = Combat(self.main_player, Monster(**monster_fight))
                         combat.start()
@@ -199,7 +198,7 @@ class Game:
                     while number != 12:
                         choice = Prompt.ask("Choisissez une action :\n1 - Lancer un dé\n2 - Abandonner", choices=["1","2"])
                         if choice == 1:
-                            number = randint(0, 12)
+                            number = random.randint(0, 12)
                             dialog.talk("-", f"Vous lancez un dé et tombez sur le numéro {number}")
                             if number != 12:
                                 dialog.talk("Garde Gorille 1", "Hahaha, tu as raté ! Ré essaie si tu l'ose...")
