@@ -72,6 +72,17 @@ class Game:
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (La Foire aux Illusions Perdues)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino Zoologique)\n7 - Go to the south (Le temple des 1 000 moines)\n", choices=["1","2","3","4","5","6","7"])
             match choice:
                 case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                    # je sais pas quel nom de variable mettre pour player_level
+                player_level = n
+                print(player_level)
+                level_min = player_level - 2
+                level_max = player_level + 2
+                monster_possibility = [monster for monster in monsters if level_min <= monsters("level") <=level_max]
+
+                if monster_possibility :
+                     monster_fight = random.choice(monster_possibility)
+                    print("Vous rencontez", monster_fight)
+                    
                     combat = Combat(self.main_player, place.monsters[randint(0, len(place.monsters) - 1)])
                     combat.start()
                     self.places["Souflis Forest"].interact()
