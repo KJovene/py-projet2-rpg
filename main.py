@@ -9,8 +9,9 @@ console = Console()
 class Game:
     def __init__(self, name: str):
         self.name = name
-        self.main_player = None
+        self.main_player = Player("SAPAL", 1000, 0, None, None, None)
 
+        
         # Le joueur spawn dans le Tutoriel du jeu
         def spawn_interaction(place):
             naration = [
@@ -54,10 +55,11 @@ class Game:
             ]
             dialog.dialog(naration)
             
-            #Présentation de l'objectif principal, drop et xp
-            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={"health": 10}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            #Tutoriel de combat
+            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=1, dropable_items=[(self.items["Petite potion rouge"], 100)], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, damage=5)]))
             tutorielCombat.start()
-
+            
+            #Présentation de l'objectif principal, drop et xp
             naration = [
                 ["Vous", "Je l'ai eu !"],
                 ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prête à affronter bien plus que des lapins."],
@@ -97,34 +99,46 @@ class Game:
                         combat = Combat(self.main_player, Monster(**self.monsters["Hamid"]))
                         combat.start()
                     place.interact()
+
+                #Le joueur ouvre son inventaire et choisi d'utiliser un objet ou non
                 case "2":
-                    pass
+                    place.interact()
+                #Le joueur se déplace au Nord vers le Sanctuaire de Kévin
                 case "3":
                     self.main_player.move(self.places["La Foire aux Illusions Perdues"])
+                #Le joueur se déplace au Nord-est vers le Sanctuaire de Mathieu
                 case "4":
                     self.main_player.move(self.places["Domaine des Souflis"])
+                #Le Joueur se déplace à l'Est vers le donjon final HETIC
                 case "5":
                     self.main_player.move(self.places["Hetic"])
+                #Le joueur se déplace au Sud-est vers le Sanctuaire d'Anjara
                 case "6":
                     self.main_player.move(self.places["Le Casino Zoologique"])
+                #Le joueur se déplace au Sud vers le Sanctuaire de Laurent
                 case "7":
                     self.main_player.move(self.places["Le temple des 1 000 moines"])
                 case _:
                     pass
+        
+        #Le joueur arrive devant la Foire aux Illusions perdues
         def la_foire_aux_illusions_perdues_interaction(place):
             pass
 
             dialog.dialog(naration)
-
+            #La voyante demande au joueur de choisir son malus
             choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d'oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
             monster = Monster(**self.monsters["Kevin"])
             match choice:
+                #Le boss vole 20 PV au joueur
                 case "1":
                     monster.stats["health"] += 20
                     self.main_player.stats["health"] -= 20
+                #Le boss vole 20 d'attaque au joueur
                 case "2":
                     monster.stats["defense"] += 20
                     self.main_player.stats["attack"] -= 20
+                #Le boss vole 20 de défense au joueur
                 case "3":
                     monster.stats["defense"] += 20
                     self.main_player.stats["defense"] -= 20
@@ -145,47 +159,62 @@ class Game:
 
             dialog.dialog(naration)
 
+            #Lancement du Combat contre Kévin, le Boss du donjon
             combat = Combat(self.main_player, monster)
 
+            #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
             if combat:
                 self.main_player.inventory.append(self.artefact[""])
 
+            #Retour à l'entrée de la Foire // Ouvre le menu d'intéraction
             self.places["Ici tout le monde perd"].interact()
+
+        #Le joueur arrive devant le Domaine des Souflis
         def domaine_des_souflis_interaction(place):
+            #Menu de navigation du Domaine des Souflis
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the south-west (Domaine des Souflis)\n", choices=["1","2","3"])
             match choice:
                 case "1": # Lancement du donjon
                     naration = [
                         ("-", "Vous franchissez les portes massives du Domaine des Souflis. Le lieu est à la fois majestueux et intimidant, avec des sculptures imposantes et des fresques murales racontant des légendes anciennes. Au centre, une immense salle trône sous un ciel artificiel éclairé par des cristaux lumineux. Vous ressentez une étrange tension dans l'air, comme si chaque pierre murmurait des avertissements."),
-                        ("Loic", f"Nous sommes arrivés, {self.main_plyer.name}. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
+                        ("Loic", f"Nous sommes arrivés, {self.main_player.name}. Voici le Domaine des Souflis. Mais restez sur vos gardes… Nous ne sommes pas seuls."),
                         ("-", "Soudain, un bruit sourd résonne. Une silhouette imposante s'avance, sortant de l'ombre. C'est Anjalou, le fils du maître du Casino Zoologique, Anjara, et actuel protecteur de Mathieu Souflis."),
-                        ("-", f"{self.main_plyer.name} entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d'un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
+                        ("-", f"{self.main_player.name} entre dans la maison et glisse légèrement sur le sol bien poli. Anjalou apparaît soudainement, vêtu d'un costume élégant, son crâne parfaitement lustré. Il lève les yeux et ajuste son chapeau avec un air supérieur."),
                         ("Anjalou", "Ah, ma chère, vous avez enfin décidé de faire acte de présence. Mais faites attention, ce sol n'est pas là pour être sali !"),
-                        ("-", f"Anjalou jette un coup d'œil à {self.main_plyer.name}, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
+                        ("-", f"Anjalou jette un coup d'œil à {self.main_player.name}, inspecte son propre reflet dans un miroir et se recoiffe en attendant sa réponse."),
                         ("Anjalou (S'approchant)", "Je suis Anjalou, le garde du corps du Seigneur Souflis. Si vous avez l'intention de vous aventurer plus loin, je conseille vivement de respecter le code de la mode et de l'élégance... ainsi que de vous préparer à affronter le véritable luxe.")
                     ]
                     dialog.dialog(naration)
+                    #Lancement du combat intermédiaire contre Anjalou
                     combat = Combat(self.main_player, Monster(**self.monsters["Anjalou"]))
+                    combat.start()
                     naration = [
-                        ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_plyer.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
+                        ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_player.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
                         ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
                         ("-", "Il s'effondre doucement, lissant encore une fois son crâne avant de sombrer dans l'obscurité."),
                         ("-", "Vous entre dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
                         ("Mathieu", "Ah, une nouvelle venue... Vous devez vous demander pourquoi un homme tel que moi se trouve ici, non ? Ne vous inquiétez pas, ce n'est pas la richesse qui vous intéressera ici. Vous vous apprêtez à rencontrer la véritable force."),
                     ]
                     dialog.dialog(naration)
+
+                    #Lancement du combat contre le boss du donjon Mathieu
                     combat = Combat(self.main_player, Monster(**self.monsters["Mathieu"]))
+                    combat.start()
                     naration = [
-                        ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_plyer.name} avec une expression résolue."),
+                        ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_player.name} avec une expression résolue."),
                         ("Mathieu", "Vous pensiez que la richesse était ma véritable arme ? Vous vous êtes trompée. J'ai plus que ça sous cette couche de confort."),
                         ("-", "Il lève son poing, prêt à frapper une dernière fois, mais vous lui donnez un coup fatal avant qu'il ne puisse attaquer. Son corps s'effondre lentement sur le sol, son sourire s'effaçant doucement, mais une lueur de respect dans ses yeux."),
                         ("Mathieu", "La... puissance... est... tout..."),
                     ]
                     dialog.dialog(naration)
+
+                    #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
                     self.main_player.inventory.append(self.artefact["Ecran du mac"])
+                    
+                    #Retour devant le Domaine des Souflis 
                     self.places["Souflis Forest"].interact()
                 case "2":
-                    pass
+                    place.interact()
                 case "3":
                     self.main_player.move(self.places("Souflis Forest"))
                 case _:
@@ -239,7 +268,7 @@ class Game:
                     self.main_player.inventory.append(self.artefact["Jeu de cartes"])
                     self.places["Le casino du cartier des plaisirs"].interact()
                 case "2":
-                    pass
+                    place.interact()
                 case "3":
                     self.main_player.move(self.places["Souflis Forest"])
                 case _:
@@ -269,8 +298,8 @@ class Game:
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
                     self.places["Souflis Forest"].interact()
-                case "2":
-                    pass
+                case "2":    
+                    place.interact()
                 case "3":
                     self.main_player.move(self.places["Souflis Forest"])
                 case _:
@@ -302,6 +331,14 @@ class Game:
         casino.places_around = {"west": souflis_forest}
         temple.places_around = {"north-west": souflis_forest}
         hetic.places_around = {"west": souflis_forest}
+
+        spawn.interaction = spawn_interaction
+        souflis_forest.interaction = souflis_forest_interaction
+        la_foire_aux_illusions_perdues.interaction = la_foire_aux_illusions_perdues_interaction
+        domaine_des_souflis.interaction = domaine_des_souflis_interaction
+        casino.interaction = le_casino_du_cartier_des_plaisirs_interaction
+        temple.interaction = le_temple_des_1000_moines_interaction
+        hetic.interaction = hetic_interaction
 
         # Stockage des places
         self.places = {
@@ -374,70 +411,70 @@ class Game:
                 "description":"",
                 "level":2,
                 "attack_list":[self.attacks["Amel 1"], self.attacks["Amel 2"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Fara": {
                 "name":"Fara",
                 "description":"",
                 "level":4,
                 "attack_list":[self.attacks["Fara 1"], self.attacks["Fara 2"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Imen": {
                 "name":"Imen",
                 "description":"",
                 "level":6,
                 "attack_list":[self.attacks["Control Mental"], self.attacks["Gear 5"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Nazim": {
                 "name":"Nazim",
                 "description":"",
                 "level":8,
                 "attack_list":[self.attacks["Kamehameha"], self.attacks["Malaka"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Nana la renarde": {
                 "name":"Nana la renarde",
                 "description":"",
                 "level":10,
                 "attack_list":[self.attacks["Charme"], self.attacks["Chant brutal"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Youva": {
                 "name":"Youva",
                 "description":"",
                 "level":12,
                 "attack_list":[self.attacks["Explosion"], self.attacks["Vol rapide"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Carglass": {
                 "name":"Carglass",
                 "description":"",
                 "level":14,
                 "attack_list":[self.attacks["Lancé de talon"], self.attacks["Griffure"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Cherif": {
                 "name":"Cherif",
                 "description":"",
                 "level":16,
                 "attack_list":[self.attacks["Coup de tonerre"], self.attacks["Grattage du délégué"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Noa": {
                 "name":"Noa",
                 "description":"",
                 "level":18,
                 "attack_list":[self.attacks["Souplesse du judoka"], self.attacks["Poing de feu"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Hamid": {
                 "name":"Hamid",
                 "description":"",
                 "level":20,
                 "attack_list":[self.attacks["Bois de boulogne"], self.attacks["Course rapide"]],
-                "dropable_items":[self.items["Petite potion rouge"]]},
+                "dropable_items":[(self.items["Petite potion rouge"], 100)]},
             "Kevin": {
                 "name":"Kevin",
                 "description":"Souverain des rires perdus",
                 "level":1000,
                 "attack_list":[self.attacks["Marteau du Forain"], self.attacks["Billes de Loterie Explosives"], self.attacks["Claque de la Poigne Gigantesque"]],
-                "dropable_items":[self.items["Clé de la fête foraine"]],
+                "dropable_items":[(self.items["Clé de la fête foraine"], 100)],
                 "boss": True},
-            "Anjaro": {
-                "name":"Anjaro",
+            "Anjalou": {
+                "name":"Anjalou",
                 "description":"Fils du Roi Singe",
                 "level":1000,
                 "attack_list":[self.attacks["Le Lasso de Soie"], self.attacks["La Roulade du Gentleman"], self.attacks["Le Vent du Chapeau"], self.attacks["Le Crâne de Lumière"]],
@@ -448,47 +485,38 @@ class Game:
                 "description":"Riche investisseur",
                 "level":1000,
                 "attack_list":[self.attacks["Le Marteau de la Banque"], self.attacks["Le Lancer de Pièce Fétiche"], self.attacks["Le Coup du Pantalon Traître"], self.attacks["L'Écran Noir de la Dette"]],
-                "dropable_items":[self.items["Clé du Domaine"]],
+                "dropable_items":[(self.items["Clé du Domaine"], 100)],
                 "boss": True},
             "Le Roi Singe": {
                 "name":"Le Roi Singe",
                 "description":"Dirigeant de la confrérie singeresque",
                 "level":1000,
                 "attack_list":[self.attacks["Low Kick du Kangourou"], self.attacks["Bouclier du lémurien"], self.attacks["Déferlante de la jungle"]],
-                "dropable_items":[self.items["Clé du casino"]],
+                "dropable_items":[(self.items["Clé du casino"], 100)],
                 "boss": True},
             "Lao-ren": {
                 "name":"Lao-ren",
                 "description":"Maître Shaolin",
                 "level":1000,
                 "attack_list":[self.attacks["Coup du Lotus Brisé"], self.attacks["Sillage d'Encens"], self.attacks["Colère des 1000 Âmes"]],
-                "dropable_items":[self.items["Clé du temple"]],
+                "dropable_items":[(self.items["Clé du temple"], 100)],
                 "boss": True},
         }
 
     def start(self):
-        console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
-        choice = Prompt.ask(
-            "Faites un choix :\n0 - Créer un monde\n1 - Charger un monde\n",
-            choices=["0", "1"]
-        )
-
+        console.print("[green]Création du personnage...[/green]")
+        player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?")
         system("clear")
-
-        if choice == "0":
-            console.print("[green]Création du personnage...[/green]")
-            player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?")
-            system("clear")
-            self.main_player = Player(
-                name=player_name,
-                level=1,
-                xp=0,
-                stats={"health": 100, "attack": 10, "defense": 5},
-                attack_list=[],
-                place= self.places["Spawn"]
-            )
-
-            self.main_player.place.interact()
+        self.main_player = Player(
+            name=player_name,
+            level=1,
+            xp=0,
+            stats={"health": 100, "attack": 10, "defense": 5},
+            attack_list=[self.attacks["Amel 1"], self.attacks["Amel 2"]],
+            place= self.places["Spawn"]
+        )
+        console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
+        self.main_player.place.interact()
 
 
 class Entity:
@@ -513,8 +541,8 @@ class Entity:
             attack_chosen = self.attack_list[int(Prompt.ask(f"Choisissez votre attaque :\n{choices}\n", choices=[str(i) for i in range(len(self.attack_list))]))]
             
         damage = max(attack_chosen.damage + self.stat["attack"] - self.stat["defense"], 0)
-        console.print(f"{self.name} attaque {target.name} avec {attack_chosen['name']} et inflige {damage}.")
-        target.take_damage(-damage, "attack")
+        console.print(f"{self.name} attaque {target.name} avec {attack_chosen.name} et inflige {damage}.")
+        target.change_stats(-damage, "health")
 
     def change_stats(self, amount: int, damage_type: str) -> None:
 
@@ -607,7 +635,8 @@ class Player(Entity):
         return base_xp * (growth_rate ** (self.level - 1))
 
     def move(self, place):
-        pass
+        self.place = place
+        self.place.interaction(self.place)
 
     def level_up(self):
         self.level += 1
@@ -621,13 +650,13 @@ class Player(Entity):
         #On débloque des nouvelles attaques ?
 
 class Place:
-    def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
+    def __init__(self, name: str, description: str, monsters: list, interaction=None, places_around=None):
         self.name = name
         self.description = description
         self.places_around = places_around or {}
         self.monsters = monsters
         self.exploration = False
-        self.interaction = interaction
+        self.interaction = interaction or {}
 
     def interact(self):
         self.interaction(self)
@@ -638,6 +667,7 @@ class Combat:
         self.turn_number = 0 
         self.player = player
         self.opponent = opponent
+        self.status = "Combat" #Fuite pour s'enfuire
         self.active_player = random.randint(0 , 1) # 0 = Player /  1 = Monster // Détermine celui qui commence en premier 
     #Début du combat
     def start(self):
@@ -649,6 +679,10 @@ class Combat:
             #Affichage des PV à chaque début de tour
             console.print(f"[bold]Vous avez {self.player.stat["health"]} PV. \n {self.opponent.name} a {self.opponent.stat["health"]} PV.") 
             self.turn()
+
+            if self.status == "Fuite":
+                break
+            
         
         #Termine le combat si l'un des deux Entity tombe à 0 PV.    
         self.end()
@@ -684,9 +718,9 @@ class Combat:
                 #Appel de la méthode self.show_inventory de la class Entity  
                 self.player.show_inventory()
 
-                choices = [index for index, item in enumerate(self.player.inventory) if isinstance(item, Consomable)]
+                choices = [str(index) for index, item in enumerate(self.player.inventory) if isinstance(item, Consomable)]
                 choices.append("Back")
-                item_choice = Prompt.ask(f"Choisissez un item a utiliser:\n{"\n".join([f"{index} - {item} : {item.description}" for index, item in enumerate(self.player.inventory) if isinstance(item, Consomable)])}\nBack - Re venir en arière", choices=choices)
+                item_choice = Prompt.ask(f"Choisissez un item a utiliser:\n{"\n".join([f"{index} - {item.name} : {item.description}" for index, item in enumerate(self.player.inventory) if isinstance(item, Consomable)])}\nBack - Re venir en arière", choices=choices)
 
                 if item_choice == "Back":
                     return self.player_turn()
@@ -695,7 +729,8 @@ class Combat:
                 #Le player choisit de s'enfuir
             elif action == '3' :
                 #Appel de le fonction self.escape pour 
-                    self.end()
+                    self.status = "Fuite"
+                    return
     
     #Tour de l'adversaire        
     def opponent_turn(self):
@@ -714,29 +749,33 @@ class Combat:
             self.player.add_xp(amount_xp)
             
             #Drop du monstre, dropable_items = la liste des drops du monstre / Appel de la méthode self.calculate_drops de la class Entity
-            drop_items = self.opponent.calculate_drops(self.dropable_items)
-            for item in drop_items:
-                self.player.inventory.append(item)
+            drop_items = []
+            if self.opponent.dropable_items:
+                    
+                drop_items = self.opponent.calculate_drops()
+                for item in drop_items:
+                    self.player.inventory.append(item)
 
-            Console.print("Le combat est terminé !")
-            Console.print(f"[cyan]Vous avez vaincu {self.opponent.name} \n vous avez gagne {amount_xp} xp, il vous manque ... xp pour augmenter de niveau \n Vous avez trouvé {drop_items}[/cyan]")
+            console.print("Le combat est terminé !")
+            console.print(f"[cyan]Vous avez vaincu {self.opponent.name} \n vous avez gagne {amount_xp} xp, il vous manque ... xp pour augmenter de niveau \n Vous avez trouvé {drop_items}[/cyan]")
      
         #Si le Player est à 0 PV   
         elif self.player.stat["health"] <= 0 :
             
             #Le player perd le combat, retour à la base    
-            Console.print("[red]Vous avez été vaincu comme un Looser que vous êtes ! Vous retournez au spawn bredouille ![/red]")          
+            console.print("[red]Vous avez été vaincu comme un Looser que vous êtes ! Vous retournez au spawn bredouille ![/red]")
+            self.player.stat["health"] = self.player.max_hp
             # PEUT ETRE TP AU SPAWN
     
         #Le joueur s'enfuit du combat
         else:
-            Console.print("[cyan]Vous arrivez à vous enfuir comme un lâche ![/cyan]")
+            console.print("[cyan]Vous arrivez à vous enfuir comme un lâche ![/cyan]")
             # PEUT ETRE TP AU SPAWN
 
 class Item:
     def __init__(self, name: str, description: str, effect: dict):
         self.name = name
-        self.descritpion = description
+        self.description = description
         self.effect = effect
         effect = {
             "health": 10
