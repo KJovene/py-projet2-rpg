@@ -53,12 +53,11 @@ class Game:
                 ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
             ]
             dialog.dialog(naration)
-
-            #Tutoriel de combat
-            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={"health": 10}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, damage=5)]))
-            tutorielCombat.start()
             
             #Présentation de l'objectif principal, drop et xp
+            tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=0, stats={"health": 10}, dropable_items=[], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, effect={})]))
+            tutorielCombat.start()
+
             naration = [
                 ["Vous", "Je l’ai eu !"],
                 ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prête à affronter bien plus que des lapins."],
@@ -545,6 +544,7 @@ class Entity:
             self.stat["defense"] = max(self.stat["defense"], 0)
             console.print(f"La défense de {self.name} {"augmente" if amount > 0 else "descend"} de {amount}. Défense : {self.stat['defense']}")
 
+
 class Monster(Entity):
     def __init__(self, name: str, description: str, level: int, stats: dict, attack_list: list, dropable_items: list):
         super().__init__(name, description, level, 0, stats, attack_list)
@@ -571,6 +571,7 @@ class Player(Entity):
         else : 
             console.print(f"\ L'inventaire de {self.name}")
             for index, item in enumerate(self.inventory):
+
                 item_details = f"{index}. {item.name} - {item.description}" if hasattr(item,"description") else f"{index}.{item.name}"
                 console.print(item_details)
                 console.print(f"Nombre d'item : {len(self.inventory)}")
@@ -600,17 +601,16 @@ class Player(Entity):
         return base_xp * (growth_rate ** (self.level - 1))
 
     def move(self, place):
-        self.place = place
-        self.place.interaction()
+        pass
 
     def level_up(self):
         self.level += 1
-        console.print(f"[green]{self.name} monte au niveau {self.level}![/green]")
+        print(f"Vous venez de passer au niveau {self.level}")
 
-        for stat, value in self.stat.items():
+        for stat, value in self.stats.items():
             increase = int(value*0.1)
-            self.stat[stat] += increase
-            console.print(f"vos statistiques sont augmentées de {increase} pour {self.stat[stat]} !")
+            self.stats[stat] += increase
+            console.print(f"vos statistiques sont augmentées de {increase} pour {self.stats[stat]} !")
         
         #On débloque des nouvelles attaques ?
 
@@ -633,7 +633,6 @@ class Combat:
         self.player = player
         self.opponent = opponent
         self.active_player = random.randint(0 , 1) # 0 = Player /  1 = Monster // Détermine celui qui commence en premier 
-
     #Début du combat
     def start(self):
         console.print(f"[red]Vous vous apprêtez à vous battre contre {self.opponent.name}...\n QUE LE COMBAT COMMENCE[/red]")
@@ -728,18 +727,23 @@ class Combat:
             Console.print("[cyan]Vous arrivez à vous enfuir comme un lâche ![/cyan]")
             # PEUT ETRE TP AU SPAWN
 
-
 class Item:
     def __init__(self, name: str, description: str, effect: dict):
         self.name = name
         self.descritpion = description
         self.effect = effect
+        effect = {
+            "health": 10
+        }
+        effect = {
+            "attack": 10,
+            "defense": 10
+        }
 
 class Equipable(Item):
     def __init__(self, name: str, description: str, effect: dict):
         super().__init__(name, description, effect)
         self.equiped = False
-
     def equip(self, target):
         #  A MODIFIER
         if not self.equipped:
@@ -751,9 +755,23 @@ class Equipable(Item):
             console.print(f"{self.name} est déjà équipé.")
 
 
+
 class Consomable(Item):
     def __init__(self, name: str, description: str, effect: dict, durability: int):
         super().__init__(name, description, effect)
+        self.active = False
+        self.durability = durability
+
+    def use(self, target):
+        if "health" in self.effect and target.max_health > target.stats["health"]:
+               if self.effect["health"] < target.max_health - target.stats["health"] :
+                   target.stats["health"] += self.effect["health"]
+               else :
+                   target.stats["health"] = target.max_health
+        elif "attack" in self.effect:
+            target.stats["attack"] += self.effect["attack"]
+        else :
+            target.stats["defense"] += self.effect["defense"]
 
     def use(self, target):
         for stat, value in self.effect.items():
@@ -788,9 +806,29 @@ class Dialog:
         system("clear")
         Prompt.ask(f"[yellow]VOIX OFF >[/yellow] {text}\n\nAppuyez sur enter pour continuer..")
 
+class Dialog:
+    def dialog(self, dialog: list):
+        for speaker, text in dialog:
+            if speaker == "-":
+                self.naration(text)
+            else:
+                self.talk(speaker, text)
+
+    def place_changement(self, new_place: str):
+        system("clear")
+        Prompt.ask(f"[bold][green]Vous changez d'endroit...\nBienvenue dans [underline]{new_place}[/underline][/green][/bold]")
+
+    def talk(self, speaker:str, text: str):
+        system("clear")
+        Prompt.ask(f"[blue]{speaker} >[/blue] {text}\n\nAppuyez sur enter pour continuer..")
+
+    def naration(self, text):
+        system("clear")
+        Prompt.ask(f"[yellow]VOIX OFF >[/yellow] {text}\n\nAppuyez sur enter pour continuer..")
+
 
 if __name__ == "__main__":
     dialog = Dialog()
     game = Game("Mon RPG")
-
     game.start()
+
