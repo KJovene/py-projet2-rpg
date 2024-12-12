@@ -1,3 +1,5 @@
+import random
+
 class Entity:
     def __init__(self, name: str, description: str, level: int, xp: float, stat: dict, attack_list: list):
         self.name = name
@@ -8,30 +10,43 @@ class Entity:
         self.attack_list = attack_list or []
         self.status = []
 
-    def attack(self, target: 'Entity') -> None:
-        if not self.attack_list:
-            console.print(f"{self.name} n'a aucune attaque disponible")
-            return
+    def attack(self, target) -> None:
+        if len(self.attack_list) <= 0:
+                console.print(f"{self.name} n'a aucune attaque disponible")
         
-        attack = self.attack_list[0]
-        damage = attack["damage"] + self.stat["attack"]
-        damage_type = attack["type"]
-        console.print(f"{self.name} attaque {target.name} avec {attack['name']} et inflige {damage}")
+        attack_chosen = None
+        if type(target) is Monster :
+            attack_chosen = self.attack_list[random.randint(0, len(self.attack_list) - 1)]
+        elif type(target) is Player :
+            choice = int(prompt.ask(f"{self.name}, choississez votre attaque parmis celle-ci :\n{"\n".join([f"{i} - {attack.name}" for i, attack in enumerate(self.attack_list)])}\n", choices=[i for i in range(len(self.attack_list))]))
+            attack_chosen = self.attack_list[choice]
+            
+        damage = attack_chosen["damage"] + self.stat["attack"]
+        console.print(f"{self.name} attaque {target.name} avec {attack_chosen['name']} et inflige {damage}.")
 
-        target.take_damage(damage,damage_type)
+        target.take_damage(damage, "attack")
 
     def take_damage(self, amount: int, damage_type: str) -> None:
-        resistance = self.stat.get(f"res_{damage_type}", 0)
-        defense = self.stat.get ("defense", 0)
-        actual_damage = max(amount - defense - resistance, 0)
+        defense = self.stat["defense"]
+        actual_damage = max(amount - defense, 0)
 
-        self.stat["health"] -= actual_damage
-        self.stat["health"] = max(self.stat["health"], 0)
+        if damage_type == "health" :
+            self.stat["health"] -= actual_damage
+            self.stat["health"] = max(self.stat["health"], 0)
 
-        console.print(f"{self.name} reçit {actual_damage}. Santé restante : {self.stat['health']}")
+            console.print(f"{self.name} reçoit {actual_damage}. Santé restante : {self.stat['health']}")
+            if self.stat["health"] <= 0:
+                console.print(f"{self.name} est vaincu")
+        elif damage_type == "attack" :
+            self.stat["attack"] -= actual_damage
+            self.stat["attack"] = max(self.stat["attack"], 0)
 
-        if self.stat["health"] <= 0:
-            console.print(f"{self.name} est vaincu")
+            console.print(f"L'attaque de {self.name} déscend de {actual_damage} points. Points d'attaque restante : {self.stat['attack']}")
+        elif damage_type == "defense" :
+            self.stat["defense"] -= actual_damage
+            self.stat["defense"] = max(self.stat["defense"], 0)
+
+            console.print(f"La défense de {self.name} déscend de {actual_damage} points. Points de défense restant : {self.stat['defense']}")
 
 class Monster(Entity):
     def __init__(self, name: str, description: str, level: int, stats: dict, attack_list: list, dropable_items: list):
@@ -39,24 +54,23 @@ class Monster(Entity):
         self.dropable_items = dropable_items
 
     def calculate_drops(self):
-        dropped_item = []
+        dropped_items = []
         for item, drop_chance in self.dropable_items:
-            if random.randint() < drop_chance:
+            if random.randint(0, 100) <= drop_chance:
                 dropped_items.append(item)
-            return dropped_items
+        return dropped_items
         
-        if __name__ == "__main__":
-            Amelie = Monster(
-                name = "Amelie",
-                level = 2,
-                stats = {"health" : 20, "attack" : 3, "defense" : 2},
-                attack_list=[],
-                dropable_items=[
-                    ("Potion de soin", 0.5)
-                ]
-            )
-        drops = Amelie.calculate_drops()
-        console.print(f"Objets obtenus : {', '.join(drops) if drops else 'Aucun objet'}")
+        # if __name__ == "__main__":
+        #     Amelie = Monster(
+        #         name = "Amelie",
+        #         level = 2,
+        #         stats = {"health" : 20, "attack" : 3, "defense" : 2},
+        #         attack_list=[],
+        #         dropable_items=[
+        #             ("Potion de soin", 50)
+        #         ]
+        #     )
+        
 
 class Player(Entity):
     def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place: Place ):
@@ -65,8 +79,8 @@ class Player(Entity):
         self.place = place
 
     def show_inventory(self):
-        if not self.inventory :
-            console.print(f"\L'inventaire de {self.name} est vide")
+        if len(self.inventory) <= 0:
+            return console.print(f"\L'inventaire de {self.name} est vide")
         else : 
             console.print(f"\ L'inventaire de {self.name}")
             for index, item in enumerate(self.inventory, start=1):
@@ -74,14 +88,13 @@ class Player(Entity):
                 console.print(item_details)
                 console.print(f"Nombre d'item : {len(self.inventory)}")
 
-    def use_item(self):
-        if not self.inventory:
-            console.print(f"Votre inventaire est vide. Vous n'avez rien à utiliser")
-            return
-        for item in self.inventory:
-            if item.name.lower() == item_name.lower():
+    def use_item(self, item_index):
+        if len(self.inventory) <= 0:
+            return console.print(f"Votre inventaire est vide. Vous n'avez rien à utiliser")
+        for index, item in enumerate(self.inventory):
+            if index == item_index:
                 console.print(f"{self.name} utilise {item.name}")
-                if hasattr(item, "use") and callable(item.use):
+                if hasattr(item, "use"):
                     item.use(self)
                     self.inventory.remove(item)
                     console.print(f"Vous venez d'utiliser {item.name}")
