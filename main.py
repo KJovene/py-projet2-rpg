@@ -714,7 +714,7 @@ class Player(Entity):
         print(f"Vous venez de passer au niveau {self.level}")
 
         for stat, value in self.stat.items():
-            increase = int(value*1.2)
+            increase = int(value*1.1)
             self.stat[stat] += increase
             console.print(f"vos statistiques sont augmentées de {increase} pour {self.stat[stat]} !")
         
