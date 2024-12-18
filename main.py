@@ -89,7 +89,17 @@ class Game:
                 case "4":
                     self.main_player.move(self.places["Domaine des Souflis"])
                 case "5":
-                    self.main_player.move(self.places["Hetic"])
+                    required_keys = {"Key 1", "Key 2", "Key 3", "Key 4"}
+                    missing_keys =[]
+                    for key in required_keys :
+                        if key not in self.main_playe.inventory:
+                            missing_keys.append(key)
+                        if not missing_keys : 
+                            self.main_player.move(self.places["Hetic"])
+                            console.print("Vous avez utilisé vos clefs pour entrer dans Hetic")
+                            break
+                        else :
+                            console.print("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
                 case "6":
                     self.main_player.move(self.places["Le Casino Zoologique"])
                 case "7":
@@ -599,12 +609,14 @@ class Player(Entity):
                 return
         console.print(f"{item.name} n'est pas dans votre inventaire")
 
-    def add_xp(self, amount : float):
+    def add_xp(self, monster_level : float):
         if amount <= 0 :
             console.print("L'expérience ne peut pas être négative")
-        console.print(f"Vous venez de gagner {amount} XP !")
-        self.xp += amount
-        required_xp = self.level_up_threshold()
+
+        xp_gained = 10 * monster_level
+        self.xp += xp_gained
+        required_xp = self.level_up_treshold()
+        console.print(f"Vous venez de gagner {xp_gained} XP !")
 
         while self.xp >= required_xp:
             self.xp -= required_xp
@@ -616,19 +628,17 @@ class Player(Entity):
         growth_rate = 1.5
         return base_xp * (growth_rate ** (self.level - 1))
 
-    def move(self, place):
-        pass
-
     def level_up(self):
         self.level += 1
-        print(f"Vous venez de passer au niveau {self.level}")
-
-        for stat, value in self.stats.items():
-            increase = int(value*0.1)
-            self.stats[stat] += increase
-            console.print(f"vos statistiques sont augmentées de {increase} pour {self.stats[stat]} !")
-        
-        #On débloque des nouvelles attaques ?
+        self.health += 15
+        self.attack += 5
+        self.defense += 3
+        console.print(f"Félicitation ! Vous êtes maintenant niveau {self.level} !")
+        console.print(f"+15 santé, +5 attaque, +3 défense")
+       
+    def move(self, place):
+        self.place = place
+        place.interaction()
 
 class Place:
     def __init__(self, name: str, description: str, monsters: list, interaction, places_around=None):
@@ -641,7 +651,6 @@ class Place:
 
     def interact(self):
         self.interaction(self)
-
 
 class Combat:
     def __init__(self, player: Player, target: Monster):
