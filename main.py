@@ -11,7 +11,7 @@ class Game:
         self.name = name
         self.main_player = Player("SAPAL", 1000, 0, None, None, None)
 
-        
+
         # Le joueur spawn dans le Tutoriel du jeu
         def spawn_interaction(place):
             naration = [
@@ -36,7 +36,7 @@ class Game:
             ]
 
             dialog.dialog(naration)
-            
+
             # Faux Déplacement dans une zone fictive pour le tutoriel
             dialog.place_changement(self.places["Souflis Forest"].name)
             naration = [
@@ -54,11 +54,11 @@ class Game:
                 ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
             ]
             dialog.dialog(naration)
-            
+
             #Tutoriel de combat
             tutorielCombat = Combat(self.main_player, Monster(name="Écho-lapin", description="Tutorial Mob", level=1, dropable_items=[Consomable(**self.items["Petite potion rouge"], drop_rate=100)], attack_list=[Attack(name="Cris du fauve", description="Le cris d'un lapin", battle_cry="Miaou 🥺", durability=100, damage=5)]))
             tutorielCombat.start()
-            
+
             #Présentation de l'objectif principal, drop et xp
             naration = [
                 ["Vous", "Je l'ai eu !"],
@@ -69,29 +69,29 @@ class Game:
                 ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC (NABIL)."],
             ]
             dialog.dialog(naration)
-            
-            #Téléportation dans la zone de farm         
+
+            #Téléportation dans la zone de farm
             self.places["Souflis Forest"].interact()
             self.main_player.move(self.places["Souflis Forest"])
-        
-        #Zone Forêt des Souflis, zone de farm    
+
+        #Zone Forêt des Souflis, zone de farm
         def souflis_forest_interaction(place):
-            
+
             #Menu de navigation
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the north (La Foire aux Illusions Perdues)\n4 - Go to the north-east (Domaine des Souflis)\n5 - Go to the east (HETIC)\n6 - Go to the south-east (Le Casino Zoologique)\n7 - Go to the south (Le temple des 1 000 moines)\n", choices=["1","2","3","4","5","6","7"])
             match choice:
-                
+
                 #Le joueur reste dans la Forêt des Souflis
                 case "1":
-                    
+
                     #Le monstre que va rencontrer le joueur sera de niveau plus ou moins équivalent à ce dernier
                     player_level = self.main_player.level
                     monster_possibility = [monster_data for monster_data in self.monsters.values() if player_level - 2 <= monster_data["level"] <= player_level + 2]
-                    
+
                     #Rencontre d'un monstre choisi aléatoirement parmis la liste monster_possibility
                     if monster_possibility :
                         monster_fight = random.choice(monster_possibility)
-                        
+
                         #Appel de la méthode self.start de la Class Combat
                         combat = Combat(self.main_player, Monster(**monster_fight))
                         combat.start()
@@ -120,7 +120,7 @@ class Game:
                     self.main_player.move(self.places["Le temple des 1 000 moines"])
                 case _:
                     pass
-        
+
         #Le joueur arrive devant la Foire aux Illusions perdues
         def la_foire_aux_illusions_perdues_interaction(place):
             pass
@@ -210,8 +210,8 @@ class Game:
 
                     #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
                     self.main_player.inventory.append(self.artefact["Ecran du mac"])
-                    
-                    #Retour devant le Domaine des Souflis 
+
+                    #Retour devant le Domaine des Souflis
                     self.places["Souflis Forest"].interact()
                 case "2":
                     place.interact()
@@ -297,8 +297,9 @@ class Game:
                     ]
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
+                    combat.start()
                     self.places["Souflis Forest"].interact()
-                case "2":    
+                case "2":
                     place.interact()
                 case "3":
                     self.main_player.move(self.places["Souflis Forest"])
@@ -306,7 +307,29 @@ class Game:
                     pass
 
         def hetic_interaction(place):
-            pass
+            choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+            #Arrivée à Hetic
+            naration = [
+                ("-", "Vous arrivez au bout du long chemin vous menant à la sombre façade d'un batiment."),
+                ("-", "Vous observez un grand portail, puis prenant votre courage à deux mains, vous utilisez vos forces pour ouvir cette porte. Vous avancez dans une grande cour rempli de brouillard et apercevez un silouhette."),
+                ("Alexandre","Eh bien...on dirait que les singes et les moines ne sont plus aussi féroce qu'avant"),
+                ("-", "Cet entrepreneur vous analyse entièrement, et semble se préparer à agir"),
+                ("Alexandre", "Allez, finis de jouer. Tu vas payer pour toutes les conférences que tu as ratées, y'avait pas un monde où tu n'y étais pas.")
+              ]
+            dialog.dialog(naration)
+            combat = Combat(self.main_player, Monster(**self.monsters["Alexandre"]))
+            combat.start()
+            naration = [
+                ("Alexandre", "Mais...coment un mortel peut détenir autant de puissance? Tu as donc réuni tous les outils pour trouver une alternance?"),
+                ("-", "Votre combat bat son plein contre le grand chef heticien. Soudain une brume épaisse apparaît, et une silouhette encore plus grande apparait. Vous sentez une nouvelle présence dans la cour..."),
+                ("-", "Alexandre disparait peu à peu, et vous apercevez un homme vêtu d'un superbe costume bleu."),
+                ("Nabil", "Sacrilège, je ne peux donc plus compter sur ce bon vieux Alexandre. EH OUI ! C'est bien moi Nabil Lmrabet, celui qui tire les ficelles derrière tout ce qui se passe dans ce monde. Aller humain, montre moi tout ce que ton voyage t'as appris, ou péris dans les entrailles de mon école.")
+            ]
+            dialog.dialog(naration)
+            combat = Combat(self.main_player, Monster(**self.monsters["Nabil"]))
+            combat.start()
+
+
 
         # Initialisation des places sans les connexions
         spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
@@ -411,7 +434,7 @@ class Game:
                 "level": 2,
                 "attack_list": [
                     Attack(**self.attacks["Amel 1"], drop_rate=5),
-                    Attack(**self.attacks["Amel 2"], drop_rate=5) 
+                    Attack(**self.attacks["Amel 2"], drop_rate=5)
                 ],
                 "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))]
             },
@@ -421,7 +444,7 @@ class Game:
                 "level": 4,
                 "attack_list": [
                     Attack(**self.attacks["Fara 1"], drop_rate=5),
-                    Attack(**self.attacks["Fara 2"], drop_rate=5) 
+                    Attack(**self.attacks["Fara 2"], drop_rate=5)
                 ],
                 "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))]
             },
@@ -601,7 +624,7 @@ class Entity:
     def attack(self, target) -> None:
         if not self.attack_list:
             console.print(f"{self.name} n'a aucune attaque disponible")
-        
+
         attack_chosen = None
         if type(target) is  Player:
             attack_chosen = random.choice(self.attack_list)
@@ -609,7 +632,7 @@ class Entity:
             print(self.attack_list)
             choices = "\n".join([f"{i} - {attack.name}" for i, attack in enumerate(self.attack_list)])
             attack_chosen = self.attack_list[int(Prompt.ask(f"Choisissez votre attaque :\n{choices}\n", choices=[str(i) for i in range(len(self.attack_list))]))]
-            
+
         damage = max(attack_chosen.damage + self.stat["attack"] - self.stat["defense"], 0)
         console.print(f"{self.name} attaque {target.name} avec {attack_chosen.name} et inflige {damage}.")
         target.change_stats(-damage, "health")
@@ -673,7 +696,7 @@ class Player(Entity):
     def show_inventory(self):
         if len(self.inventory) <= 0:
             return console.print(f"\L'inventaire de {self.name} est vide")
-        else : 
+        else :
             console.print(f"\ L'inventaire de {self.name}")
             for index, item in enumerate(self.inventory):
 
@@ -699,7 +722,7 @@ class Player(Entity):
             self.xp -= self.level_up_threshold()
             self.level_up()
         console.print(f"Vous venez de gagner {amount} XP !")
-    
+
     def level_up_threshold(self):
         base_xp = 100
         growth_rate = 1.5
@@ -717,7 +740,7 @@ class Player(Entity):
             increase = int(value*1.1)
             self.stat[stat] += increase
             console.print(f"vos statistiques sont augmentées de {increase} pour {self.stat[stat]} !")
-        
+
         #On débloque des nouvelles attaques ?
 
 class Place:
@@ -735,48 +758,48 @@ class Place:
 
 class Combat:
     def __init__(self, player, opponent):
-        self.turn_number = 0 
+        self.turn_number = 0
         self.player = player
         self.opponent = opponent
         self.status = "Combat" #Fuite pour s'enfuire
-        self.active_player = random.randint(0 , 1) # 0 = Player /  1 = Monster // Détermine celui qui commence en premier 
+        self.active_player = random.randint(0 , 1) # 0 = Player /  1 = Monster // Détermine celui qui commence en premier
     #Début du combat
     def start(self):
         console.print(f"[red]Vous vous apprêtez à vous battre contre {self.opponent.name}...\n QUE LE COMBAT COMMENCE[/red]")
-        
-        #Boucle des tours du combat    
+
+        #Boucle des tours du combat
         while self.player.stat["health"] != 0 and self.opponent.stat["health"] != 0 :
-                          
+
             #Affichage des PV à chaque début de tour
-            console.print(f"[bold]Vous avez {self.player.stat["health"]} PV. \n {self.opponent.name} a {self.opponent.stat["health"]} PV.") 
+            console.print(f"[bold]Vous avez {self.player.stat["health"]} PV. \n {self.opponent.name} a {self.opponent.stat["health"]} PV.")
             self.turn()
 
             if self.status == "Fuite":
                 break
-            
-        
-        #Termine le combat si l'un des deux Entity tombe à 0 PV.    
+
+
+        #Termine le combat si l'un des deux Entity tombe à 0 PV.
         self.end()
 
-    #Alternateur de tours        
+    #Alternateur de tours
     def turn(self):
         if self.active_player == 0:
             console.print(f"[cyan]Tour {self.turn_number}: {self.player.name}, à vous de jouer![/cyan]")
             self.player_turn()
         else:
             console.print(f"[magenta]Tour {self.turn_number}: {self.opponent.name} attaque![/magenta]")
-            self.opponent_turn() 
-        
-                
+            self.opponent_turn()
+
+
         #Inversion de active_player après chaque tour (alterne entre 0 et 1)
         self.active_player = 1 - self.active_player
-        
+
         #Compteur de tours
         self.turn_number += 1
 
     #Tour du PLayer
     def player_turn(self):
-        
+
             #Menu principal du tour de combat
             action = Prompt.ask("Choisissez une action\n1 - Attaquer\n2 - Inventaire\n3 - Fuir", choices = ["1","2","3"],)
 
@@ -784,9 +807,9 @@ class Combat:
             if action == '1':
                 #Appel de la méthode self.attack de la class Entity
                 self.player.attack(self.opponent)
-            #Le Player choisit d'ouvrir son Inventaire pour le REGARDER    
+            #Le Player choisit d'ouvrir son Inventaire pour le REGARDER
             elif action == '2' :
-                #Appel de la méthode self.show_inventory de la class Entity  
+                #Appel de la méthode self.show_inventory de la class Entity
                 self.player.show_inventory()
 
                 choices = [str(index) for index, item in enumerate(self.player.inventory) if isinstance(item, Consomable)]
@@ -800,45 +823,45 @@ class Combat:
                     self.player.use_item(int(item_choice))
                 #Le player choisit de s'enfuir
             elif action == '3' :
-                #Appel de le fonction self.escape pour 
+                #Appel de le fonction self.escape pour
                     self.status = "Fuite"
                     return
-    
-    #Tour de l'adversaire        
+
+    #Tour de l'adversaire
     def opponent_turn(self):
 
         #Appel de la méthode self.attack de la class Entity
         self.opponent.attack(self.player)
-    
+
     #Fin du combat
     def end(self):
-        
+
         #Si l'adversaire est à 0 PV
         if self.opponent.stat["health"] <= 0 :
-            
+
             #Ajoute l'xp au héro, 10 * Le niveau du monstre
             amount_xp = 10 * self.opponent.level
             self.player.add_xp(amount_xp)
-            
+
             #Drop du monstre, dropable_items = la liste des drops du monstre / Appel de la méthode self.calculate_drops de la class Entity
             drop_items = []
             if self.opponent.dropable_items:
-                    
+
                 drop_items = self.opponent.calculate_drops()
                 for item in drop_items:
                     self.player.inventory.append(item)
 
             console.print("Le combat est terminé !")
             console.print(f"[cyan]Vous avez vaincu {self.opponent.name} \n vous avez gagne {amount_xp} xp, il vous manque ... xp pour augmenter de niveau \n Vous avez trouvé {drop_items}[/cyan]")
-     
-        #Si le Player est à 0 PV   
+
+        #Si le Player est à 0 PV
         elif self.player.stat["health"] <= 0 :
-            
-            #Le player perd le combat, retour à la base    
+
+            #Le player perd le combat, retour à la base
             console.print("[red]Vous avez été vaincu comme un Looser que vous êtes ! Vous retournez au spawn bredouille ![/red]")
             self.player.stat["health"] = self.player.max_hp
             # PEUT ETRE TP AU SPAWN
-    
+
         #Le joueur s'enfuit du combat
         else:
             console.print("[cyan]Vous arrivez à vous enfuir comme un lâche ![/cyan]")
@@ -950,4 +973,3 @@ if __name__ == "__main__":
     dialog = Dialog()
     game = Game("Mon RPG")
     game.start()
-
