@@ -327,7 +327,7 @@ class Game:
 
                     if not combat:
                         return self.main_player.move(self.places["Souflis Forest"])
-                    self.main_player.inventory.append(Equipable(self.artefact["Maxi Phô Beuf"]))
+                    self.main_player.inventory.append(Equipable(**self.artefact["Maxi Phô Beuf"]))
                     self.main_player.move(self.places["Souflis Forest"])
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -756,13 +756,13 @@ class Monster(Entity):
             boss (bool): Indique si le monstre est un boss ou non.
         """
         stats = {
-            "health": 50 + 30 * level,
-            "attack": 5 + 3 * level,
-            "defense": 3 + 2 * level
+            "health": 50 + 20 * level,
+            "attack": 5 + 2 * level,
+            "defense": 3 + 1 * level
         } if not boss else {
-            "health": 200 + 150 * level,
-            "attack": 20 + 15 * level,
-            "defense": 10 + 10 * level
+            "health": 200 + 100 * level,
+            "attack": 20 + 10 * level,
+            "defense": 10 + 5 * level
         }
 
         super().__init__(name, description, level, 0, stats, attack_list)
@@ -803,9 +803,9 @@ class Player(Entity):
             equipped_items (list): La liste des objets équipés du joueur.
         """
         stats = {
-            "health": 100 + 20 * level,
-            "attack": 10 + 2 * level,
-            "defense": 5 + 1 * level
+            "health": 100 + 15 * level,
+            "attack": 10 + 3 * level,
+            "defense": 5 + 2 * level
         }
         super().__init__(name, "", level, xp, stats, attack_list)
         self.inventory = inventory
@@ -1121,7 +1121,7 @@ class Combat:
                 for item in drop_items:
                     self.player.inventory.append(item)
 
-            amount_xp = 10 * self.opponent.level
+            amount_xp = 20 * self.opponent.level
 
             dialog.naration(f"Le combat est terminé !\nVous avez vaincu {self.opponent.name} et gagné {amount_xp} XP. Vous avez trouvé {drop_items}.\nIl vous manque {self.player.xp_calculation_to_level_up() - self.player.xp} XP pour monter de niveau.")
             
