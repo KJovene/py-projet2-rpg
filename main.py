@@ -230,7 +230,7 @@ class Game:
                     dialog.dialog(naration)
 
                     #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
-                    self.main_player.inventory.append(self.artefact["Ecran du mac"])
+                    self.main_player.inventory.append(Equipable(**self.artefact["Ecran du Mac"]))
 
                     #Retour devant le Domaine des Souflis
                     self.main_player.move(self.places["Souflis Forest"])
@@ -262,7 +262,7 @@ class Game:
                     number = 0
 
                     while number != 12:
-                        choice = Prompt.ask("Choisissez une action :\n1 - Lancer un dé\n2 - Abandonner", choices=["1","2"])
+                        choice = int(Prompt.ask("Choisissez une action :\n1 - Lancer un dé\n2 - Abandonner", choices=["1","2"]))
                         if choice == 1:
                             number = random.randint(0, 12)
                             dialog.talk("-", f"Vous lancez un dé et tombez sur le numéro {number}")
@@ -290,7 +290,7 @@ class Game:
                     if not combat:
                         return self.main_player.move(self.places["Souflis Forest"])
 
-                    self.main_player.inventory.append(self.artefact["Jeu de cartes"])
+                    self.main_player.inventory.append(Equipable(**self.artefact["Jeu de cartes"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -327,7 +327,7 @@ class Game:
 
                     if not combat:
                         return self.main_player.move(self.places["Souflis Forest"])
-
+                    self.main_player.inventory.append(Equipable(self.artefact["Maxi Phô Beuf"]))
                     self.main_player.move(self.places["Souflis Forest"])
                 case "2":
                     self.main_player.interact_with_inventory()
