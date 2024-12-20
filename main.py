@@ -31,7 +31,7 @@ class Game:
                 ("Vous, déboussolé", "Où... Où suis-je..? Et qui êtes-vous..?"),
                 ("...", "Ah ! J'ai bien cru que vous étiez mort !"),
                 ("Vous, lentement", "Mais qui..."),
-                ("...", "Chut ! Laissez-moi me présenter, je me nomme Loic et je serai ton guide tout au long de cette aventure !"),
+                ("...", "Chut ! Laissez-moi me présenter, je me nomme Loic et je serai ton guide tout au long de cette aventure !"), #On tutoie ou on vouvoie ?
                 ("Vous, encore confus", "Une aventure ? Mais de quoi parlez-vous ?"),
                 ("Loic, avec un sourire énigmatique", f"Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères."),
                 ("Vous, en vous redressant lentement", "Je ne comprends pas... Comment suis-je arrivé ici ?"),
@@ -57,8 +57,8 @@ class Game:
                 ["-", "Soudain, un mouvement furtif attire votre attention. Une petite créature, mi-lapin, mi-reptile, bondit hors d'un buisson. Elle vous fixe avec des yeux curieux."],
                 ["Loic", f"Regardez, {self.main_player.name}. La nature vous offre déjà votre premier défi. Ces créatures, les 'Écho-lapins', sont faibles, mais rapides. Attrapez-en un pour commencer. Vous devez vous familiariser avec le maniement de vos compétences."],
                 ["Vous", "Mais… je ne sais même pas comment faire ça."],
-                ["Loic (riant doucement)", "C'est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire - un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."],
-                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l'intérieur. Vous le saisissez avec hésitation."],
+                ["Loic (riant doucement)", "C'est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire - un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."], #On garde ce script ? Il n'y a plus de bâtons 
+                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l'intérieur. Vous le saisissez avec hésitation."], #Pareil pour le bâton
                 ["Loic", "Bien. Maintenant, tenez-vous prêt. Ces créatures sont petites, mais elles peuvent mordre si vous n'êtes pas rapide. Concentrez votre énergie sur leur mouvement… et frappez !"],
                 ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
             ]
@@ -74,8 +74,8 @@ class Game:
                 ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prêt à affronter bien plus que des lapins."],
                 ["-", "Alors que vous continuez votre exploration, Loic vous explique les mécaniques du jeu."],
                 ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n1 - Expérience et Niveaux : Chaque créature vaincue vous rapporte de l'expérience. Plus vous en accumulez, plus vous montez en niveau, débloquant de nouvelles compétences et renforçant vos capacités."],
-                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."],
-                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC (N."],
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."], #Script à changer aussi
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC."],
             ]
             dialog.dialog(naration)
 
@@ -209,7 +209,7 @@ class Game:
                         ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_player.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
                         ("Anjalou", "Même la perfection doit un jour céder... Mais... mon crâne... il était encore si... éclatant..."),
                         ("-", "Il s'effondre doucement, lissant encore une fois son crâne avant de sombrer dans l'obscurité."),
-                        ("-", "Vous entre dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
+                        ("-", "Vous entrez dans une pièce richement décorée. Au fond, un homme se tient là, entouré de tableaux et de meubles luxueux. Il porte des habits amples et une attitude décontractée, mais quelque chose semble étrange, comme s'il dissimulait une puissance inouïe derrière cette apparence tranquille."),
                         ("Mathieu", "Ah, un nouveau venu... Vous devez vous demander pourquoi un homme tel que moi se trouve ici, non ? Ne vous inquiétez pas, ce n'est pas la richesse qui vous intéressera ici. Vous vous apprêtez à rencontrer la véritable force."),
                     ]
                     dialog.dialog(naration)
@@ -242,7 +242,7 @@ class Game:
                 case _:
                     pass
 
-        def le_casino_du_cartier_des_plaisirs_interaction(place):
+        def le_casino_du_cartier_des_plaisirs_interaction(place): #Toujours changer le nom de cette zone
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
             match choice:
                 case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
@@ -267,7 +267,7 @@ class Game:
                             number = random.randint(0, 12)
                             dialog.talk("-", f"Vous lancez un dé et tombez sur le numéro {number}")
                             if number != 12:
-                                dialog.talk("Garde Gorille 1", "Hahaha, tu as raté ! Ré essaie si tu l'ose...")
+                                dialog.talk("Garde Gorille 1", "Hahaha, tu as raté ! Ré essaie si tu l'oses...")
                         else: # Choice == 2
                             dialog.talk("Garde Gorille 1", "Pff, comme prévu. Aucun humain ne peut rivaliser avec la jungle. Rentre chez toi, gamin.")
                             return place.interact(self.main_player)
