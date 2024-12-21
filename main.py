@@ -730,7 +730,7 @@ class Game:
         system("clear")
         self.main_player = Player(
             name=player_name,
-            level=110,
+            level=1,
             xp=0,
             stats={"health": 100, "attack": 10, "defense": 5},
             attack_list=[Attack(**self.attacks["Amel 1"]), Attack(**self.attacks["Colère des 1000 Âmes"]),Attack(**self.attacks["Amel 2"])],
