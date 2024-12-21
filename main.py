@@ -18,7 +18,7 @@ class Game:
             name (str): Le nom du jeu.
         """
         self.name = name
-        self.main_player = Player("SAPAL", 1000, 0, {}, [], None)
+        self.main_player = Player("SAPAL", 0, 0, {}, [], None)
 
 
         # Le joueur spawn dans le Tutoriel du jeu
@@ -133,7 +133,16 @@ class Game:
 
         #Le joueur arrive devant la Foire aux Illusions perdues
         def la_foire_aux_illusions_perdues_interaction(place):
-            pass
+            dialog = [
+                ("-", "Après avoir quitté la dense et mystérieuse Forêt des Souflis, vous arrivez sur un sentier escarpé."),
+                ("-", "En contrebas, un étrange spectacle attire votre attention : un lieu qui ressemble à une fête foraine, bruyant et lumineux, plein de mouvement. Intrigué, vous descendez le sentier sinueux, curieux d'explorer cet endroit qui semble détonner dans cette nature sauvage."),
+                ("-", "Mais plus vous approchez, plus les détails vous troublent : la 'fête foraine' semble minuscule comparée à ce que vous aviez vu de loin. Quelques tentes délabrées, des attractions à moitié effondrées, et une ambiance bien plus lugubre qu'invitante. Vous ressentez un frisson désagréable."),
+                ("-", "Soudain, une vieille femme surgit de l'ombre et vous agrippe le bras avec une poigne étonnamment ferme pour son âge."),
+                ("Vieille Femme", "Alors, jeune âme téméraire… que fais-tu ici, perdu au milieu de nulle part ?"),
+                ("Vous", "Je me suis égaré après avoir quitté la Forêt des Souflis."),
+                ("Vieille Femme", "Oh, comme c'est mignon. Mais tu as de la chance d'être tombé sur moi, car je peux t'aider. Cependant, tout a un prix ici... Je vais te proposer des objets et tu devras en choisir un."),
+                ("Vieille Femme", "Chacun de ces objets a des avantages uniques pour la suite de ton aventure. Mais choisis bien, car tu ne pourras jamais revenir en arrière.")
+            ]
 
             # dialog.dialog(naration)
             #La voyante demande au joueur de choisir son malus
@@ -175,7 +184,12 @@ class Game:
 
             #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
             if combat:
-                self.main_player.inventory.append(Equipable(**self.artefact["Petit canard"]))
+                dialog = [ 
+                    ("-", "Kévin s’écroule au sol, haletant, son masque tombant pour révéler un visage fatigué mais amusé."),
+                    ("Kevin", "Hahaha… ça faisait longtemps que je n’avais pas perdu… Bien joué, étranger. Tu as prouvé ta valeur. Prends ce trésor, il pourrait t’être utile."),
+                    ("-", "Vous découvrez un coffre à moitié ouvert au fond de la pièce. À l’intérieur, un canard en plastique jaune semble vous attendre. Sous le canard, un numéro mystérieux est gravé.")
+                ]
+                self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
             else:
                 return self.main_player.move(self.places["Souflis Forest"])
 
@@ -230,7 +244,7 @@ class Game:
                     dialog.dialog(naration)
 
                     #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
-                    self.main_player.inventory.append(Equipable(**self.artefact["Ecran du Mac"]))
+                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Ecran du Mac"]))
 
                     #Retour devant le Domaine des Souflis
                     self.main_player.move(self.places["Souflis Forest"])
@@ -290,7 +304,7 @@ class Game:
                     if not combat:
                         return self.main_player.move(self.places["Souflis Forest"])
 
-                    self.main_player.inventory.append(Equipable(**self.artefact["Jeu de cartes"]))
+                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -327,7 +341,7 @@ class Game:
 
                     if not combat:
                         return self.main_player.move(self.places["Souflis Forest"])
-                    self.main_player.inventory.append(Equipable(**self.artefact["Maxi Phô Beuf"]))
+                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Beuf"]))
                     self.main_player.move(self.places["Souflis Forest"])
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -881,6 +895,16 @@ class Player(Entity):
         else:
             dialog.naration(f"L'item à l'index {item_index} n'est pas dans votre inventaire.")
             return False
+    
+    def add_item_to_inventory(self, item):
+        """
+        Ajoute un objet à l'inventaire du joueur.
+        
+        Args:
+            item (Item): L'objet à ajouter.
+        """
+        self.inventory.append(item)
+        dialog.naration(f"{self.name} a obtenu {item.name}")
 
     def interact_with_inventory(self, combat_mode=False):
         """
@@ -1104,11 +1128,11 @@ class Combat:
 
                 drop_items = self.opponent.calculate_drops()
                 for item in drop_items:
-                    self.player.inventory.append(item)
+                    self.player.add_item_to_inventory(item)
 
             amount_xp = 20 * self.opponent.level
 
-            dialog.naration(f"Le combat est terminé !\nVous avez vaincu {self.opponent.name} et gagné {amount_xp} XP. Vous avez trouvé {drop_items}.\nIl vous manque {self.player.xp_calculation_to_level_up() - self.player.xp} XP pour monter de niveau.")
+            dialog.naration(f"Le combat est terminé !\nVous avez vaincu {self.opponent.name} et gagné {amount_xp} XP.\nIl vous manque {self.player.xp_calculation_to_level_up() - self.player.xp} XP pour monter de niveau.")
 
             self.player.add_xp(amount_xp)
             self.handle_attack_drops()
