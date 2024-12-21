@@ -699,7 +699,7 @@ class Entity:
         if type(target) is Player:
             attack_chosen = random.choice(self.attack_list)
         elif type(target) is Monster:
-            choices = "\n".join([f"{i} - {attack.name}" for i, attack in enumerate(self.attack_list)])
+            choices = "\n".join([f"{i} - {attack.name} : {attack.damage + self.stat["attack"]}" for i, attack in enumerate(self.attack_list)])
             attack_chosen = self.attack_list[int(Prompt.ask(f"Choisissez votre attaque :\n{choices}\n", choices=[str(i) for i in range(len(self.attack_list))]))]
 
         dialog.naration(f"{self.name} utilise {attack_chosen.name}. \"{attack_chosen.battle_cry}\"")
