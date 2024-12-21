@@ -133,68 +133,80 @@ class Game:
 
         #Le joueur arrive devant la Foire aux Illusions perdues
         def la_foire_aux_illusions_perdues_interaction(place):
-            dialog = [
-                ("-", "Après avoir quitté la dense et mystérieuse Forêt des Souflis, vous arrivez sur un sentier escarpé."),
-                ("-", "En contrebas, un étrange spectacle attire votre attention : un lieu qui ressemble à une fête foraine, bruyant et lumineux, plein de mouvement. Intrigué, vous descendez le sentier sinueux, curieux d'explorer cet endroit qui semble détonner dans cette nature sauvage."),
-                ("-", "Mais plus vous approchez, plus les détails vous troublent : la 'fête foraine' semble minuscule comparée à ce que vous aviez vu de loin. Quelques tentes délabrées, des attractions à moitié effondrées, et une ambiance bien plus lugubre qu'invitante. Vous ressentez un frisson désagréable."),
-                ("-", "Soudain, une vieille femme surgit de l'ombre et vous agrippe le bras avec une poigne étonnamment ferme pour son âge."),
-                ("Vieille Femme", "Alors, jeune âme téméraire… que fais-tu ici, perdu au milieu de nulle part ?"),
-                ("Vous", "Je me suis égaré après avoir quitté la Forêt des Souflis."),
-                ("Vieille Femme", "Oh, comme c'est mignon. Mais tu as de la chance d'être tombé sur moi, car je peux t'aider. Cependant, tout a un prix ici... Je vais te proposer des objets et tu devras en choisir un."),
-                ("Vieille Femme", "Chacun de ces objets a des avantages uniques pour la suite de ton aventure. Mais choisis bien, car tu ne pourras jamais revenir en arrière.")
-            ]
-
-            # dialog.dialog(naration)
-            #La voyante demande au joueur de choisir son malus
-            choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d'oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
-            monster = Monster(**self.monsters["Kevin"])
+            #Menu de navigation de la Foire aux Illusions Perdues
+            choice = Prompt.ask("Choices :\n1 - Interact with the current zone\n2 - Open the inventory\n3 - Go to the south (Souflis Forest)\n", choices=["1", "2", "3"])
             match choice:
-                #Le boss vole 20 PV au joueur
                 case "1":
-                    monster.stat["health"] += 20
-                    self.main_player.stat["health"] -= 20
-                #Le boss vole 20 d'attaque au joueur
+                    naration = [
+                        ("-", "Après avoir quitté la dense et mystérieuse Forêt des Souflis, vous arrivez sur un sentier escarpé."),
+                        ("-", "En contrebas, un étrange spectacle attire votre attention : un lieu qui ressemble à une fête foraine, bruyant et lumineux, plein de mouvement. Intrigué, vous descendez le sentier sinueux, curieux d'explorer cet endroit qui semble détonner dans cette nature sauvage."),
+                        ("-", "Mais plus vous approchez, plus les détails vous troublent : la 'fête foraine' semble minuscule comparée à ce que vous aviez vu de loin. Quelques tentes délabrées, des attractions à moitié effondrées, et une ambiance bien plus lugubre qu'invitante. Vous ressentez un frisson désagréable."),
+                        ("-", "Soudain, une vieille femme surgit de l'ombre et vous agrippe le bras avec une poigne étonnamment ferme pour son âge."),
+                        ("Vieille Femme", "Alors, jeune âme téméraire… que fais-tu ici, perdu au milieu de nulle part ?"),
+                        ("Vous", "Je me suis égaré après avoir quitté la Forêt des Souflis."),
+                        ("Vieille Femme", "Oh, comme c'est mignon. Mais tu as de la chance d'être tombé sur moi, car je peux t'aider. Cependant, tout a un prix ici... Je vais te proposer des objets et tu devras en choisir un."),
+                        ("Vieille Femme", "Chacun de ces objets a des avantages uniques pour la suite de ton aventure. Mais choisis bien, car tu ne pourras jamais revenir en arrière.")
+                    ]
+
+                    dialog.dialog(naration)
+                    #La voyante demande au joueur de choisir son malus
+                    choice = Prompt.ask("Choisissez un objet :\n1 - Les boucles d'oreilles de la mère de Mathieu\n2 - Le bonnet légendaire de Laurent\n3 - Un orbe magique scintillant\n", choices=["1","2","3"])
+                    monster = Monster(**self.monsters["Kevin"])
+                    match choice:
+                        #Le boss vole 20 PV au joueur
+                        case "1":
+                            monster.stat["health"] += 20
+                            self.main_player.stat["health"] -= 20
+                        #Le boss vole 20 d'attaque au joueur
+                        case "2":
+                            monster.stat["defense"] += 20
+                            self.main_player.stat["attack"] -= 20
+                        #Le boss vole 20 de défense au joueur
+                        case "3":
+                            monster.stat["defense"] += 20
+                            self.main_player.stat["defense"] -= 20
+                        case _:
+                            pass
+
+                    naration = [
+                        ("-", "Vous hésitez, mais finissez par faire un choix. La vieille femme esquisse un sourire énigmatique avant de disparaître dans un nuage de fumée."),
+                        ("-", "Une fois la femme disparue, vous ressentez un étrange frisson. En fouillant votre inventaire, vous réalisez que l'objet choisi n'est pas là. Pire encore, vous sentez une partie de votre force vous quitter. Les statistiques que vous venez de perdre semblent avoir été volatilisées dans l'air… ou transférées à quelqu'un d'autre."),
+                        ("-", "Malgré cette expérience troublante, vous continuez votre chemin et entrez dans ce qui reste de la fête foraine. Mais l'ambiance y est complètement différente de ce que vous aviez perçu de loin : tout est inerte, silencieux. Plus un bruit, plus un mouvement. Les lumières des attractions vacillent, les ombres dansent, et un sentiment d'abandon vous envahit. Vous frissonnez à nouveau."),
+                        ("-", "Une lumière vive attire votre attention. Vous vous retournez et découvrez une grande structure, effrayante et imposante : le Palais des Glaces. Le bâtiment semble presque vivant, et une énergie sinistre s'en dégage. Vous comprenez que c'est votre seule option pour avancer. Résolu, vous pénétrez dans ce lieu étrange, vos pas résonnant dans un silence oppressant."),
+                        ("-", "L'intérieur est encore plus déroutant : des miroirs déformants renvoient des images grotesques et inquiétantes de vous-même. Chaque reflet semble amplifié, chaque pas résonne comme un coup de tonnerre. Alors que vous progressez dans ce labyrinthe brillant et oppressant, un rire lointain résonne soudain. Il est à la fois malveillant et amusé, semblant venir de partout à la fois."),
+                        ("???", "Bienvenue dans MON domaine, intrus."),
+                        ("-", "Vous tournez frénétiquement la tête, cherchant l'origine de cette voix, mais tout ce que vous voyez, ce sont des ombres mouvantes et des éclats de lumière. Soudain, une silhouette bondit devant vous. Un homme masqué, vêtu comme un clown sinistre, avec un immense marteau posé nonchalamment sur son épaule."),
+                        ("Kévin", "Tu crois pouvoir défier le Souverain des Rires Perdus ? HAHAHA ! Prépare-toi à souffrir, petit joueur. Ce lieu est mon royaume, et ici, je fixe les règles."),
+                        ("-", "Kévin brandit son marteau et se jette sur vous. Vous esquivez de justesse et comprenez que vous n'avez pas d'autre choix que de vous battre.")
+                    ]
+
+                    dialog.dialog(naration)
+
+                    #Lancement du Combat contre Kévin, le Boss du donjon
+                    combat = Combat(self.main_player, monster)
+                    combat.start()
+
+                    #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
+                    if combat:
+                        naration = [ 
+                            ("-", "Kévin s'écroule au sol, haletant, son masque tombant pour révéler un visage fatigué mais amusé."),
+                            ("Kevin", "Hahaha… ça faisait longtemps que je n'avais pas perdu… Bien joué, étranger. Tu as prouvé ta valeur. Prends ce trésor, il pourrait t'être utile."),
+                            ("-", "Vous découvrez un coffre à moitié ouvert au fond de la pièce. À l'intérieur, un canard en plastique jaune semble vous attendre. Sous le canard, un numéro mystérieux est gravé.")
+                        ]
+                        dialog.dialog(naration)
+                        self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
+                    else:
+                        return place.interact(self.main_player)
+
+                    #Retour à l'entrée de la Foire // Ouvre le menu d'intéraction
+                    place.interact(self.main_player)
                 case "2":
-                    monster.stat["defense"] += 20
-                    self.main_player.stat["attack"] -= 20
-                #Le boss vole 20 de défense au joueur
+                    self.main_player.interact_with_inventory()
+                    place.interact(self.main_player)
                 case "3":
-                    monster.stat["defense"] += 20
-                    self.main_player.stat["defense"] -= 20
+                    self.main_player.move(self.places["Souflis Forest"])
                 case _:
                     pass
-
-            naration = [
-                ("-", "Vous hésitez, mais finissez par faire un choix. La vieille femme esquisse un sourire énigmatique avant de disparaître dans un nuage de fumée."),
-                ("-", "Une fois la femme disparue, vous ressentez un étrange frisson. En fouillant votre inventaire, vous réalisez que l'objet choisi n'est pas là. Pire encore, vous sentez une partie de votre force vous quitter. Les statistiques que vous venez de perdre semblent avoir été volatilisées dans l'air… ou transférées à quelqu'un d'autre."),
-                ("-", "Malgré cette expérience troublante, vous continuez votre chemin et entrez dans ce qui reste de la fête foraine. Mais l'ambiance y est complètement différente de ce que vous aviez perçu de loin : tout est inerte, silencieux. Plus un bruit, plus un mouvement. Les lumières des attractions vacillent, les ombres dansent, et un sentiment d'abandon vous envahit. Vous frissonnez à nouveau."),
-                ("-", "Une lumière vive attire votre attention. Vous vous retournez et découvrez une grande structure, effrayante et imposante : le Palais des Glaces. Le bâtiment semble presque vivant, et une énergie sinistre s'en dégage. Vous comprenez que c'est votre seule option pour avancer. Résolu, vous pénétrez dans ce lieu étrange, vos pas résonnant dans un silence oppressant."),
-                ("-", "L'intérieur est encore plus déroutant : des miroirs déformants renvoient des images grotesques et inquiétantes de vous-même. Chaque reflet semble amplifié, chaque pas résonne comme un coup de tonnerre. Alors que vous progressez dans ce labyrinthe brillant et oppressant, un rire lointain résonne soudain. Il est à la fois malveillant et amusé, semblant venir de partout à la fois."),
-                ("???", "Bienvenue dans MON domaine, intrus."),
-                ("-", "Vous tournez frénétiquement la tête, cherchant l'origine de cette voix, mais tout ce que vous voyez, ce sont des ombres mouvantes et des éclats de lumière. Soudain, une silhouette bondit devant vous. Un homme masqué, vêtu comme un clown sinistre, avec un immense marteau posé nonchalamment sur son épaule."),
-                ("Kévin", "Tu crois pouvoir défier le Souverain des Rires Perdus ? HAHAHA ! Prépare-toi à souffrir, petit joueur. Ce lieu est mon royaume, et ici, je fixe les règles."),
-                ("-", "Kévin brandit son marteau et se jette sur vous. Vous esquivez de justesse et comprenez que vous n'avez pas d'autre choix que de vous battre.")
-            ]
-
-            dialog.dialog(naration)
-
-            #Lancement du Combat contre Kévin, le Boss du donjon
-            combat = Combat(self.main_player, monster)
-            combat.start()
-
-            #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
-            if combat:
-                dialog = [ 
-                    ("-", "Kévin s’écroule au sol, haletant, son masque tombant pour révéler un visage fatigué mais amusé."),
-                    ("Kevin", "Hahaha… ça faisait longtemps que je n’avais pas perdu… Bien joué, étranger. Tu as prouvé ta valeur. Prends ce trésor, il pourrait t’être utile."),
-                    ("-", "Vous découvrez un coffre à moitié ouvert au fond de la pièce. À l’intérieur, un canard en plastique jaune semble vous attendre. Sous le canard, un numéro mystérieux est gravé.")
-                ]
-                self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
-            else:
-                return self.main_player.move(self.places["Souflis Forest"])
-
-            #Retour à l'entrée de la Foire // Ouvre le menu d'intéraction
-            self.places["La Foire aux Illusions Perduesperd"].interact(self.main_player)
 
         #Le joueur arrive devant le Domaine des Souflis
         def domaine_des_souflis_interaction(place):
@@ -217,7 +229,7 @@ class Game:
                     combat.start()
 
                     if not combat:
-                        return self.main_player.move(self.places["Souflis Forest"])
+                        return place.interact(self.main_player)
 
                     naration = [
                         ("-", f"Anjalou, en plein combat, esquive avec grâce avant de s'arrêter un instant pour polir son crâne. Puis, d'un coup, {self.main_player.name} réussit à le déstabiliser avec un coup décisif. Anjalou tombe à genoux, un dernier éclat de lumière se reflétant sur son crâne brillant."),
@@ -233,7 +245,7 @@ class Game:
                     combat.start()
 
                     if not combat:
-                        return self.main_player.move(self.places["Souflis Forest"])
+                        return place.interact(self.main_player)
 
                     naration = [
                         ("-", f"Après une bataille intense, Mathieu se tient encore debout, son corps gravement blessé, mais une lueur de défi dans ses yeux. Il soulève son bras et regarde {self.main_player.name} avec une expression résolue."),
@@ -244,10 +256,10 @@ class Game:
                     dialog.dialog(naration)
 
                     #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
-                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Ecran du Mac"]))
+                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Écran du Mac"]))
 
                     #Retour devant le Domaine des Souflis
-                    self.main_player.move(self.places["Souflis Forest"])
+                    place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
                     place.interact(self.main_player)
@@ -302,7 +314,7 @@ class Game:
                     combat.start()
 
                     if not combat:
-                        return self.main_player.move(self.places["Souflis Forest"])
+                        return place.interact(self.main_player)
 
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
                     place.interact(self.main_player)
@@ -340,9 +352,9 @@ class Game:
                     combat.start()
 
                     if not combat:
-                        return self.main_player.move(self.places["Souflis Forest"])
-                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Beuf"]))
-                    self.main_player.move(self.places["Souflis Forest"])
+                        return place.interact(self.main_player)
+                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
+                    place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
                     place.interact(self.main_player)
@@ -647,7 +659,7 @@ class Game:
         system("clear")
         self.main_player = Player(
             name=player_name,
-            level=1,
+            level=110,
             xp=0,
             stats={"health": 100, "attack": 10, "defense": 5},
             attack_list=[Attack(**self.attacks["Amel 1"]), Attack(**self.attacks["Colère des 1000 Âmes"]),Attack(**self.attacks["Amel 2"])],
