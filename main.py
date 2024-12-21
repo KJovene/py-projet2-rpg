@@ -791,11 +791,16 @@ class Entity:
             choices = "\n".join([f"{i} - {attack.name} : {attack.damage + self.stat["attack"]}" for i, attack in enumerate(self.attack_list)])
             attack_chosen = self.attack_list[int(Prompt.ask(f"Choisissez votre attaque :\n{choices}\n", choices=[str(i) for i in range(len(self.attack_list))]))]
 
-        dialog.naration(f"{self.name} utilise {attack_chosen.name}. \"{attack_chosen.battle_cry}\"")
-        damage = max(attack_chosen.damage + self.stat["attack"] - self.stat["defense"], 0)
-        target.change_stats(-damage, "health")
-        attack_chosen.durability -= 1
-        return f"{self.name} attaque {target.name} et inflige {damage}."
+        if attack_chosen.durability > 0 or attack_chosen.max_durability == -1:
+            dialog.naration(f"{self.name} utilise {attack_chosen.name}. \"{attack_chosen.battle_cry}\"")
+            damage = max(attack_chosen.damage + self.stat["attack"] - target.stat["defense"], 0)
+            target.change_stats(-damage, "health")
+            if attack_chosen.max_durability != -1:
+                attack_chosen.durability -= 1
+            dialog.naration(f"{self.name} attaque {target.name} et inflige {damage}.")
+        else:
+            dialog.naration(f"{self.name} n'a plus de durabilité pour {attack_chosen.name}")
+            return self.attack(target)
 
     def change_stats(self, amount: int, damage_type: str) -> None:
         """
@@ -1244,9 +1249,10 @@ class Combat:
             # PEUT ETRE TP AU SPAWN
 
     def reset_attack_durability(self):
-        # Reset attack durability for the player
+        # Reset la durabilité de l'attaque
         for attack in self.player.attack_list:
-            attack.durability = attack.max_durability
+            if attack.max_durability != -1:
+                attack.durability = attack.max_durability
 
     def handle_attack_drops(self):
         """
@@ -1385,7 +1391,7 @@ class Attack:
         self.description = description
         self.battle_cry = battle_cry
         self.durability = durability
-        self.max_durability = durability
+        self.max_durability = durability if durability != -1 else -1
         self.damage = damage
         self.drop_rate = drop_rate
 
