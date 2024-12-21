@@ -21,6 +21,7 @@ class Game:
         self.main_player = Player("SAPAL", 0, 0, {}, [], None)
 
 
+
         # Le joueur spawn dans le Tutoriel du jeu
         def spawn_interaction(place):
             naration = [
@@ -364,7 +365,44 @@ class Game:
                     pass
 
         def hetic_interaction(place):
-            self.main_player.move(self.places["Souflis Forest"])
+          choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
+
+          match choice:
+          case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+              #Arrivée à Hetic
+            naration = [
+                ("-", "Vous arrivez au bout du long chemin vous menant à la sombre façade d'un batiment."),
+                ("-", "Vous observez un grand portail, puis prenant votre courage à deux mains, vous utilisez vos forces pour ouvir cette porte. Vous avancez dans une grande cour rempli de brouillard et apercevez un silouhette."),
+                ("Alexandre","Eh bien...on dirait que les singes et les moines ne sont plus aussi féroce qu'avant"),
+                ("-", "Cet entrepreneur vous analyse entièrement, et semble se préparer à agir"),
+                ("Alexandre", "Allez, finis de jouer. Tu vas payer pour toutes les conférences que tu as ratées, y'avait pas un monde où tu n'y étais pas.")
+              ]
+            dialog.dialog(naration)
+            combat = Combat(self.main_player, Monster(**self.monsters["Alexandre"]))
+            combat.start()
+            naration = [
+                ("Alexandre", "Mais...coment un mortel peut détenir autant de puissance? Tu as donc réuni tous les outils pour trouver une alternance?"),
+                ("-", "Votre combat bat son plein contre le grand chef heticien. Soudain une brume épaisse apparaît, et une silouhette encore plus grande apparait. Vous sentez une nouvelle présence dans la cour..."),
+                ("-", "Alexandre disparait peu à peu, et vous apercevez un homme vêtu d'un superbe costume bleu."),
+                ("Nabil", "Sacrilège, je ne peux donc plus compter sur ce bon vieux Alexandre. EH OUI ! C'est bien moi Nabil Lmrabet, celui qui tire les ficelles derrière tout ce qui se passe dans ce monde. Aller humain, montre moi tout ce que ton voyage t'as appris, ou péris dans les entrailles de mon école.")
+            ]
+            dialog.dialog(naration)
+            combat = Combat(self.main_player, Monster(**self.monsters["Nabil"]))
+            combat.start()
+            
+            if combat:
+              pass #FIN DU JEU
+            else:
+              return place.interact(self.main_player)
+              
+          case "2":
+              self.main_player.interact_with_inventory()
+              place.interact(self.main_player)
+          case "3":
+              self.main_player.move(self.places["Souflis Forest"])
+          case _:
+              pass
+
 
         # Initialisation des places sans les connexions
         spawn = Place(name="Spawn", description="Le point de départ du joueur", monsters=[], interaction=spawn_interaction)
@@ -644,7 +682,31 @@ class Game:
                 ],
                 "dropable_items": [(Item(**self.items["Clé du temple"], drop_rate=100))],
                 "boss": True
-            }
+            },
+          "Alexandre": {
+              "name": "Alexandre",
+              "description": "Directeur d'HETIC",
+              "level": 30,
+              "attack_list": [
+                  Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
+                  Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
+                  Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
+              ],
+            "dropable_items": [],
+            "boss": True
+          },
+          "Nabil": {
+              "name": "Nabil",
+              "description": "Le porte parôle",
+              "level": 35,
+              "attack_list": [
+                  Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
+                  Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
+                  Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
+              ],
+            "dropable_items": [],
+            "boss": True
+          }
         }
 
 
@@ -1133,7 +1195,6 @@ class Combat:
         """
         #Si l'adversaire est à 0 PV
         if self.opponent.stat["health"] <= 0 :
-
             #Drop du monstre, dropable_items = la liste des drops du monstre / Appel de la méthode self.calculate_drops de la class Entity
             drop_items = []
             if self.opponent.dropable_items:
@@ -1152,7 +1213,6 @@ class Combat:
             return True
 
         #Si le Player est à 0 PV
-
         elif self.player.stat["health"] <= 0 :
 
             #Le player perd le combat, retour à la base
