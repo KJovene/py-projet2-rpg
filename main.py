@@ -368,40 +368,49 @@ class Game:
           choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
 
           match choice:
-          case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
-              #Arrivée à Hetic
-            naration = [
-                ("-", "Vous arrivez au bout du long chemin vous menant à la sombre façade d'un batiment."),
-                ("-", "Vous observez un grand portail, puis prenant votre courage à deux mains, vous utilisez vos forces pour ouvir cette porte. Vous avancez dans une grande cour rempli de brouillard et apercevez un silouhette."),
-                ("Alexandre","Eh bien...on dirait que les singes et les moines ne sont plus aussi féroce qu'avant"),
-                ("-", "Cet entrepreneur vous analyse entièrement, et semble se préparer à agir"),
-                ("Alexandre", "Allez, finis de jouer. Tu vas payer pour toutes les conférences que tu as ratées, y'avait pas un monde où tu n'y étais pas.")
-              ]
-            dialog.dialog(naration)
-            combat = Combat(self.main_player, Monster(**self.monsters["Alexandre"]))
-            combat.start()
-            naration = [
-                ("Alexandre", "Mais...coment un mortel peut détenir autant de puissance? Tu as donc réuni tous les outils pour trouver une alternance?"),
-                ("-", "Votre combat bat son plein contre le grand chef heticien. Soudain une brume épaisse apparaît, et une silouhette encore plus grande apparait. Vous sentez une nouvelle présence dans la cour..."),
-                ("-", "Alexandre disparait peu à peu, et vous apercevez un homme vêtu d'un superbe costume bleu."),
-                ("Nabil", "Sacrilège, je ne peux donc plus compter sur ce bon vieux Alexandre. EH OUI ! C'est bien moi Nabil Lmrabet, celui qui tire les ficelles derrière tout ce qui se passe dans ce monde. Aller humain, montre moi tout ce que ton voyage t'as appris, ou péris dans les entrailles de mon école.")
-            ]
-            dialog.dialog(naration)
-            combat = Combat(self.main_player, Monster(**self.monsters["Nabil"]))
-            combat.start()
-            
-            if combat:
-              pass #FIN DU JEU
-            else:
-              return place.interact(self.main_player)
-              
-          case "2":
-              self.main_player.interact_with_inventory()
-              place.interact(self.main_player)
-          case "3":
-              self.main_player.move(self.places["Souflis Forest"])
-          case _:
-              pass
+            case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
+                #Arrivée à Hetic
+                naration = [
+                    ("-", "Vous arrivez au bout du long chemin vous menant à la sombre façade d'un batiment."),
+                    ("-", "Vous observez un grand portail, puis prenant votre courage à deux mains, vous utilisez vos forces pour ouvir cette porte. Vous avancez dans une grande cour rempli de brouillard et apercevez un silouhette."),
+                    ("Alexandre","Eh bien...on dirait que les singes et les moines ne sont plus aussi féroce qu'avant"),
+                    ("-", "Cet entrepreneur vous analyse entièrement, et semble se préparer à agir"),
+                    ("Alexandre", "Allez, finis de jouer. Tu vas payer pour toutes les conférences que tu as ratées, y'avait pas un monde où tu n'y étais pas.")
+                ]
+                dialog.dialog(naration)
+                combat = Combat(self.main_player, Monster(**self.monsters["Alexandre"]))
+                combat.start()
+                naration = [
+                    ("Alexandre", "Mais...coment un mortel peut détenir autant de puissance? Tu as donc réuni tous les outils pour trouver une alternance?"),
+                    ("-", "Votre combat bat son plein contre le grand chef heticien. Soudain une brume épaisse apparaît, et une silouhette encore plus grande apparait. Vous sentez une nouvelle présence dans la cour..."),
+                    ("-", "Alexandre disparait peu à peu, et vous apercevez un homme vêtu d'un superbe costume bleu."),
+                    ("Nabil", "Sacrilège, je ne peux donc plus compter sur ce bon vieux Alexandre. EH OUI ! C'est bien moi Nabil Lmrabet, celui qui tire les ficelles derrière tout ce qui se passe dans ce monde. Aller humain, montre moi tout ce que ton voyage t'as appris, ou péris dans les entrailles de mon école.")
+                ]
+                dialog.dialog(naration)
+                combat = Combat(self.main_player, Monster(**self.monsters["Nabil"]))
+                combat.start()
+                
+                if combat:
+                    naration = [
+                        ("Nabil", "Impossible... Comment as-tu pu me vaincre ?!"),
+                        ("-", "Vous regardez autour de vous, le silence règne. Vous avez réussi. Vous avez vaincu tous les obstacles et triomphé de tous les ennemis."),
+                        ("-", "Vous ressentez un mélange de soulagement et de fierté. Vous avez accompli votre quête."),
+                        ("-", "Alors que vous vous apprêtez à quitter les lieux, une lumière éclatante vous entoure. Vous êtes téléporté dans un endroit familier."),
+                        ("Loic", "Félicitations, {self.main_player.name}. Vous avez réussi là où tant d'autres ont échoué. Vous êtes un véritable héros."),
+                        ("-", "Vous souriez, sachant que votre aventure est terminée, mais que de nouvelles quêtes vous attendent peut-être à l'avenir."),
+                    ]
+                    dialog.dialog(naration)
+                    return self.end()
+                else:
+                    return place.interact(self.main_player)
+                
+            case "2":
+                self.main_player.interact_with_inventory()
+                place.interact(self.main_player)
+            case "3":
+                self.main_player.move(self.places["Souflis Forest"])
+            case _:
+                pass
 
 
         # Initialisation des places sans les connexions
@@ -730,6 +739,12 @@ class Game:
         )
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
         self.main_player.place.interact(self.main_player)
+
+    def end(self):
+        """
+        Termine le jeu en affichant un message de fin.
+        """
+        console.print("[bold green]Merci d'avoir joué ![/bold green]")
 
 
 class Entity:
