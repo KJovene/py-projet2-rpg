@@ -964,7 +964,7 @@ class Player(Entity):
         dialog.naration(f"Vous venez de passer au niveau {self.level} !")
         level_up_stats_text = []
         for stat, value in self.stat.items():
-            increase = int(value * 0.1)
+            increase = int(value * 0.2)
             new_stat_value = value + increase
             level_up_stats_text.append(f"{stat.capitalize()} : {self.stat[stat]} -> {new_stat_value}")
             self.stat[stat] = new_stat_value
