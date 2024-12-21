@@ -31,7 +31,7 @@ class Game:
                 ("Vous, déboussolé", "Où... Où suis-je..? Et qui êtes-vous..?"),
                 ("...", "Ah ! J'ai bien cru que vous étiez mort !"),
                 ("Vous, lentement", "Mais qui..."),
-                ("...", "Chut ! Laissez-moi me présenter, je me nomme Loic et je serai ton guide tout au long de cette aventure !"), #On tutoie ou on vouvoie ?
+                ("...", "Chut ! Laissez-moi me présenter, je me nomme Loic et je serai ton guide tout au long de cette aventure !"),
                 ("Vous, encore confus", "Une aventure ? Mais de quoi parlez-vous ?"),
                 ("Loic, avec un sourire énigmatique", f"Ah, {self.main_player.name} ! Vous avez tant à découvrir. Vous vous trouvez dans un monde extraordinaire, rempli de magie et de mystères."),
                 ("Vous, en vous redressant lentement", "Je ne comprends pas... Comment suis-je arrivé ici ?"),
@@ -57,8 +57,8 @@ class Game:
                 ["-", "Soudain, un mouvement furtif attire votre attention. Une petite créature, mi-lapin, mi-reptile, bondit hors d'un buisson. Elle vous fixe avec des yeux curieux."],
                 ["Loic", f"Regardez, {self.main_player.name}. La nature vous offre déjà votre premier défi. Ces créatures, les 'Écho-lapins', sont faibles, mais rapides. Attrapez-en un pour commencer. Vous devez vous familiariser avec le maniement de vos compétences."],
                 ["Vous", "Mais… je ne sais même pas comment faire ça."],
-                ["Loic (riant doucement)", "C'est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire - un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."], #On garde ce script ? Il n'y a plus de bâtons 
-                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l'intérieur. Vous le saisissez avec hésitation."], #Pareil pour le bâton
+                ["Loic (riant doucement)", "C'est pourquoi je suis là. Regardez dans votre sac. Vous y trouverez une arme rudimentaire - un bâton, mais suffisant pour débuter. Maintenant, concentrez-vous."],
+                ["-", "Vous ouvrez un petit sac en toile suspendu à votre ceinture. Un bâton, usé mais solide, repose à l'intérieur. Vous le saisissez avec hésitation."],
                 ["Loic", "Bien. Maintenant, tenez-vous prêt. Ces créatures sont petites, mais elles peuvent mordre si vous n'êtes pas rapide. Concentrez votre énergie sur leur mouvement… et frappez !"],
                 ["-", "Un tutoriel interactif commence. Vous apprenez à utiliser les commandes de base pour attaquer."],
             ]
@@ -74,7 +74,7 @@ class Game:
                 ["Loic", f"Très bien, {self.main_player.name}. Chaque créature ici vous offre une leçon. Continuez ainsi, et bientôt, vous serez prêt à affronter bien plus que des lapins."],
                 ["-", "Alors que vous continuez votre exploration, Loic vous explique les mécaniques du jeu."],
                 ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n1 - Expérience et Niveaux : Chaque créature vaincue vous rapporte de l'expérience. Plus vous en accumulez, plus vous montez en niveau, débloquant de nouvelles compétences et renforçant vos capacités."],
-                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."], #Script à changer aussi
+                ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n2 - Équipement : Vous trouverez des matériaux dans les environs. Utilisez-les pour améliorer votre arme ou vous soigner."],
                 ["Loic", "Dans cette forêt, vous allez apprendre les fondamentaux. Voici ce que vous devez savoir pour progresser :\n3 - Quête principale : Vous devrez récupérer 4 clés avant de pouvoir vous confronter au boss final se trouvant a HETIC."],
             ]
             dialog.dialog(naration)
@@ -242,7 +242,7 @@ class Game:
                 case _:
                     pass
 
-        def le_casino_du_cartier_des_plaisirs_interaction(place): #Toujours changer le nom de cette zone
+        def le_casino_zoologique_interaction(place): #Toujours changer le nom de cette zone
             choice = Prompt.ask("Choices :\n1 - Interact with the curent zone\n2 - Open the inventory\n3 - Go to the North (La Foret des Souflis)\n", choices=["1","2","3"])
             match choice:
                 case "1": # Lancement d'un combat + re envoi de l'interface a la fin du combat'
@@ -345,7 +345,7 @@ class Game:
         souflis_forest = Place(name="Souflis Forest", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=souflis_forest_interaction)
         la_foire_aux_illusions_perdues = Place(name="La Foire aux Illusions Perdues", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=la_foire_aux_illusions_perdues_interaction)
         domaine_des_souflis = Place(name="Le domaine des Souflis", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=domaine_des_souflis_interaction)
-        casino = Place(name="Le Casino Zoologique", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_du_cartier_des_plaisirs_interaction)
+        casino = Place(name="Le Casino Zoologique", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_casino_zoologique_interaction)
         temple = Place(name="Le temple des 1 000 moines", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=le_temple_des_1000_moines_interaction)
         hetic = Place(name="Hetic", description="Un endroit où vous pouvez trouver des ressources", monsters=[], interaction=hetic_interaction)
         # Connexions entre les places
@@ -368,7 +368,7 @@ class Game:
         souflis_forest.interaction = souflis_forest_interaction
         la_foire_aux_illusions_perdues.interaction = la_foire_aux_illusions_perdues_interaction
         domaine_des_souflis.interaction = domaine_des_souflis_interaction
-        casino.interaction = le_casino_du_cartier_des_plaisirs_interaction
+        casino.interaction = le_casino_zoologique_interaction
         temple.interaction = le_temple_des_1000_moines_interaction
         hetic.interaction = hetic_interaction
 
@@ -803,9 +803,9 @@ class Player(Entity):
             equipped_items (list): La liste des objets équipés du joueur.
         """
         stats = {
-            "health": 100 + 15 * level,
-            "attack": 10 + 3 * level,
-            "defense": 5 + 2 * level
+            "health": 100 + 20 * level,
+            "attack": 10 + 2 * level,
+            "defense": 5 + 1 * level
         }
         super().__init__(name, "", level, xp, stats, attack_list)
         self.inventory = inventory
@@ -947,21 +947,6 @@ class Player(Entity):
         dialog.naration("\n".join(level_up_stats_text))
 
         self.max_hp = self.stat["health"]
-
-        # Vérifie les nouvelles attaques à apprendre
-        self.check_new_attacks()
-
-    def check_new_attacks(self):
-        """
-        Vérifie si le joueur peut apprendre de nouvelles attaques en fonction de son niveau.
-        """
-        new_attacks = {
-            5: Attack(name="Coup de poing", description="Un coup de poing puissant", battle_cry="Bam!", durability=100, damage=20),
-            10: Attack(name="Coup de pied", description="Un coup de pied rapide", battle_cry="Pow!", durability=100, damage=30),
-            15: Attack(name="Coup de tête", description="Un coup de tête dévastateur", battle_cry="Wham!", durability=100, damage=40)
-        }
-        if self.level in new_attacks:
-            self.gain_attack(new_attacks[self.level])
 
     def gain_attack(self, new_attack):
         """
@@ -1124,18 +1109,6 @@ class Combat:
             amount_xp = 20 * self.opponent.level
 
             dialog.naration(f"Le combat est terminé !\nVous avez vaincu {self.opponent.name} et gagné {amount_xp} XP. Vous avez trouvé {drop_items}.\nIl vous manque {self.player.xp_calculation_to_level_up() - self.player.xp} XP pour monter de niveau.")
-            
-            #Ajoute l'xp au héro, 10 * Le niveau du monstre
-            if self.player.level != 10:
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
-                self.player.level_up()
 
             self.player.add_xp(amount_xp)
             self.handle_attack_drops()
@@ -1143,6 +1116,7 @@ class Combat:
             return True
 
         #Si le Player est à 0 PV
+
         elif self.player.stat["health"] <= 0 :
 
             #Le player perd le combat, retour à la base
