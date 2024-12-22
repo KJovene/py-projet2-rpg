@@ -157,6 +157,7 @@ class Game:
                         #Le boss vole 20 PV au joueur
                         case "1":
                             monster.stat["health"] += 20
+                            monster.max_hp += 20
                             self.main_player.stat["health"] -= 20
                         #Le boss vole 20 d'attaque au joueur
                         case "2":
@@ -185,10 +186,10 @@ class Game:
 
                     #Lancement du Combat contre Kévin, le Boss du donjon
                     combat = Combat(self.main_player, monster)
-                    combat.start()
+                    
 
                     #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
-                    if combat:
+                    if combat.start():
                         naration = [ 
                             ("-", "Kévin s'écroule au sol, haletant, son masque tombant pour révéler un visage fatigué mais amusé."),
                             ("Kevin", "Hahaha… ça faisait longtemps que je n'avais pas perdu… Bien joué, étranger. Tu as prouvé ta valeur. Prends ce trésor, il pourrait t'être utile."),
@@ -227,9 +228,9 @@ class Game:
                     dialog.dialog(naration)
                     #Lancement du combat intermédiaire contre Anjalou
                     combat = Combat(self.main_player, Monster(**self.monsters["Anjalou"]))
-                    combat.start()
+                    
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     naration = [
@@ -243,9 +244,8 @@ class Game:
 
                     #Lancement du combat contre le boss du donjon Mathieu
                     combat = Combat(self.main_player, Monster(**self.monsters["Mathieu"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     naration = [
@@ -312,9 +312,8 @@ class Game:
                     dialog.dialog(naration)
 
                     combat = Combat(self.main_player, Monster(**self.monsters["Le Roi Singe"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
@@ -340,8 +339,7 @@ class Game:
                     dialog.dialog(naration)
                     # Jeu du baton contre pour entrer dans le temple
                     stick_game = Stick("Disciple Léo", self.main_player)
-                    stick_game.stick_start()
-                    if not stick_game:
+                    if not stick_game.stick_start():
                         return place.interact(self.main_player)
                     naration = [
                         ("-", "Vous avez réussi à battre Léo dans un jeu de bâton. Il vous adresse un sourire chaleureux et vous invite à entrer dans le temple."),
@@ -355,9 +353,8 @@ class Game:
                 
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
                     place.interact(self.main_player)
@@ -752,7 +749,66 @@ class Game:
         """
         console.print("[bold green]Merci d'avoir joué ![/bold green]")
 
+class Stick:
+    def __init__(self, opponent, player):
+        self.nb_batons = 21
+        self.active_player = random.randint(0, 1) # 0 = opponent, 1 = player
+        self.opponent = opponent
+        self.player = player
+        self.turn_number = 0
+    
+    def stick_start(self):
+        dialog.naration(f"Que le Jeu du Baton Sacré commence !! Tu ne vas jamais rencontrer mon maître je te le garantis !")
+        while self.nb_batons > 0:
+            self.active_player = 1 - self.active_player
+            self.turn()
+            self.leo_chakra()
+        return self.end()
+    
+    def leo_chakra(self):
+            if self.nb_batons == 5:
+                console.print(f"{self.opponent}: Je sens que la pression monte !! je concentre tout mon chakra !!!")
+            elif self.nb_batons == 1 and self.active_player == 1:
+                console.print(f"{self.opponent}: Quoi ???!!! C'est impossible !!! Je ne peux pas perdre !!!")
+    
+    def turn(self):
+        if self.active_player == 0:
+            self.opponent_turn()
+        else:
+            self.turn_number += 1
+            console.print(f"Tour {self.turn_number}") 
+            console.print(f"Le nombre de bâtons restant est de {self.nb_batons}")
+            self.player_turn()
+       
+    def remove(self, batons_retires):
+        if self.nb_batons < batons_retires:
+            dialog.naration("Il n'y a pas assez de bâtons pour retirer autant")
+            return False
+        self.nb_batons -= batons_retires
+        return True
+        
+    def opponent_turn(self):
+        while True:
+            batons_retires = random.randint(1, 3)
+            if self.remove(batons_retires):
+                console.print(f"{self.opponent} a retiré {batons_retires} bâtons")
+                break
 
+    def player_turn(self):
+        while True:
+            batons_retires = int(Prompt.ask("Combien de bâtons voulez-vous retirer ?", choices=["1", "2", "3"]))
+            if self.remove(batons_retires):
+                console.print(f"{self.player.name} a retiré {batons_retires} bâtons")
+                break
+        
+    def end(self):
+        if self.active_player == 1:
+            dialog.naration(f"Vous avez perdu... {self.opponent} a gagné le jeu des battons !")
+            return False
+        else: 
+            dialog.naration(f"La partie est terminée, {self.player.name} a gagné !")
+            return True
+        
 class Entity:
     """
     Représente une entité générique dans le jeu.
@@ -803,7 +859,6 @@ class Entity:
             target.change_stats(-damage, "health")
             if attack_chosen.max_durability != -1:
                 attack_chosen.durability -= 1
-            dialog.naration(f"{self.name} attaque {target.name} et inflige {damage}.")
         else:
             dialog.naration(f"{self.name} n'a plus de durabilité pour {attack_chosen.name}")
             return self.attack(target)
@@ -817,7 +872,7 @@ class Entity:
             damage_type (str): Le type de statistique à modifier (health, attack, defense).
         """
         if damage_type == "health" :
-            new_health = self.stat["health"] + amount
+            new_health = max(self.stat["health"] + amount, 0)
             if new_health > self.max_hp:
                 new_health = self.max_hp
 
@@ -827,13 +882,9 @@ class Entity:
                 dialog.naration(f"La santé de {self.name} augmente de {amount} ({self.stat['health']} -> {new_health})")
             
             self.stat["health"] = new_health
-            self.stat["health"] = max(self.stat["health"], 0)
 
-
-            if self.stat["health"] <= 0:
-                dialog.naration(f"{self.name} est vaincu")
         elif damage_type == "attack" :
-            new_attack = self.stat["attack"] + amount
+            new_attack = max(self.stat["attack"] + amount, 0)
             
             if amount < 0:
                 dialog.naration(f"L'attaque de {self.name} descend de {-amount} ({self.stat['attack']} -> {new_attack})")
@@ -841,9 +892,8 @@ class Entity:
                 dialog.naration(f"L'attaque de {self.name} augmente de {amount} ({self.stat['attack']} -> {new_attack})")
             
             self.stat["attack"] = new_attack
-            self.stat["attack"] = max(self.stat["attack"], 0)
         elif damage_type == "defense" :
-            new_defense = self.stat["defense"] + amount
+            new_defense = max(self.stat["defense"] + amount, 0)
             
             if amount < 0:
                 dialog.naration(f"La défense de {self.name} descend de {-amount} ({self.stat['defense']} -> {new_defense})")
@@ -851,7 +901,6 @@ class Entity:
                 dialog.naration(f"La défense de {self.name} augmente de {amount} ({self.stat['defense']} -> {new_defense})")
             
             self.stat["defense"] = new_defense
-            self.stat["defense"] = max(self.stat["defense"], 0)
 
 class Monster(Entity):
     """
@@ -1140,62 +1189,6 @@ class Place:
         """
         player.display_stats()
         self.interaction(self)
-
-class Stick:
-    def __init__(self, opponent, main_player):
-        self.nb_batons = 21
-        self.active_player = random.randint(0, 1)
-        self.opponent = opponent
-        self.player = main_player
-        self.turn_number = 1
-    
-    def stick_start(self):
-        print(f"Que le Jeu du Baton Sacré commence !! Tu ne vas jamais rencontrer mon maître je te le garantis !")
-        while self.nb_batons > 0:
-            print(f"Le nombre de bâtons restant est de {self.nb_batons}")
-            self.turn()
-            self.leo_chakra()
-            self.active_player = 1 - self.active_player
-        self.end()  
-    
-    def leo_chakra(self):
-            if self.nb_batons == 5:
-                print(f"{self.opponent}: Je sens que la pression monte !! je concentre tout mon chakra !!!")
-            elif self.nb_batons == 1 and self.active_player == 1:
-                print(f"{self.opponent}: Quoi ???!!! C'est impossible !!! Je ne peux pas perdre !!!")
-    
-    def turn(self):
-        if self.active_player == 0:
-            self.turn_number += 1
-            print(f"Tour {self.turn_number}") 
-            self.opponent_turn()
-        else:
-            self.player_turn()
-       
-    def remove(self, batons_retires):
-        if self.nb_batons < batons_retires:
-            print("Il n'y a pas assez de bâtons pour retirer autant")
-            return False
-        self.nb_batons -= batons_retires
-        return True
-        
-    def opponent_turn(self):
-        batons_retires = random.randint(1, 3)
-        if self.remove(batons_retires):
-            print(f"{self.opponent} a retiré {batons_retires} bâtons")
-
-    def player_turn(self):
-        while True:
-            batons_retires = int(Prompt.ask("Combien de bâtons voulez-vous retirer ?", choices=["1", "2", "3"]))
-            if self.remove(batons_retires):
-                print(f"{self.player} a retiré {batons_retires} bâtons")
-                break
-        
-    def end(self):
-        if self.active_player == 0:
-            print(f"La partie est terminée, {self.opponent} a gagné !")
-        else: 
-            print(f"La partie est terminée, {self.player} a gagné !")
 
     
 class Combat:
