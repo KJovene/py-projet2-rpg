@@ -1,5 +1,6 @@
 from rich.console import Console
 from rich.prompt import Prompt
+from classes.Stick import Stick
 import random
 from os import system
 
@@ -166,6 +167,7 @@ class Game:
                         #Le boss vole 20 PV au joueur
                         case "1":
                             monster.stat["health"] += 20
+                            monster.max_hp += 20
                             self.main_player.stat["health"] -= 20
                         #Le boss vole 20 d'attaque au joueur
                         case "2":
@@ -194,10 +196,10 @@ class Game:
 
                     #Lancement du Combat contre Kévin, le Boss du donjon
                     combat = Combat(self.main_player, monster)
-                    combat.start()
+                    
 
                     #Si le combat est gagné, le joueur drop l'artefact (Petit canard +20PV max)
-                    if combat:
+                    if combat.start():
                         naration = [ 
                             ("-", "Kévin s'écroule au sol, haletant, son masque tombant pour révéler un visage fatigué mais amusé."),
                             ("Kevin", "Hahaha… ça faisait longtemps que je n'avais pas perdu… Bien joué, étranger. Tu as prouvé ta valeur. Prends ce trésor, il pourrait t'être utile."),
@@ -237,9 +239,9 @@ class Game:
                     dialog.dialog(naration)
                     #Lancement du combat intermédiaire contre Anjalou
                     combat = Combat(self.main_player, Monster(**self.monsters["Anjalou"]))
-                    combat.start()
+                    
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     naration = [
@@ -253,9 +255,8 @@ class Game:
 
                     #Lancement du combat contre le boss du donjon Mathieu
                     combat = Combat(self.main_player, Monster(**self.monsters["Mathieu"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     naration = [
@@ -321,9 +322,8 @@ class Game:
                     dialog.dialog(naration)
 
                     combat = Combat(self.main_player, Monster(**self.monsters["Le Roi Singe"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
 
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
@@ -345,12 +345,15 @@ class Game:
                         ("-", "Vous arrivez au pied de la montagne qui abrite le légendaire Temple des 1000 Moines. Une double porte imposante en bois rouge écarlate se dresse devant vous, marquant l'entrée de ce sanctuaire ancien. Alors que vous vous approchez, les portes s'ouvrent lentement dans un grincement solennel. Une silhouette élancée se détache dans l'ombre du seuil."),
                         ('Leo', "Mes respects, jeune héros. Je suis Leo, humble serviteur de ce temple sacré. Bienvenue au sanctuaire du Temple des 1000 Moines."),
                         ("Leo (s'inclinant légèrement)", "Mon maître, Lao Ren, vous attendait avec impatience. Il dit que vous êtes l'Élu destiné à libérer la Forêt des Souflis de l'emprise de la guilde HETIC. Cependant…"),
-                        ("Leo (serrant fortement un baton légèrement)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
+                        ("Leo (serrant fortement un petit baton)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
                     ]
                     dialog.dialog(naration)
-                    # COMBAT CONTRE LEO
-                
+                    # Jeu du baton contre pour entrer dans le temple
+                    stick_game = Stick("Disciple Léo", self.main_player)
+                    if not stick_game.stick_start():
+                        return place.interact(self.main_player)
                     naration = [
+                        ("-", "Vous avez réussi à battre Léo dans un jeu de bâton. Il vous adresse un sourire chaleureux et vous invite à entrer dans le temple."),
                         ("-", "Vous gravissez péniblement l'escalier interminable. À chaque marche, la végétation luxuriante de la forêt des Souflis s'éloigne, offrant une vue à couper le souffle sur le paysage environnant. Enfin, au sommet, le temple se dévoile, majestueux. Les trois pavillons principaux scintillent sous le soleil, leurs toits dorés étincelant comme des joyaux. Les murs extérieurs racontent, à travers des fresques, l'histoire des 1000 moines qui atteignirent l'illumination en ces lieux.\nAlors que vous avancez, une voix grave et profonde résonne dans le vent, semblant provenir de toutes les directions à la fois."),
                         ("-", "Vous entendez une voix omniprésente. \"Vous avez donc réussi le défi de mon disciple… Suivez ma voix, héros, et venez à ma rencontre.\""),
                         ("-", "Vous atteignez la cour centrale, où le vent se fait plus vif. Soudain, un nuage de fumée s'élève devant vous. De cette brume émerge Lao Ren, le Gardien du Temple des 1000 Moines. Grand et imposant, vêtu d'un habit de soie orné de motifs dorés, il tient un bâton gravé de symboles mystiques."),
@@ -358,15 +361,16 @@ class Game:
                         ("-", "Le maître, vous salue lentement, puis plante son bâton au sol avec force."),
                         ("Maître Lao ren", "Mais avant d'accepter de vous remettre la relique sacrée, il est de mon devoir de tester votre force et votre volonté. Ne perdons pas de temps... Affrontez-moi !")
                     ]
+                
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
-                    combat.start()
 
-                    if not combat:
+                    if combat.start():
                         return place.interact(self.main_player)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
                     self.main_player.add_item_to_inventory(Item(**self.items["Clé du temple"]))
                     place.interact(self.main_player)
+                    
                 case "2":
                     self.main_player.interact_with_inventory()
                     place.interact(self.main_player)
@@ -757,7 +761,6 @@ class Game:
         """
         console.print("[bold green]Merci d'avoir joué ![/bold green]")
 
-
 class Entity:
     """
     Représente une entité générique dans le jeu.
@@ -808,7 +811,6 @@ class Entity:
             target.change_stats(-damage, "health")
             if attack_chosen.max_durability != -1:
                 attack_chosen.durability -= 1
-            dialog.naration(f"{self.name} attaque {target.name} et inflige {damage}.")
         else:
             dialog.naration(f"{self.name} n'a plus de durabilité pour {attack_chosen.name}")
             return self.attack(target)
@@ -822,7 +824,7 @@ class Entity:
             damage_type (str): Le type de statistique à modifier (health, attack, defense).
         """
         if damage_type == "health" :
-            new_health = self.stat["health"] + amount
+            new_health = max(self.stat["health"] + amount, 0)
             if new_health > self.max_hp:
                 new_health = self.max_hp
 
@@ -832,13 +834,9 @@ class Entity:
                 dialog.naration(f"La santé de {self.name} augmente de {amount} ({self.stat['health']} -> {new_health})")
             
             self.stat["health"] = new_health
-            self.stat["health"] = max(self.stat["health"], 0)
 
-
-            if self.stat["health"] <= 0:
-                dialog.naration(f"{self.name} est vaincu")
         elif damage_type == "attack" :
-            new_attack = self.stat["attack"] + amount
+            new_attack = max(self.stat["attack"] + amount, 0)
             
             if amount < 0:
                 dialog.naration(f"L'attaque de {self.name} descend de {-amount} ({self.stat['attack']} -> {new_attack})")
@@ -846,9 +844,8 @@ class Entity:
                 dialog.naration(f"L'attaque de {self.name} augmente de {amount} ({self.stat['attack']} -> {new_attack})")
             
             self.stat["attack"] = new_attack
-            self.stat["attack"] = max(self.stat["attack"], 0)
         elif damage_type == "defense" :
-            new_defense = self.stat["defense"] + amount
+            new_defense = max(self.stat["defense"] + amount, 0)
             
             if amount < 0:
                 dialog.naration(f"La défense de {self.name} descend de {-amount} ({self.stat['defense']} -> {new_defense})")
@@ -856,7 +853,6 @@ class Entity:
                 dialog.naration(f"La défense de {self.name} augmente de {amount} ({self.stat['defense']} -> {new_defense})")
             
             self.stat["defense"] = new_defense
-            self.stat["defense"] = max(self.stat["defense"], 0)
 
 class Monster(Entity):
     """
