@@ -122,8 +122,17 @@ class Game:
                     self.main_player.move(self.places["Domaine des Souflis"])
                 #Le Joueur se déplace à l'Est vers le donjon final HETIC
                 case "5":
-                    self.main_player.move(self.places["Hetic"])
-                #Le joueur se déplace au Sud-est vers le Sanctuaire d'Anjara
+                    required_keys = {"Key 1", "Key 2", "Key 3", "Key 4"}
+                    missing_keys =[]
+                    for key in required_keys :
+                        if key not in self.main_playe.inventory:
+                            missing_keys.append(key)
+                        if not missing_keys : 
+                            self.main_player.move(self.places["Hetic"])
+                            console.print("Vous avez utilisé vos clefs pour entrer dans Hetic")
+                            break
+                        else :
+                            console.print("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
                 case "6":
                     self.main_player.move(self.places["Le Casino Zoologique"])
                 #Le joueur se déplace au Sud vers le Sanctuaire de Laurent
@@ -1102,7 +1111,6 @@ class Player(Entity):
         """
         console.print(f"Niveau: {self.level}\nSanté: {self.stat['health']}/{self.max_hp}\nAttaque: {self.stat['attack']}\nDéfense: {self.stat['defense']}\n\n")
 
-
 class Place:
     """
     Représente un lieu dans le jeu.
@@ -1134,7 +1142,6 @@ class Place:
         """
         player.display_stats()
         self.interaction(self)
-
 
 class Combat:
     """
