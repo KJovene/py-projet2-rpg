@@ -123,8 +123,17 @@ class Game:
                     self.main_player.move(self.places["Domaine des Souflis"])
                 #Le Joueur se déplace à l'Est vers le donjon final HETIC
                 case "5":
-                    self.main_player.move(self.places["Hetic"])
-                #Le joueur se déplace au Sud-est vers le Sanctuaire d'Anjara
+                    required_keys = [Item(**self.items["Clé du casino"]), Item(**self.items["Clé de la fête foraine"]), Item(**self.items["Clé du temple"]), Item(**self.items["Clé de la Domaine"])]
+                    missing_keys =[]
+                    for key in required_keys :
+                        if key not in self.main_playe.inventory:
+                            missing_keys.append(key)
+                        if not missing_keys : 
+                            dialog.naration("Vous  utilisez vos clefs pour entrer dans Hetic")
+                            self.main_player.move(self.places["Hetic"])
+                            break
+                        else :
+                            console.print("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
                 case "6":
                     self.main_player.move(self.places["Le Casino Zoologique"])
                 #Le joueur se déplace au Sud vers le Sanctuaire de Laurent
@@ -198,6 +207,7 @@ class Game:
                         ]
                         dialog.dialog(naration)
                         self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
+                        self.main_player.add_item_to_inventory(Item(**self.items["Clé de la fête foraine"]))
                     else:
                         return place.interact(self.main_player)
 
@@ -257,9 +267,8 @@ class Game:
                     ]
                     dialog.dialog(naration)
 
-                    #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Écran du Mac"]))
-
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du Domaine"]))
                     #Retour devant le Domaine des Souflis
                     place.interact(self.main_player)
                 case "2":
@@ -318,6 +327,7 @@ class Game:
                         return place.interact(self.main_player)
 
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du casino"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -358,6 +368,7 @@ class Game:
                     if combat.start():
                         return place.interact(self.main_player)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du temple"]))
                     place.interact(self.main_player)
                     
                 case "2":
@@ -1098,7 +1109,6 @@ class Player(Entity):
         """
         console.print(f"Niveau: {self.level}\nSanté: {self.stat['health']}/{self.max_hp}\nAttaque: {self.stat['attack']}\nDéfense: {self.stat['defense']}\n\n")
 
-
 class Place:
     """
     Représente un lieu dans le jeu.
@@ -1131,7 +1141,6 @@ class Place:
         player.display_stats()
         self.interaction(self)
 
-    
 class Combat:
     """
     Représente un combat entre un joueur et un adversaire.
