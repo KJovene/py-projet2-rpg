@@ -122,14 +122,14 @@ class Game:
                     self.main_player.move(self.places["Domaine des Souflis"])
                 #Le Joueur se déplace à l'Est vers le donjon final HETIC
                 case "5":
-                    required_keys = {"Key 1", "Key 2", "Key 3", "Key 4"}
+                    required_keys = [Item(**self.items["Clé du casino"]), Item(**self.items["Clé de la fête foraine"]), Item(**self.items["Clé du temple"]), Item(**self.items["Clé de la Domaine"])]
                     missing_keys =[]
                     for key in required_keys :
                         if key not in self.main_playe.inventory:
                             missing_keys.append(key)
                         if not missing_keys : 
+                            dialog.naration("Vous  utilisez vos clefs pour entrer dans Hetic")
                             self.main_player.move(self.places["Hetic"])
-                            console.print("Vous avez utilisé vos clefs pour entrer dans Hetic")
                             break
                         else :
                             console.print("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
@@ -205,6 +205,7 @@ class Game:
                         ]
                         dialog.dialog(naration)
                         self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
+                        self.main_player.add_item_to_inventory(Item(**self.items["Clé de la fête foraine"]))
                     else:
                         return place.interact(self.main_player)
 
@@ -265,9 +266,8 @@ class Game:
                     ]
                     dialog.dialog(naration)
 
-                    #Si le combat est gagné, le joueur drop l'artéfact (Écran du mac +10 défense)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Écran du Mac"]))
-
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du Domaine"]))
                     #Retour devant le Domaine des Souflis
                     place.interact(self.main_player)
                 case "2":
@@ -327,6 +327,7 @@ class Game:
                         return place.interact(self.main_player)
 
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du casino"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -364,6 +365,7 @@ class Game:
                     if not combat:
                         return place.interact(self.main_player)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
+                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du temple"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
