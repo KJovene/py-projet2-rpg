@@ -335,12 +335,16 @@ class Game:
                         ("-", "Vous arrivez au pied de la montagne qui abrite le légendaire Temple des 1000 Moines. Une double porte imposante en bois rouge écarlate se dresse devant vous, marquant l'entrée de ce sanctuaire ancien. Alors que vous vous approchez, les portes s'ouvrent lentement dans un grincement solennel. Une silhouette élancée se détache dans l'ombre du seuil."),
                         ('Leo', "Mes respects, jeune héros. Je suis Leo, humble serviteur de ce temple sacré. Bienvenue au sanctuaire du Temple des 1000 Moines."),
                         ("Leo (s'inclinant légèrement)", "Mon maître, Lao Ren, vous attendait avec impatience. Il dit que vous êtes l'Élu destiné à libérer la Forêt des Souflis de l'emprise de la guilde HETIC. Cependant…"),
-                        ("Leo (serrant fortement un baton légèrement)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
+                        ("Leo (serrant fortement un petit baton)", "…je dois m'assurer que vous êtes digne de rencontrer mon maître. Préparez-vous, jeune scarabée, car seul un esprit affûté peut franchir cette porte !"),
                     ]
                     dialog.dialog(naration)
-                    # COMBAT CONTRE LEO
-                
+                    # Jeu du baton contre pour entrer dans le temple
+                    stick_game = Stick("Disciple Léo", self.main_player)
+                    stick_game.stick_start()
+                    if not stick_game:
+                        return place.interact(self.main_player)
                     naration = [
+                        ("-", "Vous avez réussi à battre Léo dans un jeu de bâton. Il vous adresse un sourire chaleureux et vous invite à entrer dans le temple."),
                         ("-", "Vous gravissez péniblement l'escalier interminable. À chaque marche, la végétation luxuriante de la forêt des Souflis s'éloigne, offrant une vue à couper le souffle sur le paysage environnant. Enfin, au sommet, le temple se dévoile, majestueux. Les trois pavillons principaux scintillent sous le soleil, leurs toits dorés étincelant comme des joyaux. Les murs extérieurs racontent, à travers des fresques, l'histoire des 1000 moines qui atteignirent l'illumination en ces lieux.\nAlors que vous avancez, une voix grave et profonde résonne dans le vent, semblant provenir de toutes les directions à la fois."),
                         ("-", "Vous entendez une voix omniprésente. \"Vous avez donc réussi le défi de mon disciple… Suivez ma voix, héros, et venez à ma rencontre.\""),
                         ("-", "Vous atteignez la cour centrale, où le vent se fait plus vif. Soudain, un nuage de fumée s'élève devant vous. De cette brume émerge Lao Ren, le Gardien du Temple des 1000 Moines. Grand et imposant, vêtu d'un habit de soie orné de motifs dorés, il tient un bâton gravé de symboles mystiques."),
@@ -348,6 +352,7 @@ class Game:
                         ("-", "Le maître, vous salue lentement, puis plante son bâton au sol avec force."),
                         ("Maître Lao ren", "Mais avant d'accepter de vous remettre la relique sacrée, il est de mon devoir de tester votre force et votre volonté. Ne perdons pas de temps... Affrontez-moi !")
                     ]
+                
                     dialog.dialog(naration)
                     combat = Combat(self.main_player, Monster(**self.monsters["Lao-ren"]))
                     combat.start()
@@ -356,6 +361,7 @@ class Game:
                         return place.interact(self.main_player)
                     self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
                     place.interact(self.main_player)
+                    
                 case "2":
                     self.main_player.interact_with_inventory()
                     place.interact(self.main_player)
@@ -1135,7 +1141,63 @@ class Place:
         player.display_stats()
         self.interaction(self)
 
+class Stick:
+    def __init__(self, opponent, main_player):
+        self.nb_batons = 21
+        self.active_player = random.randint(0, 1)
+        self.opponent = opponent
+        self.player = main_player
+        self.turn_number = 1
+    
+    def stick_start(self):
+        print(f"Que le Jeu du Baton Sacré commence !! Tu ne vas jamais rencontrer mon maître je te le garantis !")
+        while self.nb_batons > 0:
+            print(f"Le nombre de bâtons restant est de {self.nb_batons}")
+            self.turn()
+            self.leo_chakra()
+            self.active_player = 1 - self.active_player
+        self.end()  
+    
+    def leo_chakra(self):
+            if self.nb_batons == 5:
+                print(f"{self.opponent}: Je sens que la pression monte !! je concentre tout mon chakra !!!")
+            elif self.nb_batons == 1 and self.active_player == 1:
+                print(f"{self.opponent}: Quoi ???!!! C'est impossible !!! Je ne peux pas perdre !!!")
+    
+    def turn(self):
+        if self.active_player == 0:
+            self.turn_number += 1
+            print(f"Tour {self.turn_number}") 
+            self.opponent_turn()
+        else:
+            self.player_turn()
+       
+    def remove(self, batons_retires):
+        if self.nb_batons < batons_retires:
+            print("Il n'y a pas assez de bâtons pour retirer autant")
+            return False
+        self.nb_batons -= batons_retires
+        return True
+        
+    def opponent_turn(self):
+        batons_retires = random.randint(1, 3)
+        if self.remove(batons_retires):
+            print(f"{self.opponent} a retiré {batons_retires} bâtons")
 
+    def player_turn(self):
+        while True:
+            batons_retires = int(Prompt.ask("Combien de bâtons voulez-vous retirer ?", choices=["1", "2", "3"]))
+            if self.remove(batons_retires):
+                print(f"{self.player} a retiré {batons_retires} bâtons")
+                break
+        
+    def end(self):
+        if self.active_player == 0:
+            print(f"La partie est terminée, {self.opponent} a gagné !")
+        else: 
+            print(f"La partie est terminée, {self.player} a gagné !")
+
+    
 class Combat:
     """
     Représente un combat entre un joueur et un adversaire.
