@@ -1,3 +1,10 @@
+"""
+GROUPE : KEVIN, LAURENT, ANJARA, MATHIEU
+
+Nous sommes désolé de ne pas avoir découpé le code mais nous avons ajouté beaucoup de commentaires pour vous faciliter la vie.
+Vous pouvez appuyer longtemps sur entrer pour passer les dialogues plus rapidement.
+"""
+
 from rich.console import Console
 from rich.prompt import Prompt
 from classes.Stick import Stick
@@ -19,7 +26,7 @@ class Game:
             name (str): Le nom du jeu.
         """
         self.name = name
-        self.main_player = Player("SAPAL", 0, 0, {}, [], None)
+        self.main_player = Player("SAPAL", 0, 0, [], None)
 
 
 
@@ -123,17 +130,17 @@ class Game:
                     self.main_player.move(self.places["Domaine des Souflis"])
                 #Le Joueur se déplace à l'Est vers le donjon final HETIC
                 case "5":
-                    required_keys = [Item(**self.items["Clé du casino"]), Item(**self.items["Clé de la fête foraine"]), Item(**self.items["Clé du temple"]), Item(**self.items["Clé de la Domaine"])]
-                    missing_keys =[]
-                    for key in required_keys :
-                        if key not in self.main_playe.inventory:
-                            missing_keys.append(key)
-                        if not missing_keys : 
-                            dialog.naration("Vous  utilisez vos clefs pour entrer dans Hetic")
-                            self.main_player.move(self.places["Hetic"])
-                            break
-                        else :
-                            console.print("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
+                    required_keys = ["Clé du casino", "Clé de la fête foraine", "Clé du temple", "Clé du Domaine"]
+                    missing_keys = []
+                    for key_name in required_keys:
+                        if not key_name in [item.name for item in self.main_player.inventory]:
+                            missing_keys.append(key_name)
+                    if len(missing_keys) == 0:
+                        dialog.naration("Vous utilisez vos clefs pour entrer dans Hetic")
+                        self.main_player.move(self.places["Hetic"])
+                    else:
+                        dialog.naration("Vous n'avez pas les clefs nécessaires pour entrer à Hetic")
+                        place.interact(self.main_player)
                 case "6":
                     self.main_player.move(self.places["Le Casino Zoologique"])
                 #Le joueur se déplace au Sud vers le Sanctuaire de Laurent
@@ -206,8 +213,6 @@ class Game:
                             ("-", "Vous découvrez un coffre à moitié ouvert au fond de la pièce. À l'intérieur, un canard en plastique jaune semble vous attendre. Sous le canard, un numéro mystérieux est gravé.")
                         ]
                         dialog.dialog(naration)
-                        self.main_player.add_item_to_inventory(Equipable(**self.artefact["Petit canard"]))
-                        self.main_player.add_item_to_inventory(Item(**self.items["Clé de la fête foraine"]))
                     else:
                         return place.interact(self.main_player)
 
@@ -267,8 +272,6 @@ class Game:
                     ]
                     dialog.dialog(naration)
 
-                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Écran du Mac"]))
-                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du Domaine"]))
                     #Retour devant le Domaine des Souflis
                     place.interact(self.main_player)
                 case "2":
@@ -326,8 +329,6 @@ class Game:
                     if combat.start():
                         return place.interact(self.main_player)
 
-                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Jeu de cartes"]))
-                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du casino"]))
                     place.interact(self.main_player)
                 case "2":
                     self.main_player.interact_with_inventory()
@@ -367,8 +368,6 @@ class Game:
 
                     if combat.start():
                         return place.interact(self.main_player)
-                    self.main_player.add_item_to_inventory(Equipable(**self.artefact["Maxi Phô Boeuf"]))
-                    self.main_player.add_item_to_inventory(Item(**self.items["Clé du temple"]))
                     place.interact(self.main_player)
                     
                 case "2":
@@ -394,7 +393,8 @@ class Game:
                 ]
                 dialog.dialog(naration)
                 combat = Combat(self.main_player, Monster(**self.monsters["Alexandre"]))
-                combat.start()
+                if not combat.start():
+                    place.interact(self.main_player)
                 naration = [
                     ("Alexandre", "Mais...coment un mortel peut détenir autant de puissance? Tu as donc réuni tous les outils pour trouver une alternance?"),
                     ("-", "Votre combat bat son plein contre le grand chef heticien. Soudain une brume épaisse apparaît, et une silouhette encore plus grande apparait. Vous sentez une nouvelle présence dans la cour..."),
@@ -403,7 +403,8 @@ class Game:
                 ]
                 dialog.dialog(naration)
                 combat = Combat(self.main_player, Monster(**self.monsters["Nabil"]))
-                combat.start()
+                if not combat.start():
+                    place.interact(self.main_player)
                 
                 if combat:
                     naration = [
@@ -472,44 +473,48 @@ class Game:
         }
 
         self.attacks = {
-            "Bois de boulogne": {"name": "Bois de boulogne", "description": "", "battle_cry": "", "durability": 100, "damage": 65},
-            "Course rapide": {"name": "Course rapide", "description": "", "battle_cry": "", "durability": 100, "damage": 60},
-            "Souplesse du judoka": {"name": "Souplesse du judoka", "description": "", "battle_cry": "Go muscu", "durability": 100, "damage": 60},
-            "Poing de feu": {"name": "Poing de feu", "description": "", "battle_cry": "Brule en enfer", "durability": 100, "damage": 55},
-            "Coup de tonerre": {"name": "Coup de tonerre", "description": "", "battle_cry": "Ça va piquer", "durability": 100, "damage": 55},
-            "Grattage du délégué": {"name": "Grattage du délégué", "description": "", "battle_cry": "Donne moi tes hp", "durability": 100, "damage": 50},
-            "Lancé de talon": {"name": "Lancé de talon", "description": "", "battle_cry": "Prend toi mon talon", "durability": 100, "damage": 45},
-            "Griffure": {"name": "Griffure", "description": "", "battle_cry": "Roarrrr", "durability": 100, "damage": 40},
-            "Explosion": {"name": "Explosion", "description": "", "battle_cry": "Araaaaa", "durability": 100, "damage": 40},
-            "Vol rapide": {"name": "Vol rapide", "description": "", "battle_cry": "Bismilah", "durability": 100, "damage": 35},
-            "Charme": {"name": "Charme", "description": "", "battle_cry": "Mouah 💋", "durability": 100, "damage": 35},
-            "Chant brutal": {"name": "Chant brutal", "description": "", "battle_cry": "Dès que je chanterais tu deviendras sourd.", "durability": 100, "damage": 30},
-            "Kamehameha": {"name": "Kamehameha", "description": "", "battle_cry": "Redonne mon couscous", "durability": 100, "damage": 30},
-            "Malaka": {"name": "Malaka", "description": "", "battle_cry": "Mange mon grec", "durability": 100, "damage": 25},
-            "Control Mental": {"name": "Control Mental", "description": "", "battle_cry": "Au hazard", "durability": 100, "damage": 25},
-            "Gear 5": {"name": "Gear 5", "description": "", "battle_cry": "Youhouu", "durability": 100, "damage": 20},
-            "Fara 1": {"name": "Fara 1", "description": "", "battle_cry": "", "durability": 100, "damage": 20},
-            "Fara 2": {"name": "Fara 2", "description": "", "battle_cry": "", "durability": 100, "damage": 15},
-            "Amel 1": {"name": "Amel 1", "description": "", "battle_cry": "", "durability": 100, "damage": 15},
-            "Amel 2": {"name": "Amel 2", "description": "", "battle_cry": "", "durability": 100, "damage": 1000000}, # 10
-            "Marteau du Forain": {"name": "Marteau du Forain", "description": "", "battle_cry": "Kévin abat son marteau avec fracas, déclenchant une onde de choc qui fait vibrer les miroirs autour de vous.", "durability": 100, "damage": 100},
-            "Billes de Loterie Explosives": {"name": "Billes de Loterie Explosives", "description": "", "battle_cry": "Il lance une poignée de billes colorées qui explosent en gerbes de lumière aveuglante.", "durability": 100, "damage": 100},
-            "Claque de la Poigne Gigantesque": {"name": "Claque de la Poigne Gigantesque", "description": "", "battle_cry": "Il prépare une claque chargée, des veines lumineuses pulsent sur la main, et un bruit sourd de tension monte dans l'air. L'impact crée une onde de choc qui soulève poussière et débris tout autour.", "durability": 1, "damage": 100},
-            "Le Lasso de Soie": {"name": "Le Lasso de Soie", "description": "Anjalou utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l'envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", "battle_cry": "TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", "durability": 100, "damage": 100},
-            "La Roulade du Gentleman": {"name": "La Roulade du Gentleman", "description": "Anjalou effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", "battle_cry": "UNE DANSE AU RYTHME DU STYLE !", "durability": 100, "damage": 100},
-            "Le Vent du Chapeau": {"name": "Le Vent du Chapeau", "description": "Anjalou effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", "battle_cry": "MON STYLE, MA PUISSANCE !", "durability": 100, "damage": 100},
-            "Le Crâne de Lumière": {"name": "Le Crâne de Lumière", "description": "Anjalou se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l'éclat de son apparence avec une touche de perfection.", "battle_cry": "VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", "durability": 1, "damage": 100},
-            "Le Marteau de la Banque": {"name": "Le Marteau de la Banque", "description": "Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", "battle_cry": "TA BOURSE NE VA PAS AIMER ÇA !", "durability": 100, "damage": 100},
-            "Le Lancer de Pièce Fétiche": {"name": "Le Lancer de Pièce Fétiche", "description": "Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l'ennemi directement entre les yeux.", "battle_cry": "C'EST À MOI QUE TU LA DOIS, LA MONNAIE !", "durability": 100, "damage": 100},
-            "Le Coup du Pantalon Traître": {"name": "Le Coup du Pantalon Traître", "description": "Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu'il emporte ses adversaires.", "battle_cry": "CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", "durability": 100, "damage": 100},
+            "Bois de boulogne": {"name": "Bois de boulogne", "description": "Je me souvient de ma forêt natale..", "battle_cry": "YAAAAAAH", "durability": -1, "damage": 65},
+            "Course rapide": {"name": "Course rapide", "description": "Je cours très très vite !!!", "battle_cry": "HYPER VITESSE !!!!", "durability": -1, "damage": 60},
+            "Souplesse du judoka": {"name": "Souplesse du judoka", "description": "Avec la fluidité et la puissance d'un Teddy Riner prime, projette l'adversaire au sol avec une grâce impeccable", "battle_cry": "Go muscu", "durability": -1, "damage": 60},
+            "Poing de feu": {"name": "Poing de feu", "description": "Poing littéralement enflammé", "battle_cry": "Brule en enfer", "durability": -1, "damage": 55},
+            "Coup de tonerre": {"name": "Coup de tonerre", "description": "Appelle la foudre de façon mystique", "battle_cry": "Ça va piquer", "durability": -1, "damage": 55},
+            "Grattage du délégué": {"name": "Grattage du délégué", "description": "Faut bien s'entourer...", "battle_cry": "Donne moi tes hp", "durability": -1, "damage": 50},
+            "Lancé de talon": {"name": "Lancé de talon", "description": "Lance un talon mais ce n'est pas une chaussure..", "battle_cry": "Prend toi mon talon", "durability": -1, "damage": 45},
+            "Griffure": {"name": "Griffure", "description": "Des ongles t'as peur", "battle_cry": "Roarrrr", "durability": -1, "damage": 40},
+            "Explosion": {"name": "Explosion", "description": "Boom", "battle_cry": "Araaaaa", "durability": -1, "damage": 40},
+            "Vol rapide": {"name": "Vol rapide", "description": "UN HUMAIN QUI VOLE", "battle_cry": "Bismilah", "durability": -1, "damage": 35},
+            "Charme": {"name": "Charme", "description": "L'amour est plus fort que tout", "battle_cry": "Mouah 💋", "durability": -1, "damage": 35},
+            "Chant brutal": {"name": "Chant brutal", "description": "Pas mal d'Octaves dans la voix", "battle_cry": "Dès que je chanterais tu deviendras sourd.", "durability": -1, "damage": 30},
+            "Kamehameha": {"name": "Kamehameha", "description": "Pouvoir totalement originaire d'ici", "battle_cry": "Redonne mon couscous", "durability": -1, "damage": 30},
+            "Malaka": {"name": "Malaka", "description": "Il fait chaud là bas", "battle_cry": "Mange mon grec", "durability": -1, "damage": 25},
+            "Control Mental": {"name": "Control Mental", "description": "Contrôle seulement le petit doigt de l'adversaire", "battle_cry": "Au hazard", "durability": -1, "damage": 25},
+            "Gear 5": {"name": "Gear 5", "description": "Pouvoir totalement créer dans la forêt des souflis", "battle_cry": "Youhouu", "durability": -1, "damage": 20},
+            "Ultra tarte": {"name": "Ultra tarte", "description": "Une énormé baffe", "battle_cry": "ET BIIIIIM", "durability": -1, "damage": 20},
+            "Balayette laser": {"name": "Balayette laser", "description": "La gravité reste la force la plus faible des 4 que compose l'univers..", "battle_cry": "Tête AU SOL", "durability": -1, "damage": 15},
+            "Force de mouche": {"name": "Force de mouche", "description": "P'tit coup de pression", "battle_cry": "Attention ça va faire mal !!!", "durability": -1, "damage": 15},
+            "Contre-argument": {"name": "Contre-argument", "description": "La violence ne résoud rien..", "battle_cry": "La violence verbale est la plus grande des violence..", "durability": -1, "damage": 10},
+            "Marteau du Forain": {"name": "Marteau du Forain", "description": "Un marteau venant d'une des plus grandes forges roumaine de l'humanité", "battle_cry": "Kévin abat son marteau avec fracas, déclenchant une onde de choc qui fait vibrer les miroirs autour de vous.", "durability": -1, "damage": 30},
+            "Billes de Loterie Explosives": {"name": "Billes de Loterie Explosives", "description": "Des billes de fabrication chinoise..peut être ?", "battle_cry": "Il lance une poignée de billes colorées qui explosent en gerbes de lumière aveuglante.", "durability": -1, "damage": 28},
+            "Claque de la Poigne Gigantesque": {"name": "Claque de la Poigne Gigantesque", "description": "Une main qui mériterait d'être un panneau stop", "battle_cry": "Il prépare une claque chargée, des veines lumineuses pulsent sur la main, et un bruit sourd de tension monte dans l'air. L'impact crée une onde de choc qui soulève poussière et débris tout autour.", "durability": 1, "damage": 40},
+            "Le Lasso de Soie": {"name": "Le Lasso de Soie", "description": "Anjalou utilise un lasso en soie fine, qu'il fait briller comme une étoile. Il l'envoie avec élégance pour attraper ses ennemis et les ramener vers lui avec un mouvement fluide et gracieux.", "battle_cry": "TU M'ES ACCROCHÉ… ET J'AI UN CRÂNE À PRÉSERVER !", "durability": -1, "damage": 30},
+            "La Roulade du Gentleman": {"name": "La Roulade du Gentleman", "description": "Anjalou effectue une roulade parfaitement chorégraphiée, évitant les attaques ennemies tout en décochant un coup de pied agile, comme un maître de danse.", "battle_cry": "UNE DANSE AU RYTHME DU STYLE !", "durability": -1, "damage": 35},
+            "Le Vent du Chapeau": {"name": "Le Vent du Chapeau", "description": "Anjalou effectue un mouvement rapide, et son chapeau élégant se transforme en un projecteur de lumière qui éblouit temporairement les ennemis autour de lui.", "battle_cry": "MON STYLE, MA PUISSANCE !", "durability": -1, "damage": 40},
+            "Le Crâne de Lumière": {"name": "Le Crâne de Lumière", "description": "Anjalou se tient droit, prend une pause pour s'assurer que son crâne est parfaitement poli, puis libère une lumière aveuglante depuis son crâne chauve, envoyant une onde d'énergie brillante dans toute la zone. L'onde déstabilise ses ennemis, tout en rétablissant l'éclat de son apparence avec une touche de perfection.", "battle_cry": "VOUS NE POUVEZ PAS FAIRE CONCURRENCE AVEC LE CRÂNE DU MAÎTRE !", "durability": 1, "damage": 55},
+            "Le Marteau de la Banque": {"name": "Le Marteau de la Banque", "description": "Mathieu fait apparaître un énorme marteau doré en forme de lingot et le balance violemment sur le sol, créant une onde de choc étincelante.", "battle_cry": "TA BOURSE NE VA PAS AIMER ÇA !", "durability": -1, "damage": 70},
+            "Le Lancer de Pièce Fétiche": {"name": "Le Lancer de Pièce Fétiche", "description": "Il saisit une pièce dorée et la propulse à une vitesse fulgurante, frappant l'ennemi directement entre les yeux.", "battle_cry": "C'EST À MOI QUE TU LA DOIS, LA MONNAIE !", "durability": -1, "damage": 60},
+            "Le Coup du Pantalon Traître": {"name": "Le Coup du Pantalon Traître", "description": "Mathieu arrache un pan de ses vêtements et le fait tournoyer, créant un vent si puissant qu'il emporte ses adversaires.", "battle_cry": "CES FRINGUES NE SONT PAS JUSTE POUR LE STYLE !", "durability": -1, "damage": 50},
             "L'Écran Noir de la Dette": {"name": "L'Écran Noir de la Dette", "description": "Mathieu tend les bras, et un immense écran translucide apparaît au-dessus de l'arène, projetant une lumière éblouissante. Sur cet écran, une facture gigantesque s'affiche avec des chiffres astronomiques qui clignotent, plongeant ses ennemis dans une terreur indescriptible.", "battle_cry": "ET SI TU PAYAIS TES IMPÔTS ?!", "durability": 1, "damage": 100},
-            "Low Kick du Kangourou": {"name": "Low Kick du Kangourou", "description": "", "battle_cry": "", "durability": 100, "damage": 100},
-            "Bouclier du lémurien": {"name": "Bouclier du lémurien", "description": "", "battle_cry": "", "durability": 100, "damage": 100},
-            "Déferlante de la jungle": {"name": "Déferlante de la jungle", "description": "", "battle_cry": "", "durability": 1, "damage": 100},
-            "Coup du Lotus Brisé": {"name": "Coup du Lotus Brisé", "description": "Un coup puissant et ciblé, imitant l'éclosion brutale d'un lotus.", "battle_cry": "", "durability": 100, "damage": 100},
-            "Sillage d'Encens": {"name": "Sillage d'Encens", "description": "Une série de mouvements fluides libérant une fumée toxique qui entrave les adversaires.", "battle_cry": "", "durability": 100, "damage": 100},
-            "Colère des 1000 Âmes": {"name": "Colère des 1000 Âmes", "description": "Le boss invoque les esprits des moines qui l'entourent pour déchaîner une tempête spirituelle dévastatrice.", "battle_cry": "", "durability": 1, "damage": 100},
+            "Low Kick du Kangourou": {"name": "Low Kick du Kangourou", "description": "Le tibia est une partie du corps très dure mais très sensible..", "battle_cry": "AYAAAH", "durability": -1, "damage": 100},
+            "Bouclier du lémurien": {"name": "Bouclier du lémurien", "description": "Un bouclier venant tout droit du WAKANDA", "battle_cry": "WAKANDA POUR TOUJOURSSS!!!", "durability": -1, "damage": 120},
+            "Déferlante de la jungle": {"name": "Déferlante de la jungle", "description": "Une bonne tempête tropicale comme on les aime..", "battle_cry": "Un brin d'air !", "durability": 1, "damage": 150},
+            "Coup du Lotus Brisé": {"name": "Coup du Lotus Brisé", "description": "Un coup puissant et ciblé, imitant l'éclosion brutale d'un lotus.", "battle_cry": "Repose en paix...", "durability": -1, "damage": 350},
+            "Sillage d'Encens": {"name": "Sillage d'Encens", "description": "Une série de mouvements fluides libérant une fumée toxique qui entrave les adversaires.", "battle_cry": "Fumer tue.", "durability": -1, "damage": 250},
+            "Colère des 1000 Âmes": {"name": "Colère des 1000 Âmes", "description": "Le boss invoque les esprits des moines qui l'entourent pour déchaîner une tempête spirituelle dévastatrice.", "battle_cry": "TOUS TES MORTS SONT CONTRE TOI !", "durability": 1, "damage": 500},
+            "Attaque légère" : {"name" : "Attaque légère", "description": "Attaque de base rapide et préçise", "battle_cry": "Ah c'est légeeeeeeer", "durability": -1, "damage": 10},
+            "Attaque lourde" : {"name": "Attaque lourde", "description": "Attaque de base lourde", "battle_cry": "Ah c'est Louuuuuuurd", "durability": 2, "damage": 20},
+            "Le cheat de Loic" : {"name": "Le cheat de Loic", "description": "/kill, pas le temps, faut corriger...", "battle_cry": "FAUT QUE JE CORRIGE VITE... HETIFICATION !!", "durability": -1, "damage": 486486486486}
         }
+
         self.items = {
             "Clé du casino": {"name": "Clé du casino", "description": "Cette clé t'aidera à accéder au boss final !", "effect": {}},
             "Clé de la fête foraine": {"name": "Clé de la fête foraine", "description": "Cette clé t'aidera à accéder au boss final !", "effect": {}},
@@ -517,216 +522,272 @@ class Game:
             "Clé du Domaine": {"name": "Clé du Domaine", "description": "Cette clé t'aidera à accéder au boss final !", "effect": {}},
             "Petite potion rouge": {"name": "Petite potion rouge", "description": "Potion donnée par la déesse Gaïa (soigne 20 PV)", "effect": {"health": 20}},
             "Grande potion rouge": {"name": "Grande potion rouge", "description": "Potion donnée par la déesse Gaïa (soigne 50 PV)", "effect": {"health": 50}},
-            "Potion de régénération": {"name": "Potion de régénération", "description": "Régénère 10 PV par tour pendant 5 tours", "effect": {"health": 10}}
+            "Potion de vie": {"name": "Potion de vie", "description": "Une potion qui soigne 100 PV", "effect": {"health": 100}},
+            "Potion de régénération": {"name": "Potion de régénération", "description": "Une potion qui soigne 200 PV", "effect": {"health": 200}},
+            "Potion divine": {"name": "Potion divine", "description": "Une potion qui soigne complètement les PV", "effect": {"health": 9999}}
         }
 
         self.artefact = {
-            "Petit canard": {"name": "Petit canard", "description": "Augmente l'HP", "effect": {"health": 20, "attack": 0, "defense": 0}},
-            "Écran du Mac": {"name": "Écran du Mac", "description": "Utilisé comme bouclier, c'est le fameux écran du Mac de Mathieu", "effect": {"health": 0, "attack": 0, "defense": 10}},
-            "Maxi Phô Boeuf": {"name": "Maxi Phô Boeuf", "description": "", "effect": {"health": 0, "attack": 10, "defense": 0}},
-            "Jeu de cartes": {"name": "Jeu de cartes", "description": "", "effect": {"health": 0, "attack": 0, "defense": 10}}
+            "Petit canard": {"name": "Petit canard", "description": "Augmente l'HP. Parce que rien ne vaut un bon bain avec un canard en plastique.", "effect": {"health": 50, "attack": 0, "defense": 0}},
+            "Écran du Mac": {"name": "Écran du Mac", "description": "Utilisé comme bouclier, c'est le fameux écran du Mac de Mathieu. Attention aux pixels morts !", "effect": {"health": 0, "attack": 0, "defense": 20}},
+            "Maxi Phô Boeuf": {"name": "Maxi Phô Boeuf", "description": "Une soupe de nouille dont la recette est restée secrète depuis hier. Un vrai coup de boost pour les guerriers affamés.", "effect": {"health": 0, "attack": 200, "defense": 0}},
+            "Jeu de cartes": {"name": "Jeu de cartes", "description": "Jeu de carte truqué. Parfait pour les soirées poker entre amis... ou pour tricher en combat.", "effect": {"health": 0, "attack": 0, "defense": 100}}
         }
 
         self.monsters = {
             "Amelie": {
-                "name": "Amelie",
-                "description": "",
-                "level": 2,
-                "attack_list": [
-                    Attack(**self.attacks["Amel 1"], drop_rate=5),
-                    Attack(**self.attacks["Amel 2"], drop_rate=5)
-                ],
-                "dropable_items": [
-                    Consomable(**self.items["Petite potion rouge"], drop_rate=100)
-                ],
-                "boss": False
+            "name": "Amelie",
+            "description": "Une créature mystérieuse avec une aura envoûtante.",
+            "level": 2,
+            "attack_list": [
+                Attack(**self.attacks["Force de mouche"], drop_rate=5),
+                Attack(**self.attacks["Contre-argument"], drop_rate=5)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=25),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=20),
+                Consomable(**self.items["Potion de vie"], drop_rate=3),
+                Consomable(**self.items["Potion de régénération"], drop_rate=2),
+                Consomable(**self.items["Potion divine"], drop_rate=1)
+            ],
+            "boss": False
             },
             "Fara": {
-                "name": "Fara",
-                "description": "",
-                "level": 4,
-                "attack_list": [
-                    Attack(**self.attacks["Fara 1"], drop_rate=5),
-                    Attack(**self.attacks["Fara 2"], drop_rate=5)
-                ],
-                "dropable_items": [
-                    Consomable(**self.items["Grande potion rouge"], drop_rate=100)
-                ],
-                "boss": False
+            "name": "Fara",
+            "description": "Un guerrier redoutable avec une force brute.",
+            "level": 4,
+            "attack_list": [
+                Attack(**self.attacks["Ultra tarte"], drop_rate=5),
+                Attack(**self.attacks["Balayette laser"], drop_rate=5)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=25),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=20),
+                Consomable(**self.items["Potion de vie"], drop_rate=3),
+                Consomable(**self.items["Potion de régénération"], drop_rate=2),
+                Consomable(**self.items["Potion divine"], drop_rate=1)
+            ],
+            "boss": False
             },
             "Imen": {
-                "name": "Imen",
-                "description": "",
-                "level": 6,
-                "attack_list": [
-                    Attack(**self.attacks["Control Mental"], drop_rate=4),
-                    Attack(**self.attacks["Gear 5"], drop_rate=4)
-                ],
-                "dropable_items": [
-                    Consomable(**self.items["Petite potion rouge"], drop_rate=100),
-                    Consomable(**self.items["Potion de régénération"], drop_rate=50)
-                ],
-                "boss": False
+            "name": "Imen",
+            "description": "Un mage puissant maîtrisant les arts mystiques.",
+            "level": 6,
+            "attack_list": [
+                Attack(**self.attacks["Control Mental"], drop_rate=4),
+                Attack(**self.attacks["Gear 5"], drop_rate=4)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=25),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=20),
+                Consomable(**self.items["Potion de vie"], drop_rate=6),
+                Consomable(**self.items["Potion de régénération"], drop_rate=2),
+                Consomable(**self.items["Potion divine"], drop_rate=1)
+            ],
+            "boss": False
             },
             "Nazim": {
-                "name": "Nazim",
-                "description": "",
-                "level": 8,
-                "attack_list": [
-                    Attack(**self.attacks["Kamehameha"], drop_rate=3),
-                    Attack(**self.attacks["Malaka"], drop_rate=3)
+            "name": "Nazim",
+            "description": "Un combattant agile et rapide comme l'éclair.",
+            "level": 8,
+            "attack_list": [
+                Attack(**self.attacks["Kamehameha"], drop_rate=3),
+                Attack(**self.attacks["Malaka"], drop_rate=3)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=25),
+                Consomable(**self.items["Potion de vie"], drop_rate=10),
+                Consomable(**self.items["Potion de régénération"], drop_rate=5),
+                Consomable(**self.items["Potion divine"], drop_rate=2)
                 ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "boss": False
             },
             "Nana la renarde": {
-                "name": "Nana la renarde",
-                "description": "",
-                "level": 10,
-                "attack_list": [
-                    Attack(**self.attacks["Charme"], drop_rate=3),
-                    Attack(**self.attacks["Chant brutal"], drop_rate=3)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Nana la renarde",
+            "description": "Une renarde rusée avec des charmes envoûtants.",
+            "level": 10,
+            "attack_list": [
+                Attack(**self.attacks["Charme"], drop_rate=3),
+                Attack(**self.attacks["Chant brutal"], drop_rate=3)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=35),
+                Consomable(**self.items["Potion de vie"], drop_rate=13),
+                Consomable(**self.items["Potion de régénération"], drop_rate=8),
+                Consomable(**self.items["Potion divine"], drop_rate=3)
+            ],
+            "boss": False
             },
             "Youva": {
-                "name": "Youva",
-                "description": "",
-                "level": 12,
-                "attack_list": [
-                    Attack(**self.attacks["Explosion"], drop_rate=2),
-                    Attack(**self.attacks["Vol rapide"], drop_rate=2)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Youva",
+            "description": "Un guerrier explosif avec une vitesse fulgurante.",
+            "level": 12,
+            "attack_list": [
+                Attack(**self.attacks["Explosion"], drop_rate=2),
+                Attack(**self.attacks["Vol rapide"], drop_rate=2)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=35),
+                Consomable(**self.items["Potion de vie"], drop_rate=13),
+                Consomable(**self.items["Potion de régénération"], drop_rate=8),
+                Consomable(**self.items["Potion divine"], drop_rate=3)
+            ],
+            "boss": False
             },
             "Carglass": {
-                "name": "Carglass",
-                "description": "",
-                "level": 14,
-                "attack_list": [
-                    Attack(**self.attacks["Lancé de talon"], drop_rate=2),
-                    Attack(**self.attacks["Griffure"], drop_rate=2)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Carglass",
+            "description": "Un monstre robuste avec des griffes acérées.",
+            "level": 14,
+            "attack_list": [
+                Attack(**self.attacks["Lancé de talon"], drop_rate=2),
+                Attack(**self.attacks["Griffure"], drop_rate=2)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=25),
+                Consomable(**self.items["Potion de vie"], drop_rate=15),
+                Consomable(**self.items["Potion de régénération"], drop_rate=8),
+                Consomable(**self.items["Potion divine"], drop_rate=3)
+            ],
+            "boss": False
             },
             "Cherif": {
-                "name": "Cherif",
-                "description": "",
-                "level": 16,
-                "attack_list": [
-                    Attack(**self.attacks["Coup de tonerre"], drop_rate=2),
-                    Attack(**self.attacks["Grattage du délégué"], drop_rate=2)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Cherif",
+            "description": "Un guerrier redoutable avec des attaques électriques.",
+            "level": 16,
+            "attack_list": [
+                Attack(**self.attacks["Coup de tonerre"], drop_rate=2),
+                Attack(**self.attacks["Grattage du délégué"], drop_rate=2)
+            ],
+            "dropable_items": [
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=25),
+                Consomable(**self.items["Potion de vie"], drop_rate=20),
+                Consomable(**self.items["Potion de régénération"], drop_rate=8),
+                Consomable(**self.items["Potion divine"], drop_rate=3)
+            ],
+            "boss": False
             },
             "Noa": {
-                "name": "Noa",
-                "description": "",
-                "level": 18,
-                "attack_list": [
-                    Attack(**self.attacks["Souplesse du judoka"], drop_rate=2),
-                    Attack(**self.attacks["Poing de feu"], drop_rate=2)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Noa",
+            "description": "Un judoka puissant avec des poings enflammés.",
+            "level": 18,
+            "attack_list": [
+                Attack(**self.attacks["Souplesse du judoka"], drop_rate=2),
+                Attack(**self.attacks["Poing de feu"], drop_rate=2)
+            ],
+            "dropable_items": [                   
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=15),
+                Consomable(**self.items["Potion de vie"], drop_rate=10),
+                Consomable(**self.items["Potion de régénération"], drop_rate=15),
+                Consomable(**self.items["Potion divine"], drop_rate=5)
+            ],
+            "boss": False
             },
             "Hamid": {
-                "name": "Hamid",
-                "description": "",
-                "level": 20,
-                "attack_list": [
-                    Attack(**self.attacks["Bois de boulogne"], drop_rate=2),
-                    Attack(**self.attacks["Course rapide"], drop_rate=2)
-                ],
-                "dropable_items": [(Consomable(**self.items["Petite potion rouge"], drop_rate=100))],
-                "boss": False
+            "name": "Hamid",
+            "description": "Un guerrier forestier avec une vitesse incroyable.",
+            "level": 20,
+            "attack_list": [
+                Attack(**self.attacks["Bois de boulogne"], drop_rate=2),
+                Attack(**self.attacks["Course rapide"], drop_rate=2)
+            ],
+            "dropable_items": [
+                
+                Consomable(**self.items["Petite potion rouge"], drop_rate=15),
+                Consomable(**self.items["Grande potion rouge"], drop_rate=15),
+                Consomable(**self.items["Potion de vie"], drop_rate=10),
+                Consomable(**self.items["Potion de régénération"], drop_rate=20),
+                Consomable(**self.items["Potion divine"], drop_rate=10)
+            ],
+            "boss": False
             },
             "Kevin": {
-                "name": "Kevin",
-                "description": "Souverain des rires perdus",
-                "level": 5,
-                "attack_list": [
-                    Attack(**self.attacks["Marteau du Forain"], drop_rate=10),
-                    Attack(**self.attacks["Billes de Loterie Explosives"], drop_rate=10),
-                    Attack(**self.attacks["Claque de la Poigne Gigantesque"], drop_rate=10)
-                ],
-                "dropable_items": [(Item(**self.items["Clé de la fête foraine"], drop_rate=100))],
-                "boss": True
+            "name": "Kevin",
+            "description": "Souverain des rires perdus, maître des illusions.",
+            "level": 5,
+            "attack_list": [
+                Attack(**self.attacks["Marteau du Forain"], drop_rate=10),
+                Attack(**self.attacks["Billes de Loterie Explosives"], drop_rate=10),
+                Attack(**self.attacks["Claque de la Poigne Gigantesque"], drop_rate=10)
+            ],
+            "dropable_items": [(Item(**self.items["Clé de la fête foraine"], drop_rate=100)),Equipable(**self.artefact["Petit canard"])],
+            "boss": True
             },
             "Anjalou": {
-                "name": "Anjalou",
-                "description": "Fils du Roi Singe",
-                "level": 10,
-                "attack_list": [
-                    Attack(**self.attacks["Le Lasso de Soie"], drop_rate=10),
-                    Attack(**self.attacks["La Roulade du Gentleman"], drop_rate=10),
-                    Attack(**self.attacks["Le Vent du Chapeau"], drop_rate=10),
-                    Attack(**self.attacks["Le Crâne de Lumière"], drop_rate=10)
-                ],
-                "dropable_items": [],
-                "boss": True
+            "name": "Anjalou",
+            "description": "Fils du Roi Singe, élégant et redoutable.",
+            "level": 10,
+            "attack_list": [
+                Attack(**self.attacks["Le Lasso de Soie"], drop_rate=10),
+                Attack(**self.attacks["La Roulade du Gentleman"], drop_rate=10),
+                Attack(**self.attacks["Le Vent du Chapeau"], drop_rate=10),
+                Attack(**self.attacks["Le Crâne de Lumière"], drop_rate=10)
+            ],
+            "dropable_items": [],
+            "boss": True
             },
             "Mathieu": {
-                "name": "Mathieu",
-                "description": "Riche investisseur",
-                "level": 15,
-                "attack_list": [
-                    Attack(**self.attacks["Le Marteau de la Banque"], drop_rate=10),
-                    Attack(**self.attacks["Le Lancer de Pièce Fétiche"], drop_rate=10),
-                    Attack(**self.attacks["Le Coup du Pantalon Traître"], drop_rate=10),
-                    Attack(**self.attacks["L'Écran Noir de la Dette"], drop_rate=10)
-                ],
-                "dropable_items": [(Item(**self.items["Clé du Domaine"], drop_rate=100))],
-                "boss": True
+            "name": "Mathieu",
+            "description": "Riche investisseur avec des attaques dévastatrices.",
+            "level": 15,
+            "attack_list": [
+                Attack(**self.attacks["Le Marteau de la Banque"], drop_rate=10),
+                Attack(**self.attacks["Le Lancer de Pièce Fétiche"], drop_rate=10),
+                Attack(**self.attacks["Le Coup du Pantalon Traître"], drop_rate=10),
+                Attack(**self.attacks["L'Écran Noir de la Dette"], drop_rate=10)
+            ],
+            "dropable_items": [(Item(**self.items["Clé du Domaine"], drop_rate=100)), Equipable(**self.artefact["Écran du Mac"])],
+            "boss": True
             },
             "Le Roi Singe": {
-                "name": "Le Roi Singe",
-                "description": "Dirigeant de la confrérie singeresque",
-                "level": 20,
-                "attack_list": [
-                    Attack(**self.attacks["Low Kick du Kangourou"], drop_rate=10),
-                    Attack(**self.attacks["Bouclier du lémurien"], drop_rate=10),
-                    Attack(**self.attacks["Déferlante de la jungle"], drop_rate=10)
-                ],
-                "dropable_items": [(Item(**self.items["Clé du casino"], drop_rate=100))],
-                "boss": True
+            "name": "Le Roi Singe",
+            "description": "Dirigeant de la confrérie singeresque, puissant et sage.",
+            "level": 20,
+            "attack_list": [
+                Attack(**self.attacks["Low Kick du Kangourou"], drop_rate=10),
+                Attack(**self.attacks["Bouclier du lémurien"], drop_rate=10),
+                Attack(**self.attacks["Déferlante de la jungle"], drop_rate=10)
+            ],
+            "dropable_items": [(Item(**self.items["Clé du casino"], drop_rate=100)), Equipable(**self.artefact["Jeu de cartes"])],
+            "boss": True
             },
             "Lao-ren": {
-                "name": "Lao-ren",
-                "description": "Maître Shaolin",
-                "level": 25,
-                "attack_list": [
-                    Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
-                    Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
-                    Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
-                ],
-                "dropable_items": [(Item(**self.items["Clé du temple"], drop_rate=100))],
-                "boss": True
+            "name": "Lao-ren",
+            "description": "Maître Shaolin, gardien du temple sacré.",
+            "level": 25,
+            "attack_list": [
+                Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
+                Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
+                Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
+            ],
+            "dropable_items": [(Item(**self.items["Clé du temple"], drop_rate=100)), Equipable(**self.artefact["Maxi Phô Boeuf"])],
+            "boss": True
             },
           "Alexandre": {
               "name": "Alexandre",
-              "description": "Directeur d'HETIC",
+              "description": "Directeur d'HETIC, stratège redoutable.",
               "level": 30,
               "attack_list": [
-                  Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
-                  Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
-                  Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
+              Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
+              Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
+              Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
               ],
             "dropable_items": [],
             "boss": True
           },
           "Nabil": {
               "name": "Nabil",
-              "description": "Le porte parôle",
+              "description": "Le porte-parole, manipulateur et puissant.",
               "level": 35,
               "attack_list": [
-                  Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
-                  Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
-                  Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
+              Attack(**self.attacks["Coup du Lotus Brisé"], drop_rate=10),
+              Attack(**self.attacks["Sillage d'Encens"], drop_rate=10),
+              Attack(**self.attacks["Colère des 1000 Âmes"], drop_rate=10)
               ],
             "dropable_items": [],
             "boss": True
@@ -741,17 +802,26 @@ class Game:
         Démarre le jeu en créant le joueur principal et en initiant la première interaction.
         """
         console.print("[green]Création du personnage...[/green]")
-        player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ?", default="Joueur")
+        player_name = Prompt.ask("Quel nom souhaitez-vous donner à votre personnage ? (si vous êtes Loic, veuillez écrire \"Loic\")", default="Joueur")
         system("clear")
-        self.main_player = Player(
-            name=player_name,
-            level=1,
-            xp=0,
-            stats={"health": 100, "attack": 10, "defense": 5},
-            attack_list=[Attack(**self.attacks["Amel 1"]), Attack(**self.attacks["Colère des 1000 Âmes"]),Attack(**self.attacks["Amel 2"])],
-            place= self.places["Spawn"],
-            inventory=[Consomable(**self.items["Petite potion rouge"]), Equipable(**self.artefact["Maxi Phô Boeuf"]),Equipable(**self.artefact["Maxi Phô Boeuf"]),Equipable(**self.artefact["Maxi Phô Boeuf"]),Equipable(**self.artefact["Maxi Phô Boeuf"])],
-        )
+        if player_name == "Loic":
+            self.main_player = Player(
+                name=player_name,
+                level=10,
+                xp=0,
+                attack_list=[Attack(**self.attacks["Attaque légère"]), Attack(**self.attacks["Colère des 1000 Âmes"]),Attack(**self.attacks["Le cheat de Loic"])],
+                place= self.places["Spawn"],
+                inventory=[Item(**self.items["Clé du casino"]), Item(**self.items["Clé de la fête foraine"]), Item(**self.items["Clé du temple"]), Item(**self.items["Clé du Domaine"])],
+            )
+        else:
+            self.main_player = Player(
+                name=player_name,
+                level=1,
+                xp=0,
+                attack_list=[Attack(**self.attacks["Attaque légère"]), Attack(**self.attacks["Attaque lourde"])],
+                place= self.places["Spawn"],
+                inventory=[],
+            )
         console.print(f"[bold blue]Bienvenue dans {self.name}[/bold blue]")
         self.main_player.place.interact(self.main_player)
 
@@ -894,16 +964,13 @@ class Monster(Entity):
         for item in self.dropable_items:
             if random.randint(0, 100) <= item.drop_rate:
                 dropped_items.append(item)
-        print(dropped_items)
         return dropped_items
-
-
 
 class Player(Entity):
     """
     Représente un joueur dans le jeu.
     """
-    def __init__(self, name: str, level: int, xp: float, stats: dict, attack_list: list, place, inventory: list = [], equipped_items: list = []):
+    def __init__(self, name: str, level: int, xp: float, attack_list: list, place, inventory: list = [], equipped_items: list = []):
         """
         Initialise un joueur avec des attributs spécifiques.
         
@@ -926,17 +993,6 @@ class Player(Entity):
         self.inventory = inventory
         self.place = place
         self.equipped_items = equipped_items
-
-    def show_inventory(self):
-        """
-        Affiche l'inventaire du joueur.
-        """
-        if len(self.inventory) <= 0:
-            dialog.naration(f"L'inventaire de {self.name} est vide")
-        else:
-            inventory_details = [f"{index}. {item.name} - {item.description}" if hasattr(item, "description") else f"{index}. {item.name}" for index, item in enumerate(self.inventory)]
-            console.print(f"Inventaire de {self.name}:\n" + "\n".join(inventory_details))
-            console.print(f"Nombre d'items : {len(self.inventory)}")
 
     def use_item(self, item_index):
         """
@@ -1017,7 +1073,6 @@ class Player(Entity):
         Returns:
             bool: Indique si l'interaction a été réussie ou non.
         """
-        self.show_inventory()
         choices = [str(index) for index, item in enumerate(self.inventory)]
         choices.append("back")
         item_choice = Prompt.ask(f"Choisissez un item avec lequel intéragir :\n{'\n'.join([f'{index} - {item.name} : {item.description}' for index, item in enumerate(self.inventory)])}\nback - Revenir en arrière", choices=choices)
@@ -1328,6 +1383,8 @@ class Equipable(Item):
         """
         if not self.equipped:
             for stat, value in self.effect.items():
+                if stat == "health":
+                    target.max_hp += value
                 target.stat[stat] += value
             self.equipped = True
             dialog.naration(f"{self.name} est maintenant équipé !")
@@ -1343,6 +1400,8 @@ class Equipable(Item):
         """
         if self.equipped:
             for stat, value in self.effect.items():
+                if stat == "health":
+                    target.max_hp -= value
                 target.stat[stat] -= value
             self.equipped = False
             dialog.naration(f"{self.name} a été déséquipé.")
@@ -1374,7 +1433,6 @@ class Consomable(Item):
         for stat, value in self.effect.items():
             if stat in target.stat:
                 target.change_stats(value, stat)
-
 
 class Attack:
     """
