@@ -214,6 +214,18 @@ class Game:
                         ]
                         dialog.dialog(naration)
                     else:
+                        match choice:
+                            #Le boss vole 20 PV au joueur
+                            case "1":
+                                pass
+                            #Le boss vole 20 d'attaque au joueur
+                            case "2":
+                                self.main_player.stat["attack"] += 20
+                            #Le boss vole 20 de défense au joueur
+                            case "3":
+                                self.main_player.stat["defense"] += 20
+                            case _:
+                                pass
                         return place.interact(self.main_player)
 
                     #Retour à l'entrée de la Foire // Ouvre le menu d'intéraction
