@@ -1133,7 +1133,7 @@ class Player(Entity):
         level_up_stats_text = []
         for stat, value in self.stat.items():
             increase = int(value * 0.2) if stat != "health" else int(self.max_hp * 0.2)
-            new_stat_value = value + increase
+            new_stat_value = value + increase if stat != "health" else self.max_hp + increase
             level_up_stats_text.append(f"{stat.capitalize()} : {self.stat[stat]} -> {new_stat_value}")
             self.stat[stat] = new_stat_value
         dialog.naration("\n".join(level_up_stats_text))
